@@ -1,4 +1,115 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://dev-diary.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://dev-diary.github.io//" rel="alternate" type="text/html" /><updated>2019-05-19T14:17:03+00:00</updated><id>https://dev-diary.github.io//feed.xml</id><title type="html">Dev-diary</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Object Oriented Design Principles Everythone Should Know</title><link href="https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know/" rel="alternate" type="text/html" title="Object Oriented Design Principles Everythone Should Know" /><published>2019-05-14T00:00:00+00:00</published><updated>2019-05-14T00:00:00+00:00</updated><id>https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know</id><content type="html" xml:base="https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know/">&lt;p&gt;During my study, I have collected quite a large and interesting list of object-oriented programming  design principles that may be useful to you.  This post is a shortened note. I invite you to explore knowledge reading books such as “Clean Architecture”, Martin Robert C.  Ready? I invite you to read the 10 most important OOP principles.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://dev-diary.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://dev-diary.github.io//" rel="alternate" type="text/html" /><updated>2019-05-19T18:37:19+00:00</updated><id>https://dev-diary.github.io//feed.xml</id><title type="html">Dev-diary</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Creating Jekyll Automated Deployment to GitHub Pages with CircleCI</title><link href="https://dev-diary.github.io//blog/Creating-Jekyll-Automated-Deployment-With-CircleCI/" rel="alternate" type="text/html" title="Creating Jekyll Automated Deployment to GitHub Pages with CircleCI" /><published>2019-05-19T00:00:00+00:00</published><updated>2019-05-19T00:00:00+00:00</updated><id>https://dev-diary.github.io//blog/Creating-Jekyll-Automated-Deployment-With-CircleCI</id><content type="html" xml:base="https://dev-diary.github.io//blog/Creating-Jekyll-Automated-Deployment-With-CircleCI/">&lt;p&gt;A few days ago I logged in to Google Webmaster Tools to check if my blog is already available on google. I was surprised because the site was blocked. The addresses in sitemap.xml pointed to localhost: 4000/page-address. It’s all because I was building a blog locally and pushing a ready, built version from &lt;code class=&quot;highlighter-rouge&quot;&gt;_sites&lt;/code&gt; directory to GitHub repository. I thought I would automate the deployment  process using one of the to Cl/CD - CircleCI&lt;/p&gt;
+&lt;h3 id=&quot;circleci&quot;&gt;CircleCI&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;CircleCI&lt;/strong&gt; provides very interesting (and free, which is important for me) service that allows you to utilize continuous integration in your development process.  CircleCI seamlessly integrates with &lt;em&gt;GitHub, GitLab, BitBucket&lt;/em&gt; so you can automate your build, test, and deploy pipeline. There are many other Continuous Integration tools available on a market (Travis CI, Go CD, GitLab CI) however, I liked CircleCi the most. I encourage you to read &lt;a href=&quot;https://circleci.com/docs/2.0/about-circleci/&quot;&gt;the documentation.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Github account&lt;/li&gt;
+  &lt;li&gt;Repository with the Jekyll blog source code&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;automatically-deploying-jekyll-blog-to-github-pages&quot;&gt;Automatically deploying Jekyll blog to GitHub Pages&lt;/h3&gt;
+&lt;p&gt;Currently, I have one public repository to which I push the contents of the locally generated _site folder. I want to prepare:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;A private repository with the entire Jekyll template code (I do not want to share my template code on the public repo)&lt;/li&gt;
+  &lt;li&gt;A public repository to which CircleCI pipeline will push the generated _site content&lt;/li&gt;
+  &lt;li&gt;Template of a blog based on &lt;em&gt;Jekyll&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In my case, these two repositories are in different GitHub accounts. This is because I created a separate account for my blog. However, this does not matter when it comes to building automation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/circle-jekyll.jpg&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;circleci-configuration&quot;&gt;CircleCI Configuration&lt;/h3&gt;
+
+&lt;p&gt;First, log in to &lt;a href=&quot;https://circleci.com/dashboard&quot;&gt;CircleCi &lt;/a&gt; using the Github account. If you have two accounts like me (One for the blog, the second for yourself) - use the second one. This is where we will store the entire Jekyll template code in the private repository.&lt;/p&gt;
+
+&lt;p&gt;After logging in you should see your repositories. Select the repository where you will store the entire template code.
+&lt;img src=&quot;/images/circleCi.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we have to define a deployment pipeline. CircleCI configuration is stored in a single YAML file located at &lt;code class=&quot;highlighter-rouge&quot;&gt;.circleci/config.yml&lt;/code&gt; in the root of your project’s directory.&lt;/p&gt;
+
+&lt;h3 id=&quot;configyml&quot;&gt;Config.yml&lt;/h3&gt;
+&lt;p&gt;Detailed instructions on how to create configuration can be found on the &lt;a href=&quot;https://circleci.com/docs/2.0/writing-yaml/&quot;&gt;https://circleci.com/docs/2.0/writing-yaml/&lt;/a&gt;.
+My configuration is simple and contains only a few steps:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;&lt;span class=&quot;na&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;defaults&lt;/span&gt;  
+  &lt;span class=&quot;na&quot;&gt;working_directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/repo&lt;/span&gt;  
+&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2&lt;/span&gt;  
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+    &lt;span class=&quot;s&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*defaults&lt;/span&gt;  
+  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.6&lt;/span&gt;  
+    &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Bundler Install&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Rsync Install&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt install rsync&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install Dependencies&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Jekyll build&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec jekyll build&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;deploy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy Blog to GitHub&lt;/span&gt;  
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;  
+            &lt;span class=&quot;no&quot;&gt;if [ $CIRCLE_BRANCH == 'master' ]; then  &lt;/span&gt;
+              &lt;span class=&quot;no&quot;&gt;bash .circleci/deploy.sh  &lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;fi  &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;workflows&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+  &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2&lt;/span&gt;  
+  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+    &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I used a CircleCI pre-built docker image that comes with tools that are useful to build Jekyll theme (Ruby and Rails image). In my pipeline, I install the bundler, which is needed to install all of the dependencies specified in the Gemfile file. I build a template just like locally - using &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec Jekyll build&lt;/code&gt;. You probably wonder why I added the  &lt;strong&gt;Rsync Install&lt;/strong&gt; step.  This is to synchronize the newly generated theme with the currently used. In Linux, you can not move files with overwriting, that’s why I’m using Rsync.&lt;/p&gt;
+
+&lt;h3 id=&quot;deploysh-script&quot;&gt;Deploy.sh script&lt;/h3&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Clone Jekyll generated template repository  &lt;/span&gt;
+git clone https://&amp;lt;GitHub Personal access token&amp;gt;@github.com/dev-diary/dev-diary.github.io.git  
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;dev-diary.github.io  
+  
+&lt;span class=&quot;c&quot;&gt;# Adding only files that have changed to the currently used template &lt;/span&gt;
+rsync &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; ../_site/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  
+  
+&lt;span class=&quot;c&quot;&gt;#Setting GIT user  &lt;/span&gt;
+git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.email &lt;span class=&quot;s2&quot;&gt;&quot;michael.fabjanski@gmail.com&quot;&lt;/span&gt;  
+git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.name &lt;span class=&quot;s2&quot;&gt;&quot;Michal&quot;&lt;/span&gt;  
+  
+&lt;span class=&quot;c&quot;&gt;# Preparation of backup branch name with (Branch from before new change)  &lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;BRANCH_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;backup-&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;today&quot;&lt;/span&gt; +&lt;span class=&quot;s2&quot;&gt;&quot;%Y%m%d%H%M&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;  
+git checkout &lt;span class=&quot;nt&quot;&gt;-b&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$BRANCH_NAME&lt;/span&gt;  
+git push &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; https://7d2c83a2ddc30630bb41d19177775e30c09d29b1@github.com/dev-diary/dev-diary.github.io.git &lt;span class=&quot;nv&quot;&gt;$BRANCH_NAME&lt;/span&gt;  
+  
+&lt;span class=&quot;c&quot;&gt;#Add new changes to the generated template code and push it  &lt;/span&gt;
+git checkout master  
+git add &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  
+git commit &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Builded new version - &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;today&quot;&lt;/span&gt; +&lt;span class=&quot;s2&quot;&gt;&quot;%Y%m%d%H%M&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;  
+git push &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; https://&amp;lt;GitHub Personal access token&amp;gt;@github.com/dev-diary/dev-diary.github.io.git&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the script, I clone the repository with the generated template. I only add new changes (generated by the pipeline in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_site&lt;/code&gt; folder). Because I use the second repository for the blog (it is not connected to CircleCi), I had to generate &lt;a href=&quot;https://github.com/settings/tokens&quot;&gt;GitHub Personal access token&lt;/a&gt;.
+Before the commit, I create a branch with back up.&lt;/p&gt;
+
+&lt;p&gt;In the end, I commit the changes and push to the repository with the generated theme.&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-run-our-pipeline&quot;&gt;Let’s run our pipeline&lt;/h3&gt;
+
+&lt;p&gt;After adding my private repository with the entire template code in CircleCI - the tool automatically triggers builds after each commit.
+&lt;img src=&quot;/images/circle-jobs.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the sample build:
+&lt;img src=&quot;/images/circle-job.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After each commit to the master in my private repository, after about 30 seconds, a new commit is added to the public blog repository.
+&lt;img src=&quot;/images/github-commits.JPG&quot; alt=&quot;dev-diary-commits&quot; /&gt;&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A few days ago I logged in to Google Webmaster Tools to check if my blog is already available on google. I was surprised because the site was blocked. The addresses in sitemap.xml pointed to localhost: 4000/page-address. It’s all because I was building a blog locally and pushing a ready, built version from _sites directory to GitHub repository. I thought I would automate the deployment process using one of the to Cl/CD - CircleCI CircleCI CircleCI provides very interesting (and free, which is important for me) service that allows you to utilize continuous integration in your development process. CircleCI seamlessly integrates with GitHub, GitLab, BitBucket so you can automate your build, test, and deploy pipeline. There are many other Continuous Integration tools available on a market (Travis CI, Go CD, GitLab CI) however, I liked CircleCi the most. I encourage you to read the documentation.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://dev-diary.github.io//images/Automated-deployment-With-CircleCI.jpg" /></entry><entry><title type="html">Object Oriented Design Principles Everythone Should Know</title><link href="https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know/" rel="alternate" type="text/html" title="Object Oriented Design Principles Everythone Should Know" /><published>2019-05-14T00:00:00+00:00</published><updated>2019-05-14T00:00:00+00:00</updated><id>https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know</id><content type="html" xml:base="https://dev-diary.github.io//blog/10-Object-oriented-design-principles-everythone-should-know/">&lt;p&gt;During my study, I have collected quite a large and interesting list of object-oriented programming  design principles that may be useful to you.  This post is a shortened note. I invite you to explore knowledge reading books such as “Clean Architecture”, Martin Robert C.  Ready? I invite you to read the 10 most important OOP principles.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Object-Oriented Design Principles&lt;/strong&gt; represent a set of rules that are the essence of object-oriented programming and help us/others to prepare well, easy to understand design.&lt;/p&gt;
 
