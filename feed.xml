@@ -1,4 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-05-30T22:04:51+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">How to set up custom domain for Github Pages with HTTPS</title><link href="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/" rel="alternate" type="text/html" title="How to set up custom domain for Github Pages with HTTPS" /><published>2019-05-25T00:00:00+00:00</published><updated>2019-05-25T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS</id><content type="html" xml:base="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/">&lt;p&gt;The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to &lt;a href=&quot;https://www.google.com/webmasters/tools/submit-url&quot; title=&quot;Google&quot;&gt;Google&lt;/a&gt;. The whole operation takes only a few minutes and can be done in a few steps.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-05-30T22:17:42+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection).</title><link href="https://www.devdiaries.net/blog/Spring-Design-Patterns/" rel="alternate" type="text/html" title="Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection)." /><published>2019-05-30T00:00:00+00:00</published><updated>2019-05-30T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Design-Patterns</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Design-Patterns/">&lt;p&gt;A lot of ground will be covered in these posts, but it will all center around &lt;strong&gt;Spring Framework&lt;/strong&gt;.  I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better.&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Java knowledge&lt;/li&gt;
+  &lt;li&gt;Basic Spring knowledge&lt;/li&gt;
+  &lt;li&gt;Object-Oriented Programming&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;what-are-design-patterns&quot;&gt;What are Design Patterns?&lt;/h3&gt;
+&lt;p&gt;Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations.  There are three types of patterns:&lt;/p&gt;
+&lt;h4 id=&quot;creational-design-patterns&quot;&gt;Creational Design Patterns&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Creational patterns are focused on how to instantiate an object or group of related objects.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;structural-design-patterns&quot;&gt;Structural Design Patterns&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Structural patterns are mostly concerned with object composition or in other words how the entities can use each other.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;behavioral-design-patterns&quot;&gt;Behavioral Design Patterns&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Behavioral Patterns are concerned with providing solutions regarding object interaction - how they communicate, how are some dependent on others.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;inversion-of-control&quot;&gt;Inversion of Control&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Inversion of Control&lt;/strong&gt; is one of the most important patterns that is used by &lt;strong&gt;Spring&lt;/strong&gt;. This is the main principle of Spring. The main advantages of IoC are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Decreases coupling&lt;/li&gt;
+  &lt;li&gt;Improves testability&lt;/li&gt;
+  &lt;li&gt;Greater modularity of a program&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;How it works?&lt;/strong&gt; The control of application objects is transferred to a container or framework. A central container constructs and manages all objects references. When other components within the application need an object - IoC container hands it to them.    &lt;br /&gt;
+&lt;strong&gt;How it works in Spring Framework?&lt;/strong&gt; In Spring, the IoC container manages all of the application dependencies. Instead of writing “&lt;em&gt;&lt;strong&gt;new Class()”&lt;/strong&gt;&lt;/em&gt; on your code, the object is created by someone else. This &lt;em&gt;‘someone else’&lt;/em&gt; is referred to as the IoC Container.     &lt;br /&gt;
+In addition to creating new objects, Spring IoC container manages their entire &lt;strong&gt;life cycle&lt;/strong&gt;. That includes creating objects, destroying them and invoking certain methods of the object (callbacks).  So, what are the benefits of Spring IoC? Firstly, it reduces noise in the code (Imagine creating a JDBC connection object in dozens of classes). It also reduces object coupling, because you are handed a dependency into your object, you are not as tightly coupled to it (you actually don`t need to know how it is constructed).&lt;/p&gt;
+&lt;h3 id=&quot;dependency-injection&quot;&gt;Dependency Injection&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Dependency injection is a software design pattern that implements inversion of control for resolving dependencies.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let’s start with a simple example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MainScreen&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+      
+ &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;      
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+        &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Text:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printHelloWorldMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;      
+    &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Writing a unit test for the &lt;code class=&quot;highlighter-rouge&quot;&gt;PrintOnScreen&lt;/code&gt; class is non-trivial. Additionally, in the &lt;code class=&quot;highlighter-rouge&quot;&gt;PrintOnScreen&lt;/code&gt; class there is initialized the printer field with a specific implementation. If we would like to change the implementation of the Screen interface, it will be necessary to modify the code of the &lt;code class=&quot;highlighter-rouge&quot;&gt;MainScreen &lt;/code&gt;class. We can get rid of these disadvantages using the &lt;strong&gt;DI&lt;/strong&gt; approach. We just need to modify the &lt;code class=&quot;highlighter-rouge&quot;&gt;MainScreen&lt;/code&gt; class to accept the &lt;code class=&quot;highlighter-rouge&quot;&gt;Screen &lt;/code&gt; , for example - injected by the constructor:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;      
+    &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;      
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+        &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Text:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printHelloWorldMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;      
+    &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+    &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This implementation of the &lt;code class=&quot;highlighter-rouge&quot;&gt;PrintOnScreen&lt;/code&gt; class will be easier to test. The test in Mockito might look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintOnScreenTest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+    &lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;      
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;shouldPrintHelloWorld&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+        &lt;span class=&quot;c1&quot;&gt;// given      &lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mock&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+        &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PrintOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+        &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;      
+        &lt;span class=&quot;c1&quot;&gt;// when      &lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printOnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;      
+        &lt;span class=&quot;c1&quot;&gt;// then      &lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;verify&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argThat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;contains&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)));&lt;/span&gt;      
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;By using &lt;strong&gt;DI&lt;/strong&gt;, the &lt;code class=&quot;highlighter-rouge&quot;&gt;PrintOnScreen&lt;/code&gt; class has become easier to test, but initialization is more complicated. Fortunately, Spring Framework allows us to use the benefits of DI in an easier way.&lt;/p&gt;
+
+&lt;h3 id=&quot;dependency-injection-in-spring-framework&quot;&gt;Dependency Injection in Spring Framework&lt;/h3&gt;
+&lt;p&gt;One way to create a Spring bean is to add the &lt;code class=&quot;highlighter-rouge&quot;&gt;@Component&lt;/code&gt; annotation to the class that you want to become a bean. The container will create an instance of this class and inject the required dependencies into it.   &lt;br /&gt;
+There are 3 ways to inject dependencies:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Constructor&lt;/strong&gt; Dependency Injection:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DependencyInjectionExample&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    
+ &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MainScreen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+    
+ &lt;span class=&quot;n&quot;&gt;DependencyInjectionExample&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MainScreen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;mainScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+ &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    
+ &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+  &lt;span class=&quot;n&quot;&gt;mainScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;showMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Heeeellooo !&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Setter&lt;/strong&gt; Dependency Injection:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+      
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;      
+      
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;seetScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Field&lt;/strong&gt; Dependency Injection:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintOnScreen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;      
+     &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;      
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;which-way-of-dependency-injection-is-the-best&quot;&gt;Which way of dependency injection is the best?&lt;/h4&gt;
+&lt;p&gt;Injection through the &lt;strong&gt;field&lt;/strong&gt; seems to be the most convenient, but this approach has several disadvantages:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;You can not add a final modifier to such a field, which makes our class mutable.&lt;/li&gt;
+  &lt;li&gt;This makes it difficult to initialize dependencies in tests.&lt;/li&gt;
+  &lt;li&gt;If we use injecting by the constructor and our application will have a cyclic relationship between the beans, we’ll get an exception just after starting the application. If injected through the field, the exception will not fly and the application will work.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Spring developers recommend injecting by the &lt;strong&gt;constructor&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;what-if-more-than-one-bean-implements-the-same-interface&quot;&gt;What if more than one bean implements the same interface?&lt;/h4&gt;
+&lt;p&gt;Sometimes several classes - beanes implements the same interface:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;messageScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;warnScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then we need to indicate the implementation that is to be injected. We have several options:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Using the &lt;strong&gt;bean name&lt;/strong&gt; as the name of the &lt;strong&gt;method parameter&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;messageScreenBean&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;messageScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If we do not give the name of the bean in the annotation parameter, it will be the name of the method by default.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;@Qualifier&lt;/strong&gt; annotation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;nd&quot;&gt;@Qualifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;messageScreen&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;messageScreen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;   &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;      
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;MessagePrinter&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@Qualifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;messageScreen&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Screen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;screen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;We can mark one of the beans with &lt;strong&gt;@Primary&lt;/strong&gt; annotation. If there is no qualifier for injection, this implementation will be selected by default.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;In this post, I demonstrated basic examples of Dependency Injection in the Spring Framework. I hope you can see how simple Spring makes Dependency Injection. In the next part, I will present you important &lt;strong&gt;creational design patterns&lt;/strong&gt; in the Spring Framework.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A lot of ground will be covered in these posts, but it will all center around Spring Framework. I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better. Requirements: Java knowledge Basic Spring knowledge Object-Oriented Programming What are Design Patterns? Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations. There are three types of patterns: Creational Design Patterns Creational patterns are focused on how to instantiate an object or group of related objects.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-dependency-injection.jpg" /></entry><entry><title type="html">How to set up custom domain for Github Pages with HTTPS</title><link href="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/" rel="alternate" type="text/html" title="How to set up custom domain for Github Pages with HTTPS" /><published>2019-05-25T00:00:00+00:00</published><updated>2019-05-25T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS</id><content type="html" xml:base="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/">&lt;p&gt;The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to &lt;a href=&quot;https://www.google.com/webmasters/tools/submit-url&quot; title=&quot;Google&quot;&gt;Google&lt;/a&gt;. The whole operation takes only a few minutes and can be done in a few steps.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
 
