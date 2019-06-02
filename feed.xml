@@ -1,4 +1,414 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-05-31T16:29:07+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection).</title><link href="https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/" rel="alternate" type="text/html" title="Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection)." /><published>2019-05-30T00:00:00+00:00</published><updated>2019-05-30T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/">&lt;p&gt;A lot of ground will be covered in these posts, but it will all center around &lt;strong&gt;Spring Framework&lt;/strong&gt;.  I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-06-02T15:21:32+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Design Patterns used in Spring Framework Part 2 - Creational Patterns.</title><link href="https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns/" rel="alternate" type="text/html" title="Design Patterns used in Spring Framework Part 2 - Creational Patterns." /><published>2019-06-02T00:00:00+00:00</published><updated>2019-06-02T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns/">&lt;p&gt;&lt;strong&gt;Creational design patterns&lt;/strong&gt; deal with object creation mechanisms, trying to create objects in a manner suitable to the situation. In this article, I will describe the most popular patterns in this category and how Spring uses them!&lt;/p&gt;
+
+&lt;h3 id=&quot;the-factory-pattern&quot;&gt;The Factory pattern&lt;/h3&gt;
+&lt;p&gt;Spring, in itself, is already an example implementation of the Factory pattern. The pattern is used throughout the entire framework. One of the primary places it’s used is the &lt;code class=&quot;highlighter-rouge&quot;&gt;BeanFactory&lt;/code&gt; class.&lt;/p&gt;
+&lt;h4 id=&quot;intent&quot;&gt;Intent&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Factory pattern allows construction of similar classes of different types using a &lt;strong&gt;factory method&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Method call creates the object for you&lt;/li&gt;
+  &lt;li&gt;Created objects are instances from classes that &lt;strong&gt;share an interface or subclass&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;problem-solution&quot;&gt;Problem Solution&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Thanks to Factory Design Pattern you do not have to worry about class construction in more than one place.&lt;/li&gt;
+  &lt;li&gt;It allows you to leverage the interface for repetitive operations.&lt;/li&gt;
+  &lt;li&gt;Copy-paste bugs are less likely.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;structure-of-the-factory-pattern&quot;&gt;Structure of the Factory Pattern&lt;/h4&gt;
+&lt;p&gt;Firstly, you have to &lt;strong&gt;create common interface&lt;/strong&gt; that you are going to use in objects factory. Then, you need to &lt;strong&gt;create a class that creates instances of your inteface&lt;/strong&gt;. In that class, you have to implement a method that servers concrete classes that you will then implement from the interface itself. 
+So, again, we have a class that has a method that creates instances of the interface when under the coverage that it’s actually creating instances in the concrete class.&lt;/p&gt;
+
+&lt;h4 id=&quot;abstract-factory-pattern&quot;&gt;Abstract Factory Pattern&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Abstract Factory Pattern&lt;/strong&gt; is a pattern very similar to the Factory Pattern. You can say that it is &lt;strong&gt;Factory of factories&lt;/strong&gt;. In a nutshell, there are two main differences between the Factory Pattern and Abstract Factory:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Abstract Factory design pattern creates Factory&lt;/li&gt;
+  &lt;li&gt;Factory design pattern creates Products&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product1Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product2Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ConcreteFactory1&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractFactory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product1Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ConcreteProduct1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product2Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ConcreteProduct2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ConcreteFactory2&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractFactory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product1Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ConcreteAnotherProduct1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Product2Base&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CreateProduct2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ConcreteAnotherProduct2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;AbstractFactory&lt;/code&gt; class is responsible for creating several different types (in contrast to Factory Pattern). As you can see in the above example, each of the factories can be associated with different objects within the same group (in this case - products).&lt;/p&gt;
+
+&lt;h4 id=&quot;factory-pattern-implementation-in-spring&quot;&gt;Factory Pattern implementation in Spring&lt;/h4&gt;
+
+&lt;p&gt;Let`s take a look at above interface:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Animal&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;makeASound&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Animal&lt;/code&gt; interface has several methods that are common to all animals (each animal has a type and name). So, now you need to create a new class: &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimalFactory&lt;/code&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;nd&quot;&gt;@Component&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AnimalFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Animal&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createAnimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+            &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;bird&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Bird&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+            &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;cat&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Cat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+            &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  
+                &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;UnsupportedOperationException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Unsupported animal type!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I added &lt;code class=&quot;highlighter-rouge&quot;&gt;@Component&lt;/code&gt; annotation because I want the Spring to manage this factory. There is one method (&lt;strong&gt;factory method&lt;/strong&gt;) which returns an Animal - &lt;code class=&quot;highlighter-rouge&quot;&gt;createAnimal&lt;/code&gt;.  It is a very simple factory that supports only two types of animals (cat, bird). If another type is provided, an exception will be thrown.&lt;/p&gt;
+
+&lt;p&gt;Let’s create Spring controller - &lt;code class=&quot;highlighter-rouge&quot;&gt;FactoryController&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;  
+&lt;span class=&quot;nd&quot;&gt;@RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FactoryController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AnimalFactory&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;FactoryController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AnimalFactory&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;factory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@PostMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;addAminal/{type}/{name}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Animal&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addAnimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@PathVariable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@PathVariable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;Animal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;createAnimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;makeASound&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I added one &lt;code class=&quot;highlighter-rouge&quot;&gt;@PostMapping&lt;/code&gt; method, which we will pass through the &lt;code class=&quot;highlighter-rouge&quot;&gt;@PathVariable&lt;/code&gt; type and name of the animal. In response, we will get the new animal object created by the factory.
+Let’s test it using a postman:
+&lt;img src=&quot;/images/createAnimal.JPG&quot; alt=&quot;factory-pattern-spring-java&quot; /&gt;
+Application logs:
+&lt;img src=&quot;/images/applicationLogs.JPG&quot; alt=&quot;factory-pattern-spring-logs&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, we have just created a new object - a bird using our factory.&lt;/p&gt;
+
+&lt;h4 id=&quot;factory-pattern-popular-use-cases-in-spring-framework&quot;&gt;Factory Pattern popular use cases in Spring Framework&lt;/h4&gt;
+&lt;p&gt;The Spring framework uses the factory design pattern for the creation of the objects by using two approaches:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Spring BeanFactory Container (e.g &lt;code class=&quot;highlighter-rouge&quot;&gt;org.springframework.beans.factory.BeanFactory&lt;/code&gt;) - It is the simplest container  in the Spring framework which provides the basic support for DI&lt;/li&gt;
+  &lt;li&gt;Spring ApplicationContext Container (e.g &lt;code class=&quot;highlighter-rouge&quot;&gt;[org.springframework.context.ApplicationContext]&lt;/code&gt;) - t is another container present in spring container which adds extra enterprise-specific functionality such as publishing application events to the attentive event listeners or loading messages from a properties file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As you can see, entire Spring is already an example implementation of the Factory pattern (any Spring application’s application context is just a giant Factory)&lt;/p&gt;
+
+&lt;h3 id=&quot;the-builder-pattern&quot;&gt;The Builder pattern&lt;/h3&gt;
+
+&lt;p&gt;Another common creational pattern is the &lt;strong&gt;Builder&lt;/strong&gt; pattern.  The popular use of Builder in the Spring is ResultAction. This class is part of the MockMcv - used for testing web applications.&lt;/p&gt;
+
+&lt;h4 id=&quot;intent-1&quot;&gt;Intent&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Each method return the object reference it`s called from.&lt;/li&gt;
+  &lt;li&gt;There is &lt;code class=&quot;highlighter-rouge&quot;&gt;build()&lt;/code&gt; method which returns a fully contstructed object (based on all the intermediate calls).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;problem-solution-1&quot;&gt;Problem Solution&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Improves the readability of the code when object creation has many parameters.&lt;/li&gt;
+  &lt;li&gt;Useful when some or all paramaters are optional.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;structure-of-the-builder-pattern&quot;&gt;Structure of the Builder Pattern&lt;/h4&gt;
+&lt;p&gt;Firstly, you need to &lt;strong&gt;define a base class with all args constructor&lt;/strong&gt;. Then, you have to create a Builder class with &lt;strong&gt;attributes and setters for each argument of the base class&lt;/strong&gt;. Each setter should return the builder. Then, need to create a &lt;code class=&quot;highlighter-rouge&quot;&gt;build()&lt;/code&gt; methid that will construct and return object of base class.&lt;/p&gt;
+
+&lt;h4 id=&quot;builder-pattern-implementation-in-spring&quot;&gt;Builder Pattern implementation in Spring&lt;/h4&gt;
+&lt;p&gt;I started my implementation with a simple Java class - &lt;code class=&quot;highlighter-rouge&quot;&gt;Employee.java&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Employee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;firstName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;lastName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;employeeId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Employee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getFirstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getLastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getEmployeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+    
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getEmail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;There are a couple attributes, contructor and auto-generated getters. It’s time for implementing builder pattern! To do this, create the &lt;code class=&quot;highlighter-rouge&quot;&gt;EmployeeBuilder&lt;/code&gt; class with the same fields as the Employee class. Generate setters - one for each of our fields. If you generate setters by IDE, you must remember to &lt;strong&gt;change the type returned by setter (void) to EmployeeBuilder&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;EmployeeBuilder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;c1&quot;&gt;// Each setter returns EmployeBuilder object.  &lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EmployeeBuilder&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setFirstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;firstName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EmployeeBuilder&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setLastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;lastName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EmployeeBuilder&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setEmployeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;employeeId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EmployeeBuilder&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setEmail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;buildEmployee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Employee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;employeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At the end I use the &lt;code class=&quot;highlighter-rouge&quot;&gt;public Employee buildEmployee()&lt;/code&gt; method that creates the employee. The advantage of this solution is that if any of our fields are null, null will be populated. We don’t really have to think about where the nulls go. Let’s take a look at action. I created &lt;code class=&quot;highlighter-rouge&quot;&gt;BuilderController&lt;/code&gt; Spring controller which has two endpoints. The first creates an employee with all fields, the second creates an employee without an email:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;  
+&lt;span class=&quot;nd&quot;&gt;@RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/builder&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BuilderController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;employee1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getEmployee1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EmployeeBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setEmployeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1234&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setEmail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;test@test.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setFirstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;John&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setLastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;smith&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;buildEmployee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;employee2&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getEmployee2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EmployeeBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setEmployeeId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;4321&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setFirstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Jeff&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setLastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Freeman&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;buildEmployee&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you probably expect, the GET request on the first edpoint returns: 
+&lt;img src=&quot;/images/builderSpring1.JPG&quot; alt=&quot;builder-pattern-spring-framework&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The second endpoint returns the employee with a null as an email:
+&lt;img src=&quot;/images/builderSpring12.JPG&quot; alt=&quot;builder-pattern-spring-framework&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;the-singleton-pattern&quot;&gt;The Singleton pattern&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Singleton&lt;/strong&gt; is a pattern used by every Java developer who uses Spring. &lt;strong&gt;Every bean is by default a singleton&lt;/strong&gt;. Its purpose is to provide the possibility of creating &lt;strong&gt;only one object of a given class&lt;/strong&gt; and providing global access to it.&lt;/p&gt;
+
+&lt;h4 id=&quot;intent-2&quot;&gt;Intent&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;There is an only private constructor.&lt;/li&gt;
+  &lt;li&gt;Class stores reference to the instance of itself.&lt;/li&gt;
+  &lt;li&gt;There is &lt;strong&gt;getInstance()&lt;/strong&gt; method which returns a reference of singleton class instance or constructs new object if not constructed.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In Singleton pattern, Java &lt;code class=&quot;highlighter-rouge&quot;&gt;new Class&lt;/code&gt; &lt;strong&gt;is never called on the class&lt;/strong&gt; except getInstance case. You should wrap this method with some locking functionality to ensure multi-thread safety.&lt;/p&gt;
+
+&lt;h4 id=&quot;problem-solution-2&quot;&gt;Problem Solution&lt;/h4&gt;
+&lt;p&gt;Singleton can be used in cases:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Object creation is expensive.&lt;/li&gt;
+  &lt;li&gt;The class that stores the application configuration. From anywhere in the system, we can modify it and we want the changes to be visible from anywhere. At the same time, we can not allow different versions of configurations to be maintained in the system.&lt;/li&gt;
+  &lt;li&gt;You need to store static state for multiple parts of the application.&lt;/li&gt;
+  &lt;li&gt;You need to control who has access to an object (concurrency controlling).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;structure-of-the-singleton-pattern&quot;&gt;Structure of the Singleton Pattern&lt;/h4&gt;
+&lt;p&gt;There are many ways to implement a singleton, but all can be reduced to three main points:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;First you have to create a private constructor in your Singleton class&lt;/li&gt;
+  &lt;li&gt;Then, create an instance handle which is stored in the class&lt;/li&gt;
+  &lt;li&gt;Create static &lt;code class=&quot;highlighter-rouge&quot;&gt;getInstance()&lt;/code&gt; method that uses a synchronized block on the object to reduce the thread safety risk.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;singleton-pattern-exemplary-implementation-in-spring&quot;&gt;Singleton Pattern exemplary implementation in Spring&lt;/h4&gt;
+&lt;p&gt;In the following example, we will implement our own Singleton. Then we will prove that the Spring components are singletons by default. 
+Let’s start with creating a couple of classes. The first one we are going to create is &lt;code class=&quot;highlighter-rouge&quot;&gt;Singleton.java&lt;/code&gt; class which will be a traditional singleton (described in the previous point):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(){}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;  
+            &lt;span class=&quot;kd&quot;&gt;synchronized&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;  
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+                    &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, create simple Spring &lt;code class=&quot;highlighter-rouge&quot;&gt;@Component&lt;/code&gt; class without any logic:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@Component&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SpringSingleton&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Next, let’s test whether our singletons ensure that only one object is created. I used the JUnit test (generated automatically when creating a Spring Boot project in Spring Initializer):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@RunWith&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SpringRunner&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;nd&quot;&gt;@SpringBootTest&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SpringDesignPatternsApplicationTests&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;SpringSingleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;springSingleton1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;SpringSingleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;springSingleton2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+    &lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;singletonObjectsShouldBeEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  
+        &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;singleton1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;singleton2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  
+&lt;span class=&quot;c1&quot;&gt;//      Checking if the Singleton objects are definitely one, the same object  &lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Assert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertSame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;singleton1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;singleton2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  
+&lt;span class=&quot;c1&quot;&gt;//      Checking if the spring components are definitely singletons  &lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Assert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertSame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;springSingleton1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;springSingleton2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assertSame()&lt;/code&gt; method checks if arguments are same objects. Test result: passed - everything was the same. That`s how you can write traditional singletons or singletons in Spring.&lt;/p&gt;
+
+&lt;h4 id=&quot;singleton-pattern-vs-spring-singletons&quot;&gt;Singleton Pattern vs Spring Singletons&lt;/h4&gt;
+
+&lt;p&gt;There is one more thing you should know. As I wrote - all Spring beans are singletons by default. However, these are not the same singletons as the traditional singletons. 
+The traditional Singleton pattern assumes that there is only one instance of a given class at the space managed by Java classloader. In Spring, there is only one instance of Bean for each given context (&lt;code class=&quot;highlighter-rouge&quot;&gt;_org.springframework.context.ApplicationContext&lt;/code&gt;) instance. So, if you have more then one context, all managed by the same Java classloader, you will probably have more than one instance of a bean.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-prototype-pattern&quot;&gt;The Prototype pattern&lt;/h3&gt;
+
+&lt;p&gt;The &lt;strong&gt;prototype&lt;/strong&gt; is a pattern whose purpose is to copy objects from the parent object. In the prototype pattern, a new object is created by &lt;strong&gt;cloning an existing object&lt;/strong&gt;. In Java, the &lt;code class=&quot;highlighter-rouge&quot;&gt;clone()&lt;/code&gt; method is an implementation of this design pattern.&lt;/p&gt;
+
+&lt;h4 id=&quot;intent-3&quot;&gt;Intent&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Instance is cloned at runtime to give new instances that have the same state&lt;/li&gt;
+  &lt;li&gt;In Java It’s done with the &lt;code class=&quot;highlighter-rouge&quot;&gt;Cloneable&lt;/code&gt; interface/&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;problem-solution-3&quot;&gt;Problem Solution&lt;/h4&gt;
+&lt;p&gt;The prototype can be used in cases:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;You have to create a lot of instances of the same or similar objects, and cloning is more efficient than creating instances of objects with the new Java keyword.&lt;/li&gt;
+  &lt;li&gt;Useful with objects that must be thread safe and need to store state (e.g shopping carts - where you want to have the same behavior but the individual items in the cart are different)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;structure-of-the-prototype-pattern&quot;&gt;Structure of the Prototype Pattern&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Create an abstract base class that implements Cloneable.&lt;/li&gt;
+  &lt;li&gt;Extend abstract class in prototype instances.&lt;/li&gt;
+  &lt;li&gt;Override the &lt;code class=&quot;highlighter-rouge&quot;&gt;clone()&lt;/code&gt; method in those prototype instances - add the class specific behavior.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;prototypepattern-implementation-in-spring&quot;&gt;PrototypePattern implementation in Spring&lt;/h4&gt;
+&lt;p&gt;I will not implement the traditional Java prototype. However, I will show you how to create a prototype bean in Spring. 
+I created one dumb class: &lt;code class=&quot;highlighter-rouge&quot;&gt;SpringPrototype.java&lt;/code&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SpringPrototype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the main application class in Spring, I defined defined a new prototype bean by setting &lt;code class=&quot;highlighter-rouge&quot;&gt;@Scope&lt;/code&gt; to prototype:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
+&lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;  
+&lt;span class=&quot;nd&quot;&gt;@Scope&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;prototype&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SpringPrototype&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;  
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;SpringPrototype&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;JUnit test:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;SpringPrototype&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prototype1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+&lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;SpringPrototype&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prototype2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+&lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;prototypeObjectsShouldNotBeEquals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;n&quot;&gt;Assert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;assertNotSame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prototype1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prototype2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I injected two instances of the SpringPrototype class with &lt;code class=&quot;highlighter-rouge&quot;&gt;@Autowired&lt;/code&gt;. Just like in the Singleton example - I used the static method from Assert to check that the created instances are not the same. My test is green. It’s proof that there are &lt;strong&gt;two different instances of the same object.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;I hope you liked the post. We’ve got to know the most important creational patterns used in Spring. In the next post, we will learn about structural patterns in Spring Framework!&lt;/p&gt;
+
+&lt;p&gt;The source code from the post is available on my &lt;a href=&quot;https://github.com/MichalFab/spring-design-patterns&quot;&gt;Github repo&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Creational design patterns deal with object creation mechanisms, trying to create objects in a manner suitable to the situation. In this article, I will describe the most popular patterns in this category and how Spring uses them!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-creational.jpg" /></entry><entry><title type="html">Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection).</title><link href="https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/" rel="alternate" type="text/html" title="Design Patterns used in Spring Framework Part 1 (Inversion of Control, Dependency Injection)." /><published>2019-05-30T00:00:00+00:00</published><updated>2019-05-30T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/">&lt;p&gt;A lot of ground will be covered in these posts, but it will all center around &lt;strong&gt;Spring Framework&lt;/strong&gt;.  I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
 &lt;ul&gt;
@@ -210,7 +620,10 @@ There are 3 ways to inject dependencies:&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;In this post, I demonstrated basic examples of Dependency Injection in the Spring Framework. I hope you can see how simple Spring makes Dependency Injection. In the next part, I will present you important &lt;strong&gt;creational design patterns&lt;/strong&gt; in the Spring Framework.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A lot of ground will be covered in these posts, but it will all center around Spring Framework. I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better. Requirements: Java knowledge Basic Spring knowledge Object-Oriented Programming What are Design Patterns? Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations. There are three types of patterns: Creational Design Patterns Creational patterns are focused on how to instantiate an object or group of related objects.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-dependency-injection.jpg" /></entry><entry><title type="html">How to set up custom domain for Github Pages with HTTPS</title><link href="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/" rel="alternate" type="text/html" title="How to set up custom domain for Github Pages with HTTPS" /><published>2019-05-25T00:00:00+00:00</published><updated>2019-05-25T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS</id><content type="html" xml:base="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/">&lt;p&gt;The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to &lt;a href=&quot;https://www.google.com/webmasters/tools/submit-url&quot; title=&quot;Google&quot;&gt;Google&lt;/a&gt;. The whole operation takes only a few minutes and can be done in a few steps.&lt;/p&gt;
+
+&lt;p&gt;In this post, I demonstrated basic examples of Dependency Injection in the Spring Framework. I hope you can see how simple Spring makes Dependency Injection.&lt;/p&gt;
+
+&lt;p&gt;If you liked it, I invite you to read the next part in which I described the most popular &lt;strong&gt;creational design patterns&lt;/strong&gt;: &lt;a href=&quot;https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns/&quot;&gt;Design Patterns used in Spring Framework Part 2 - Creational Patterns.&lt;/a&gt;&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A lot of ground will be covered in these posts, but it will all center around Spring Framework. I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better. Requirements: Java knowledge Basic Spring knowledge Object-Oriented Programming What are Design Patterns? Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations. There are three types of patterns: Creational Design Patterns Creational patterns are focused on how to instantiate an object or group of related objects.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-dependency-injection.jpg" /></entry><entry><title type="html">How to set up custom domain for Github Pages with HTTPS</title><link href="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/" rel="alternate" type="text/html" title="How to set up custom domain for Github Pages with HTTPS" /><published>2019-05-25T00:00:00+00:00</published><updated>2019-05-25T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS</id><content type="html" xml:base="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/">&lt;p&gt;The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to &lt;a href=&quot;https://www.google.com/webmasters/tools/submit-url&quot; title=&quot;Google&quot;&gt;Google&lt;/a&gt;. The whole operation takes only a few minutes and can be done in a few steps.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
 
