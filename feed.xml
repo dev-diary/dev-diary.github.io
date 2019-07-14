@@ -1,4 +1,290 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-06-29T11:14:23+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 4 Creating a frontend in React</title><link href="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/" rel="alternate" type="text/html" title="Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 4 Creating a frontend in React" /><published>2019-06-24T00:00:00+00:00</published><updated>2019-06-24T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/">&lt;p&gt;In &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-3/&quot;&gt;previous posts&lt;/a&gt;, we have created a fully working application in Spring Boot 2. Now it’s time to create a frontend that will communicate with our backend. If you have not read previous posts, I invite you to read.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-07-14T13:18:39+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V</title><link href="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/" rel="alternate" type="text/html" title="Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V" /><published>2019-07-14T00:00:00+00:00</published><updated>2019-07-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1</id><content type="html" xml:base="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/">&lt;p&gt;Today we will start playing with Kubernetes. We will start by installing Ubuntu 19.04 Server on the Hyper-V virtual machine. Next, we will create a &lt;strong&gt;single node Kubernetes cluster&lt;/strong&gt;. You can also use &lt;code class=&quot;highlighter-rouge&quot;&gt;Minikube&lt;/code&gt; (a tool for running Kubernetes locally) for Windows instead of Ubuntu Server - but I wanted it to resemble a real development environment.&lt;br /&gt;
+We will use a ssh connection from windows to manage our cluster on Ubuntu Server.&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Internet connection on the system that has Hyper-V installed.&lt;/li&gt;
+  &lt;li&gt;Hyper-V enabled&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;configuring-hyper-v-virtual-switch-manager&quot;&gt;Configuring Hyper-V Virtual Switch Manager&lt;/h3&gt;
+&lt;p&gt;Your virtual machine will need access to your host windows’ internet connection. To do this we must configure &lt;strong&gt;Virtual Switch Manager&lt;/strong&gt;. &lt;br /&gt;
+Open the Hype-V panel and click on the “Virtual Switch Manager”:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/network-switch.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create a new &lt;strong&gt;External&lt;/strong&gt; Virtual Switch:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/external-switch.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Set a name and select your network adapter in the  &lt;strong&gt;External Network&lt;/strong&gt; &lt;img src=&quot;/images/single-node-kubernetes/creating-virtual-switch.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Go to &lt;code class=&quot;highlighter-rouge&quot;&gt;Control Panel\Network and Internet\Network Connections&lt;/code&gt;. You will see your newly created connection:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/ubuntu-network-switch.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Right-click your Windows connection (In my case it is Ethernet). Click &lt;code class=&quot;highlighter-rouge&quot;&gt;Properties&lt;/code&gt;, select &lt;code class=&quot;highlighter-rouge&quot;&gt;Sharing&lt;/code&gt; tab and check the box &lt;em&gt;All other network users to connect through this computers Internet connection.&lt;/em&gt;:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/network-adapter-sharing.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;That’s all. Now you should have Internet access in your virtual machine.&lt;/p&gt;
+
+&lt;h3 id=&quot;creating-hyper-v-virtual-machine&quot;&gt;Creating Hyper-V virtual machine&lt;/h3&gt;
+&lt;p&gt;Now we can create VM with Ubuntu 19.04:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Open Start&lt;/li&gt;
+  &lt;li&gt;Search for Hyper-V Manager&lt;/li&gt;
+  &lt;li&gt;Select &lt;code class=&quot;highlighter-rouge&quot;&gt;New&lt;/code&gt; and click on &lt;code class=&quot;highlighter-rouge&quot;&gt;Virtual Machine&lt;/code&gt;:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/create-virtal-machine.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Choose a name, leave the default Generation 1 option and click &lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Select the amount of RAM. I set 8192MB&lt;/li&gt;
+  &lt;li&gt;Select the virtual switch which you created earlier: &lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/switch-select.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;On the &lt;code class=&quot;highlighter-rouge&quot;&gt;Connect virtual hard disk&lt;/code&gt; tab you can set disk size. I allocated 25Gb.&lt;/li&gt;
+  &lt;li&gt;On the &lt;code class=&quot;highlighter-rouge&quot;&gt;Installation options&lt;/code&gt; tab select &lt;strong&gt;Install an operating system from a bootable CD/DVD-ROM&lt;/strong&gt; option and provide a path for the Ubuntu ISO file. Click next and finish.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;installing-ubuntu-1904-server-using-hyper-v-virtual-machine&quot;&gt;Installing Ubuntu 19.04 Server using Hyper-V Virtual Machine&lt;/h3&gt;
+&lt;p&gt;We have prepared a virtual switch and a virtual machine. Now we can install Ubuntu.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Open Hyper-V, right-click the newly created Virtual machine (in my case name is Ubuntu). Select &lt;code class=&quot;highlighter-rouge&quot;&gt;Connect&lt;/code&gt;.&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/conenct-to-vm.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Click the &lt;code class=&quot;highlighter-rouge&quot;&gt;Start&lt;/code&gt;:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/start-vm.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Click the &lt;code class=&quot;highlighter-rouge&quot;&gt;Install Ubuntu Server&lt;/code&gt;:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/install-ubuntu.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Leave default values in the next steps&lt;/li&gt;
+  &lt;li&gt;Enter the username and password to your account&lt;/li&gt;
+  &lt;li&gt;Set  &lt;code class=&quot;highlighter-rouge&quot;&gt;Install OpenSSH server&lt;/code&gt;:&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/ssh.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Restart the virtual machine to finish the setup.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To connect to a ubuntu server in a virtual machine go to the Hyper-V -&amp;gt; Virtual Machines. Right-click on the virtual machine and then click on &lt;code class=&quot;highlighter-rouge&quot;&gt;Connect&lt;/code&gt;.&lt;br /&gt;
+&lt;img src=&quot;/images/single-node-kubernetes/ubuntu-vm.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;connecting-to-hyper-v-ubuntu-virtual-machine-via-ssh&quot;&gt;Connecting to Hyper-V Ubuntu Virtual Machine via SSH&lt;/h3&gt;
+&lt;p&gt;In next posts, we will connect to the virtual machine via SSH. We will need two programs:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html&quot;&gt;Putty&lt;/a&gt; - a free SSH client&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://winscp.net/eng/download.php&quot;&gt;WinSCP&lt;/a&gt; - a popular free SFTP client for Windows. We will use it to transfer files to the virtual machine.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To connect to a virtual machine, run the ubuntu server in Hyper-V. After starting Ubuntu, enter the command in the terminal:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt; 
+ifconfig&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Copy inet IP and use it in Putty / WinSCP to connect to VM:
+&lt;img src=&quot;/images/single-node-kubernetes/inet-ip.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the default settings and default port 22:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/single-node-kubernetes/putty-connection.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Enter the user login and password you set during the Ubuntu installation to connect:
+&lt;img src=&quot;/images/single-node-kubernetes/putty-login.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After entering login details and clicking enter - you will get access to the Ubuntu Server in your Putty terminal.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/single-node-kubernetes/ubuntu-logged.JPG&quot; alt=&quot;virtual-switch-manager&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Connection via WinSCP looks the same as in the case of Putty.&lt;/p&gt;
+
+&lt;p&gt;We already have a prepared environment. &lt;a href=&quot;https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-2/&quot;&gt;In the next post&lt;/a&gt;, we will set and configure a Kubernetes cluster.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Today we will start playing with Kubernetes. We will start by installing Ubuntu 19.04 Server on the Hyper-V virtual machine. Next, we will create a single node Kubernetes cluster. You can also use Minikube (a tool for running Kubernetes locally) for Windows instead of Ubuntu Server - but I wanted it to resemble a real development environment. We will use a ssh connection from windows to manage our cluster on Ubuntu Server. Requirements Internet connection on the system that has Hyper-V installed. Hyper-V enabled Configuring Hyper-V Virtual Switch Manager Your virtual machine will need access to your host windows’ internet connection. To do this we must configure Virtual Switch Manager. Open the Hype-V panel and click on the “Virtual Switch Manager”: Create a new External Virtual Switch: Set a name and select your network adapter in the External Network Go to Control Panel\Network and Internet\Network Connections. You will see your newly created connection: Right-click your Windows connection (In my case it is Ethernet). Click Properties, select Sharing tab and check the box All other network users to connect through this computers Internet connection.: That’s all. Now you should have Internet access in your virtual machine. Creating Hyper-V virtual machine Now we can create VM with Ubuntu 19.04: Open Start Search for Hyper-V Manager Select New and click on Virtual Machine: Choose a name, leave the default Generation 1 option and click next. Select the amount of RAM. I set 8192MB Select the virtual switch which you created earlier: On the Connect virtual hard disk tab you can set disk size. I allocated 25Gb. On the Installation options tab select Install an operating system from a bootable CD/DVD-ROM option and provide a path for the Ubuntu ISO file. Click next and finish. Installing Ubuntu 19.04 Server using Hyper-V Virtual Machine We have prepared a virtual switch and a virtual machine. Now we can install Ubuntu. Open Hyper-V, right-click the newly created Virtual machine (in my case name is Ubuntu). Select Connect. Click the Start: Click the Install Ubuntu Server: Leave default values in the next steps Enter the username and password to your account Set Install OpenSSH server: Restart the virtual machine to finish the setup. To connect to a ubuntu server in a virtual machine go to the Hyper-V -&amp;gt; Virtual Machines. Right-click on the virtual machine and then click on Connect.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/single-node-kubernetes/single-node-kubernetes.jpg" /></entry><entry><title type="html">Single Node Kubernetes Cluster - Installing Docker and Kubernetes on Ubuntu Server</title><link href="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-2/" rel="alternate" type="text/html" title="Single Node Kubernetes Cluster - Installing Docker and Kubernetes on Ubuntu Server" /><published>2019-07-14T00:00:00+00:00</published><updated>2019-07-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-2</id><content type="html" xml:base="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-2/">&lt;p&gt;&lt;a href=&quot;https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/&quot;&gt;In the previous post&lt;/a&gt;, we have prepared an environment for work. Now we will be installing and configuring Docker and Kubernetes on our Ubuntu Server.&lt;/p&gt;
+
+&lt;h3 id=&quot;installing-docker-and-kubernetes-on-ubuntu-server&quot;&gt;Installing Docker and Kubernetes on Ubuntu Server&lt;/h3&gt;
+&lt;p&gt;Let’s start with turning on the VM with Ubuntu Server and connecting via SSH to the machine (I described this in the previous post). 
+First, use the following commands to install Docker:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+curl &lt;span class=&quot;nt&quot;&gt;-fsSL&lt;/span&gt; https://download.docker.com/linux/ubuntu/gpg | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;add-apt-repository &lt;span class=&quot;s2&quot;&gt;&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;lsb_release &lt;span class=&quot;nt&quot;&gt;-cs&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; stable&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;docker-ce&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then use the following commands to install Kubernetes:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; apt-transport-https &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; curl &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; https://packages.cloud.google.com/apt/doc/apt-key.gpg | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sudo tee&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/apt/sources.list.d/kubernetes.list &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; kubeadm  kubelet kubernetes-cni&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the end, turn off the swap on Ubuntu Server because it is required in the &lt;a href=&quot;https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.8.md#before-upgrading&quot;&gt;changelog&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;swapoff &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;sudo sed&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/ swap / s/^\(.*\)$/#\1/g'&lt;/span&gt; /etc/fstab&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That’s all. Check if Docker and Kubernetes were installed using the commands:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+docker &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;and:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+kubectl version&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You should see a similar result:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+michal@michal:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+Docker version 18.09.7, build 2d0083d
+michal@michal:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl version
+Client Version: version.Info&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;Major:&lt;span class=&quot;s2&quot;&gt;&quot;1&quot;&lt;/span&gt;, Minor:&lt;span class=&quot;s2&quot;&gt;&quot;15&quot;&lt;/span&gt;, GitVersion:&lt;span class=&quot;s2&quot;&gt;&quot;v1.15.0&quot;&lt;/span&gt;, GitCommit:&lt;span class=&quot;s2&quot;&gt;&quot;e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529&quot;&lt;/span&gt;, GitTreeState:&lt;span class=&quot;s2&quot;&gt;&quot;clean&quot;&lt;/span&gt;, BuildDate:&lt;span class=&quot;s2&quot;&gt;&quot;2019-06-19T16:40:16Z&quot;&lt;/span&gt;, GoVersion:&lt;span class=&quot;s2&quot;&gt;&quot;go1.12.5&quot;&lt;/span&gt;, Compiler:&lt;span class=&quot;s2&quot;&gt;&quot;gc&quot;&lt;/span&gt;, Platform:&lt;span class=&quot;s2&quot;&gt;&quot;linux/amd64&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;creating-single-node-kubernetes-cluster-with-kubeadm&quot;&gt;Creating Single Node Kubernetes Cluster with Kubeadm&lt;/h3&gt;
+&lt;p&gt;We will use &lt;strong&gt;kubeadm&lt;/strong&gt; which helps bootstrap Kubernetes cluster. Detailed documentation is available on the  &lt;a href=&quot;https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/&quot;&gt;kubernetes website&lt;/a&gt;. I will present some of the most important steps that will create a working cluster in a few minutes.&lt;/p&gt;
+
+&lt;p&gt;At the beginning, install kubectl using the following command:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; apt-transport-https &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; curl &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; https://packages.cloud.google.com/apt/doc/apt-key.gpg | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sudo tee&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/apt/sources.list.d/kubernetes.list &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; kubeadm  kubelet kubernetes-cni&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can create a &lt;strong&gt;single node cluster&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;kubeadm init &lt;span class=&quot;nt&quot;&gt;--pod-network-cidr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10.244.0.0/16 &lt;span class=&quot;nt&quot;&gt;--apiserver-advertise-address&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;192.168.0.129 &lt;span class=&quot;nt&quot;&gt;--ignore-preflight-errors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;NumCPU&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Remember to change –&lt;strong&gt;apiserver-advertise-address&lt;/strong&gt;=192.168.0.129 with your VM inet address. If you do not know how to check inet IP - &lt;a href=&quot;https://devdiaries.net//blog/Single-Node-Kubernetes-Cluster-Part-1/#connecting-to-hyper-v-ubuntu-virtual-machine-via-ssh&quot;&gt;read the instructions from the previous post&lt;/a&gt;.
+After a few minutes of installation, you should see the message:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt; 
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  &lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.kube
+  &lt;span class=&quot;nb&quot;&gt;sudo cp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; /etc/kubernetes/admin.conf &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.kube/config
+  &lt;span class=&quot;nb&quot;&gt;sudo chown&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;:&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run &lt;span class=&quot;s2&quot;&gt;&quot;kubectl apply -f [podnetwork].yaml&quot;&lt;/span&gt; with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;any number of worker nodes by running the following on each as root:
+kubeadm &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;192.168.0.129:6443 &lt;span class=&quot;nt&quot;&gt;--token&lt;/span&gt; mc3oxw.8mkdwlr260ujpy6a &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--discovery-token-ca-cert-hash&lt;/span&gt; sha256:fbb8705c4826ece8596ee4eb14d0375677fed231bc2a3e78326bd46f3bb1f24e&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In order for Kubernetes to work for a non-root user, you must run the following commands:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.k8s
+
+&lt;span class=&quot;nb&quot;&gt;sudo cp&lt;/span&gt; /etc/kubernetes/admin.conf &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.k8s/
+
+&lt;span class=&quot;nb&quot;&gt;sudo chown&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;:&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.k8s/admin.conf
+
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KUBECONFIG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.k8s/admin.conf
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;export KUBECONFIG=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/.k8s/admin.conf&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tee&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; ~/.bashrc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;configuring-kubernetes-cluster-networking&quot;&gt;Configuring Kubernetes Cluster Networking&lt;/h4&gt;
+&lt;p&gt;After kubernetes installation, we need to configure networking. This is detailed in the &lt;a href=&quot;https://kubernetes.io/docs/concepts/cluster-administration/networking/&quot;&gt;documentation &lt;/a&gt;.
+Execute two commands to set the networking:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+kubectl apply &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+kubectl apply &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;master-node-as-a-worker&quot;&gt;Master Node as a Worker&lt;/h4&gt;
+&lt;p&gt;Finally, we have to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl taint command&lt;/code&gt;, so that our master node can create pods and be used as a worker node:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;   
+kubectl taint nodes &lt;span class=&quot;nt&quot;&gt;--all&lt;/span&gt; node-role.kubernetes.io/master-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;That’s all! We have created a working single node cluster. &lt;a href=&quot;https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-3/&quot;&gt;In the next post&lt;/a&gt;, I will show you how to create an admin dashboard in Kubernetes to be able to easily manage a cluster from the browser.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">In the previous post, we have prepared an environment for work. Now we will be installing and configuring Docker and Kubernetes on our Ubuntu Server. Installing Docker and Kubernetes on Ubuntu Server Let’s start with turning on the VM with Ubuntu Server and connecting via SSH to the machine (I described this in the previous post). First, use the following commands to install Docker: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/single-node-kubernetes/single-node-kubernetes.jpg" /></entry><entry><title type="html">Single Node Kubernetes Cluster - Deploying Kubernetes Dashboard</title><link href="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-3/" rel="alternate" type="text/html" title="Single Node Kubernetes Cluster - Deploying Kubernetes Dashboard" /><published>2019-07-14T00:00:00+00:00</published><updated>2019-07-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-3</id><content type="html" xml:base="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-3/">&lt;p&gt;&lt;a href=&quot;https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-2/&quot;&gt;In the previous post&lt;/a&gt;, we have prepared an environment for work and installed Kubernetes and Docker. Now, we will deploy &lt;strong&gt;Kubernetes Dashboard&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;deploy-kubernetes-dashboard&quot;&gt;Deploy Kubernetes Dashboard&lt;/h3&gt;
+&lt;p&gt;Kubernetes Dashboard is web-based UI for Kbuernetes clusters. It allows to manage applications deployed in the cluster. Dashboard documentation is available at &lt;a href=&quot;https://github.com/kubernetes/dashboard&quot;&gt;Kubernetes Github repo&lt;/a&gt;.
+Use the following command to deploy the dashboard on the cluster:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;     
+kubectl apply &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; kubectl apply &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To access Dashboard from your Ubuntu you must create a secure channel to your Kubernetes cluster. Run the following command:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl proxy&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now check in the new Putty window if dashboard is properly exposed:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;curl &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt; 127.0.0.1:8001&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You should see 200 OK Http response:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;michal@michal:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt; 127.0.0.1:8001
+HTTP/1.1 200 OK
+Content-Length: 2738
+Content-Type: application/json
+Date: Sun, 14 Jul 2019 10:07:39 GMT&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;proxy-to-host-windows&quot;&gt;Proxy to host Windows&lt;/h3&gt;
+&lt;p&gt;We will use the Windows browser to manage the cluster. To enable this run the following command in Ubuntu terminal:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl proxy &lt;span class=&quot;nt&quot;&gt;--address&lt;/span&gt; 192.168.0.129 &lt;span class=&quot;nt&quot;&gt;--accept-hosts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'^.*$'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;8001&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And go to &lt;a href=&quot;http://192.168.0.129:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login&quot;&gt;http://192.168.0.129:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login&lt;/a&gt; in your browser on windows. You should have seen the dashboard login screen. Please remember to &lt;strong&gt;change my inet IP adrress 192.168.0.129 with your VM’s inet IP address&lt;/strong&gt;. 
+&lt;img src=&quot;/images/single-node-kubernetes/kubernetes-login.JPG&quot; alt=&quot;kubernetes-login&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;creating-a-service-account-and-a-role-binding-in-kubernetes&quot;&gt;Creating a service account and a role binding in Kubernetes&lt;/h3&gt;
+&lt;p&gt;To log in to our dashboard we need a service accout and a role binding. To create a service account, use the following command:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl create serviceaccount &lt;span class=&quot;nt&quot;&gt;--namespace&lt;/span&gt; kube-system admin-user&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And for role binding:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl create clusterrolebinding admin-user &lt;span class=&quot;nt&quot;&gt;--clusterrole&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;cluster-admin &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;kube-system:admin-user&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;sign-in-to-kubernetes-dashboard&quot;&gt;Sign in to Kubernetes Dashboard&lt;/h3&gt;
+&lt;p&gt;There are several ways to log into the dashboard. We can genereate JWT token:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; kube-system describe secret &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;kubectl &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; kube-system get secret | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;admin-user | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And copy generated token and use it when logging in to the dashboard:
+&lt;img src=&quot;/images/single-node-kubernetes/kubernetes-token.JPG&quot; alt=&quot;kubernetes-login&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfrotunately, dashboard is only availabe via localhost. We can not log into the dashboard from the host system (Windows):&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Dashboard should not be exposed publicly using kubectl proxy command
+as it only allows HTTP connection. For domains other than localhost
+and 127.0.0.1 it will not be possible to sign in. Nothing will happen
+after clicking Sign in button on login page.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So, we can create SSH tunnel or enable skip loging. I chose the second option:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;kubectl edit deployment/kubernetes-dashboard &lt;span class=&quot;nt&quot;&gt;--namespace&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;kube-system&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Add &lt;code class=&quot;highlighter-rouge&quot;&gt;--enable-skip-login&lt;/code&gt; to the deployment’s command line arguments:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;      containers:
+      - args:
+        - &lt;span class=&quot;nt&quot;&gt;--auto-generate-certificates&lt;/span&gt;
+        - &lt;span class=&quot;nt&quot;&gt;--enable-skip-login&lt;/span&gt;            &lt;span class=&quot;c&quot;&gt;# &amp;lt;-- add this line&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/single-node-kubernetes/enable-skip-login.JPG&quot; alt=&quot;kubernetes-login&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now refresh the dashboard and click on the “skip” button. You will be correctly logged into the dashboard:
+&lt;img src=&quot;/images/single-node-kubernetes/kubernetes-dashboard.JPG&quot; alt=&quot;kubernetes-login&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
+&lt;p&gt;We have already configured a single node cluster and a dashboard thanks. Now you can manage your applications in Kubernetes. If you have any problems, I invite you to comment.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">In the previous post, we have prepared an environment for work and installed Kubernetes and Docker. Now, we will deploy Kubernetes Dashboard. Deploy Kubernetes Dashboard Kubernetes Dashboard is web-based UI for Kbuernetes clusters. It allows to manage applications deployed in the cluster. Dashboard documentation is available at Kubernetes Github repo. Use the following command to deploy the dashboard on the cluster: kubectl apply -f kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/single-node-kubernetes/single-node-kubernetes.jpg" /></entry><entry><title type="html">Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 4 Creating a frontend in React</title><link href="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/" rel="alternate" type="text/html" title="Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 4 Creating a frontend in React" /><published>2019-06-24T00:00:00+00:00</published><updated>2019-06-24T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/">&lt;p&gt;In &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-3/&quot;&gt;previous posts&lt;/a&gt;, we have created a fully working application in Spring Boot 2. Now it’s time to create a frontend that will communicate with our backend. If you have not read previous posts, I invite you to read.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
@@ -2210,650 +2496,4 @@ If you use Google Domains, select your domain in the Admin panel. Then go to &lt
 
 &lt;p&gt;It may take a few minutes (up to 48 hours) to update your DNS. In my case, the domain was verified in 10 minutes. That`s all! There’s no guaranteed time-frame for how long it will take for your website to appear in Google’s search results. It can take anywhere from hours to weeks.&lt;/p&gt;
 
-&lt;p&gt;Thanks for reading the post. See you later!&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to Google. The whole operation takes only a few minutes and can be done in a few steps. Requirements: Purchased domain (I bought it on porkbun.com. You can buy domain anywhere, for example on Google Domains) A github pages repository, e.g. https://github.com/username/username.github.io Add custom domain to Github Pages settings Go to your github repository settings page: Add you custom domain name (www.domain) at Settings -&amp;gt; GitHub Pages -&amp;gt; Custom domain: Point your custom domain to your Github Page`s website If you also use Porkbun, you can easily point the domain to your GitHub pages using the guide: Connect domain to Github Pages If you use Google Domains, select your domain in the Admin panel. Then go to DNS&amp;gt; Custom resource records and add the DNS records: 185.199.111.153 185.199.110.153 185.199.109.153 185.199.108.153 Add the CNAME record: name - www, type - CNAME, answer/value - yoursite.github.io Enable HTTPS for your GitHub pages website Go to your GitHub repository settings. Under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain check the Enforce HTTPS checkbox. After a while (up to several hours) your domain should be available once with an SSL certificate. Go to https://yourdomain and check if you can see your website. NET::ERR_CERT_COMMON_NAME_INVALID error If after entering https: //yourdomain you see a browser warning and NET :: ERR_CERT_COMMON_NAME_INVALID error - make sure that you put www.yourdomain under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain. Adding the www prefix should fix the problem.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/github-custom-domain.jpg" /></entry><entry><title type="html">Creating Jekyll Automated Deployment to GitHub Pages with CircleCI</title><link href="https://www.devdiaries.net/blog/Creating-Jekyll-Automated-Deployment-With-CircleCI/" rel="alternate" type="text/html" title="Creating Jekyll Automated Deployment to GitHub Pages with CircleCI" /><published>2019-05-20T00:00:00+00:00</published><updated>2019-05-20T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Creating-Jekyll-Automated-Deployment-With-CircleCI</id><content type="html" xml:base="https://www.devdiaries.net/blog/Creating-Jekyll-Automated-Deployment-With-CircleCI/">&lt;p&gt;A few days ago I logged in to Google Webmaster Tools to check if my blog is already available on google. I was surprised because the site was blocked. The addresses in sitemap.xml pointed to localhost: 4000/page-address. It’s all because I was building a blog locally and pushing a ready, built version from &lt;code class=&quot;highlighter-rouge&quot;&gt;_sites&lt;/code&gt; directory to GitHub repository. I thought I would automate the deployment  process using one of the to Cl/CD - CircleCI&lt;/p&gt;
-&lt;h3 id=&quot;circleci&quot;&gt;CircleCI&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;CircleCI&lt;/strong&gt; provides very interesting (and free, which is important for me) service that allows you to utilize continuous integration in your development process.  CircleCI seamlessly integrates with &lt;em&gt;GitHub, GitLab, BitBucket&lt;/em&gt; so you can automate your build, test, and deploy pipeline. There are many other Continuous Integration tools available on a market (Travis CI, Go CD, GitLab CI) however, I liked CircleCi the most. I encourage you to read &lt;a href=&quot;https://circleci.com/docs/2.0/about-circleci/&quot;&gt;the documentation.&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Github account&lt;/li&gt;
-  &lt;li&gt;Repository with the Jekyll blog source code&lt;/li&gt;
-  &lt;li&gt;Blog template based on &lt;em&gt;Jekyll&lt;/em&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;automatically-deploying-jekyll-blog-to-github-pages&quot;&gt;Automatically deploying Jekyll blog to GitHub Pages&lt;/h3&gt;
-&lt;p&gt;Currently, I have one public repository to which I push the contents of the locally generated _site folder. I want to prepare:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;A private repository with the entire Jekyll template code (I do not want to share my template code on the public repo)&lt;/li&gt;
-  &lt;li&gt;A public repository to which CircleCI pipeline will push the generated _site content&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;In my case, these two repositories are in different GitHub accounts. This is because I created a separate account for my blog. However, this does not matter when it comes to building automation.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/circle-jekyll.jpg&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;circleci-configuration&quot;&gt;CircleCI Configuration&lt;/h3&gt;
-
-&lt;p&gt;First, log in to &lt;a href=&quot;https://circleci.com/dashboard&quot;&gt;CircleCi &lt;/a&gt; using the Github account. If you have two accounts like me (One for the blog, the second for yourself) - use the second one. This is where we will store the entire Jekyll template code in the private repository.&lt;/p&gt;
-
-&lt;p&gt;After logging in you should see your repositories. Select the repository where you will store the entire template code.
-&lt;img src=&quot;/images/circleCi.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now we have to define a deployment pipeline. CircleCI configuration is stored in a single YAML file located at &lt;code class=&quot;highlighter-rouge&quot;&gt;.circleci/config.yml&lt;/code&gt; in the root of your project’s directory.&lt;/p&gt;
-
-&lt;h3 id=&quot;configyml&quot;&gt;Config.yml&lt;/h3&gt;
-&lt;p&gt;Detailed instructions on how to create configuration can be found on the &lt;a href=&quot;https://circleci.com/docs/2.0/writing-yaml/&quot;&gt;https://circleci.com/docs/2.0/writing-yaml/&lt;/a&gt;.
-My configuration is simple and contains only a few steps:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;&lt;span class=&quot;na&quot;&gt;defaults&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;defaults&lt;/span&gt;  
-  &lt;span class=&quot;na&quot;&gt;working_directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/repo&lt;/span&gt;  
-&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2&lt;/span&gt;  
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-    &lt;span class=&quot;s&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*defaults&lt;/span&gt;  
-  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.6&lt;/span&gt;  
-    &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Bundler Install&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Rsync Install&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt install rsync&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install Dependencies&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Jekyll build&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec jekyll build&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;deploy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy Blog to GitHub&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;  
-            &lt;span class=&quot;no&quot;&gt;if [ $CIRCLE_BRANCH == 'master' ]; then  &lt;/span&gt;
-              &lt;span class=&quot;no&quot;&gt;bash .circleci/deploy.sh  &lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;fi  &lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;workflows&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-  &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2&lt;/span&gt;  
-  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-    &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I used a CircleCI pre-built docker image that comes with tools that are useful to build Jekyll theme (Ruby and Rails image). In my pipeline, I install the bundler, which is needed to install all of the dependencies specified in the Gemfile file. I build a template just like locally - using &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec Jekyll build&lt;/code&gt;. You probably wonder why I added the  &lt;strong&gt;Rsync Install&lt;/strong&gt; step.  This is to synchronize the newly generated theme with the currently used. In Linux, you can not move files with overwriting, that’s why I’m using Rsync.&lt;/p&gt;
-
-&lt;h3 id=&quot;deploysh-script&quot;&gt;Deploy.sh script&lt;/h3&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Clone Jekyll generated template repository  &lt;/span&gt;
-git clone https://&amp;lt;GitHub Personal access token&amp;gt;@github.com/dev-diary/dev-diary.github.io.git  
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;dev-diary.github.io  
-  
-&lt;span class=&quot;c&quot;&gt;# Adding only files that have changed to the currently used template &lt;/span&gt;
-rsync &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; ../_site/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  
-  
-&lt;span class=&quot;c&quot;&gt;#Setting GIT user  &lt;/span&gt;
-git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.email &lt;span class=&quot;s2&quot;&gt;&quot;michael.fabjanski@gmail.com&quot;&lt;/span&gt;  
-git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.name &lt;span class=&quot;s2&quot;&gt;&quot;Michal&quot;&lt;/span&gt;  
-  
-&lt;span class=&quot;c&quot;&gt;# Preparation of backup branch name with (Branch from before new change)  &lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;BRANCH_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;backup-&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;today&quot;&lt;/span&gt; +&lt;span class=&quot;s2&quot;&gt;&quot;%Y%m%d%H%M&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;  
-git checkout &lt;span class=&quot;nt&quot;&gt;-b&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$BRANCH_NAME&lt;/span&gt;  
-git push &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; https://7d2c83a2ddc30630bb41d19177775e30c09d29b1@github.com/dev-diary/dev-diary.github.io.git &lt;span class=&quot;nv&quot;&gt;$BRANCH_NAME&lt;/span&gt;  
-  
-&lt;span class=&quot;c&quot;&gt;#Add new changes to the generated template code and push it  &lt;/span&gt;
-git checkout master  
-git add &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  
-git commit &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Builded new version - &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;today&quot;&lt;/span&gt; +&lt;span class=&quot;s2&quot;&gt;&quot;%Y%m%d%H%M&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;  
-git push &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; https://&amp;lt;GitHub Personal access token&amp;gt;@github.com/dev-diary/dev-diary.github.io.git&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I clone the repository with the generated template. Then I only add new changes (generated by the pipeline in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_site&lt;/code&gt; folder). Because I use the second repository for the blog (it is not connected to CircleCi), I had to generate &lt;a href=&quot;https://github.com/settings/tokens&quot;&gt;GitHub Personal access token&lt;/a&gt;.&lt;br /&gt;
-Before the commit, I create a branch with back up.&lt;/p&gt;
-
-&lt;p&gt;In the end, I commit the changes and push to the repository with the generated theme.&lt;/p&gt;
-
-&lt;h3 id=&quot;lets-run-our-pipeline&quot;&gt;Let’s run our pipeline&lt;/h3&gt;
-
-&lt;p&gt;After adding my private repository with the entire template code in CircleCI - the tool automatically triggers builds after each commit.
-&lt;img src=&quot;/images/circle-jobs.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This is the sample build:
-&lt;img src=&quot;/images/circle-job.JPG&quot; alt=&quot;circleci-jekyll-automated-build&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After each commit to the master in my private repository, after about 30 seconds, a new commit is added to the public blog repository.
-&lt;img src=&quot;/images/github-commits.JPG&quot; alt=&quot;dev-diary-commits&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;you-must-use-bundler-2-or-greater-with-this-lockfile-error&quot;&gt;You must use Bundler 2 or greater with this lockfile error&lt;/h3&gt;
-&lt;p&gt;If your build was a fail and you saw this message: &lt;code class=&quot;highlighter-rouge&quot;&gt;warn_for_outdated_bundler_version': You must use Bundler 2 or greater with this lockfile&lt;/code&gt; - you have to add &lt;code class=&quot;highlighter-rouge&quot;&gt;gem update --system&lt;/code&gt; step before installing bundler (See more on &lt;a href=&quot;https://github.com/jekyll/jekyll/issues/7463&quot;&gt;GitHub&lt;/a&gt;)&lt;/p&gt;
-
-&lt;h3 id=&quot;testing-in-ci&quot;&gt;Testing in CI&lt;/h3&gt;
-&lt;p&gt;It is good practice to automatically test new functionalities before deployment. You can use &lt;a href=&quot;https://github.com/gjtorikian/html-proofer&quot;&gt;HTML Proofer&lt;/a&gt; - set of tests to validate HTML. It is required to add a dependency to the Gemfile: &lt;code class=&quot;highlighter-rouge&quot;&gt;gem  'HTML-proofer'&lt;/code&gt; and one more step to circle.yml:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run Tests&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec htmlproofer ./_site -check-html&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;It works! I have a private repository with the code of my template. I am the only one who has access to theme code. After each commit on the master branch - my template is automatically built and pushed to Github pages repository. Within a few seconds after pushing changes, the new version of the blog is available online.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A few days ago I logged in to Google Webmaster Tools to check if my blog is already available on google. I was surprised because the site was blocked. The addresses in sitemap.xml pointed to localhost: 4000/page-address. It’s all because I was building a blog locally and pushing a ready, built version from _sites directory to GitHub repository. I thought I would automate the deployment process using one of the to Cl/CD - CircleCI CircleCI CircleCI provides very interesting (and free, which is important for me) service that allows you to utilize continuous integration in your development process. CircleCI seamlessly integrates with GitHub, GitLab, BitBucket so you can automate your build, test, and deploy pipeline. There are many other Continuous Integration tools available on a market (Travis CI, Go CD, GitLab CI) however, I liked CircleCi the most. I encourage you to read the documentation.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/Automated-deployment-With-CircleCI.jpg" /></entry><entry><title type="html">Object Oriented Design Principles Everythone Should Know</title><link href="https://www.devdiaries.net/blog/10-Object-oriented-design-principles-everythone-should-know/" rel="alternate" type="text/html" title="Object Oriented Design Principles Everythone Should Know" /><published>2019-05-16T00:00:00+00:00</published><updated>2019-05-16T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/10-Object-oriented-design-principles-everythone-should-know</id><content type="html" xml:base="https://www.devdiaries.net/blog/10-Object-oriented-design-principles-everythone-should-know/">&lt;p&gt;During my study, I have collected quite a large and interesting list of object-oriented programming  design principles that may be useful to you.  This post is a shortened note. I invite you to explore knowledge reading books such as “Clean Architecture”, Martin Robert C.  Ready? I invite you to read the 10 most important OOP principles.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Object-Oriented Design Principles&lt;/strong&gt; represent a set of rules that are the essence of object-oriented programming and help us/others to prepare well, easy to understand design.&lt;/p&gt;
-
-&lt;h3 id=&quot;solid&quot;&gt;SOLID&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Solid&lt;/strong&gt; is a set of five rules which tell us how to arrange our methods and data structures in classes. There are three main goals to understand and use SOLID: &lt;br /&gt;&lt;br /&gt;
-&lt;span class=&quot;right&quot;&gt;&lt;strong&gt;✓&lt;/strong&gt;&lt;/span&gt; Code and functionality changes are easier &lt;br /&gt;&lt;br /&gt;
-&lt;span class=&quot;right&quot;&gt;&lt;strong&gt;✓&lt;/strong&gt;&lt;/span&gt; Code is easy to understand &lt;br /&gt;&lt;br /&gt;
-&lt;span class=&quot;right&quot;&gt;&lt;strong&gt;✓&lt;/strong&gt;&lt;/span&gt; Software structures are the basis of components that can be used in many software systems &lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;There are five SOLID principles (each letter - one principle):&lt;/p&gt;
-
-&lt;h4 id=&quot;single-responsibility-principle&quot;&gt;Single Responsibility Principle&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Single Responsibility Principle&lt;/strong&gt; tells us that each software entity (classes, modules, methods) is designed to assume only &lt;strong&gt;one&lt;/strong&gt; responsibility. If a code change is to be made, we should need to make a changes in &lt;strong&gt;one&lt;/strong&gt; class that processes it. 
-The good example is the Employee class from a company application:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salaryInUSD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salaryInEuro&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getSalaryInPLN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salaryInUSD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exchange&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getDollarToZlotyRate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getSalaryInEuro&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salaryInEuro&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exchange&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getDollarToEuroRate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Why Employee class have to know something about currency exchange?  By putting these two methods into a single Employee class, the developers have coupled Employee class with class responsible for exchange rates. How to do it to comply with the Single Responsibility Principle? We should remove getSalary.. methods from Employee class and create new class (e.g ExchangeService, SalaryCalculator, SalaryConverter…) which has knowledge of exchange rates. Next, we should provide a salary to ExchangeService class. ExchangeService takes the salary, calculate salary in another currency and return it.&lt;/p&gt;
-
-&lt;h4 id=&quot;openclosed-principle&quot;&gt;Open/closed principle&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Open/closed principle&lt;/strong&gt; tell us that sofware entities should be open for extension, but closed for modification. Developer’s goal is to extend a class/module functionality without modyfying its source code. 
-Let’s imagine creating a Square class. In accordance with the Single Responsibility Principle, you create a Square class and AreaCalculator which contain the method &lt;strong&gt;calculateArea()&lt;/strong&gt;.
-See the following example:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AreaCalculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calculateArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLength&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLength&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Unfortunately, after some time we get a new task - we have to add two new figures: a triangle and a trapeze. The only solution is to modify the calculateArea() method:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AreaCalculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calculateArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Square&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLength&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLength&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Triangle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLength&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Trapeze&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(...);&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;RuntimeException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cannot calculate area for provided shape&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This code starts to look like &lt;a href=&quot;http://wiki.c2.com/?ArrowAntiPattern&quot; title=&quot;Arrow Anti-Pattern &quot;&gt;Arrow Anti-Pattern &lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;How to do it in accordance with O/C principle? You should use Shape interface:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And implementation:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Suqare&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Thanks to it AreaCalculator does not have to know all kinds of shapes. It relying on Shape abstraction:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AreaCalculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calculateArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We’ve just made AreaCalculator closed for modification. If we get the task of creating a new shape - we will not have to modify this class. However, we can extend it.&lt;/p&gt;
-
-&lt;h4 id=&quot;liskov-substitution-principle&quot;&gt;Liskov Substitution Principle&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;Liskov Substitution Principle&lt;/strong&gt; is a rule about the contract of the clasess: if a base class satisfies a contract, then by the LSP derived classes must also satisfy that contract. The main objectives of this principle are: &lt;br /&gt;&lt;br /&gt;
-&lt;span class=&quot;right&quot;&gt;&lt;strong&gt;✓&lt;/strong&gt;&lt;/span&gt; Classes in the application should be swapped by their subclasses without affecting the correctness of the program, i.e. the inheriting class must be a good equivalent of the base class. &lt;br /&gt;&lt;br /&gt;
-&lt;span class=&quot;right&quot;&gt;&lt;strong&gt;✓&lt;/strong&gt;&lt;/span&gt;A subclass should not do less than the base class. So it should always do more. &lt;br /&gt;&lt;br /&gt;
-Good example is the“Square extends Rectangle” class:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Mathematically, a square is a rectangle. Most people would misinterpret “is a” relation and model the relationship between the rectangle and a square with inheritance:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you probably guess, you can not have two different dimensions for a square. It is possible to bypass this by:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; 
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; 
-        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We overrided setHeight and setWidth methods to set both dimensions to the same value.  What do you think of this fix?
-This design breaks LSP. A client can works with instances of &lt;strong&gt;Rectangle&lt;/strong&gt;, but breaks when instances of &lt;strong&gt;Square&lt;/strong&gt;  are passed to it:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;countArea&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;rec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;rec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//It will be a fail for the square:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;area&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;How to do it correctly? The most critical aspect to inheritance is that we should model inheritance based on behaviours, not object properties. The easiest way to understand this is by way of example:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;area&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;area&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;area&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now clients of &lt;strong&gt;Shape&lt;/strong&gt; cannot make any behavior changes via setter methods. When clients have to change properties of shapes, they have to do it in concrete classes.&lt;/p&gt;
-
-&lt;h4 id=&quot;interface-segregation-principle&quot;&gt;Interface Segregation Principle&lt;/h4&gt;
-
-&lt;p&gt;The main assumption of the &lt;strong&gt;ISP&lt;/strong&gt;:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;No client should be forced to depend on methods it does not use.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;in other words:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Many client-specific interfaces are better than one general purpose interface.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;So interfaces that we create should not contain methods that we do not need. The class that implements the interface can not be forced to implement methods that it does not need, and this is often the case with large interface.
-Let us understand the interface segregation principle by below example:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;GenerateTimeSheet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;generateExcel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;generateCSV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We have one interface with two methods to generate time sheet report (e.g for Employee). Consider a case client TimeSheet wants to use this interface but want to use only Excel time sheets. The interface forces client to implement an unnecessary method &lt;strong&gt;generateCSV();&lt;/strong&gt;.
-A better solution would be breaking the GenerateTimeSheet interface into two small ones which contains separate methods.&lt;/p&gt;
-
-&lt;h4 id=&quot;dependency-inversion-principle&quot;&gt;Dependency Inversion Principle&lt;/h4&gt;
-&lt;p&gt;The general idea of this principle is as simple: High-level modules, which provide complex logic, should be easily reusable and unaffected by changes in low-level modules.
-Robert C. Martin’s definition of the Dependency Inversion Principle consists of two goals:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;High-level modules should not depend on low-level modules. Both should depend on abstractions.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Abstractions should not depend on details. Details should depend on abstractions.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In practice DIP tells that a method requires an interface object instead of specific class. This way we can pass many different versions of our entity into the same method.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;EventService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DBRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DBRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;saveEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;removeEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;deleteEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;EventService&lt;/strong&gt; class uses concrete DBRepository class which save or delete events from the database. In above example EventService is &lt;strong&gt;High-level module&lt;/strong&gt;.  DBRepository is a &lt;strong&gt;low-level module&lt;/strong&gt;. We have a direct dependence between classes here. In this way, we violate the DIP policy.
- How to do it correctly? To solve the above problem, we should make the EventService class not dependent on the DBRepository class. In addition, both classes must depend on abstraction. Let’s create an abstraction - &lt;strong&gt;Repository&lt;/strong&gt; interface. It will have methods for writing and reading tasks:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
- 
-     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;saveEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
- 
-     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deleteEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
- &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
- &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let’s change the EventService class to use the Repository interface and thus depend on abstraction:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt; &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;EventService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Repository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EventService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Repository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;saveEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;removeEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;deleteEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
- &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we have to implement our DBRepository class (it will also depend on abstraction):&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DBRepository&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;saveEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deleteEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
- &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Relationships have been inverted. Now the “high level module” does not depend on the “low level module”. The lower layer module depends on the abstract interface from the upper layer (Repository interface). Changes in the module at the lower level do not affect the module at a higher level.
-If, for example, we need to save events in the file instead of in a database it is simple. It is enough to add the appropriate class at a lower level (FileRepository).&lt;/p&gt;
-
-&lt;h3 id=&quot;dry---dont-repeat-yourself&quot;&gt;DRY - Don’t Repeat Yourself&lt;/h3&gt;
-&lt;p&gt;We should write a code that is reusable, not repeat the logic contained in one place in the application. If you are close to the copy/paste code, think about creating an abstraction (loop, common interface, function, class, some design pattern, eg Strategy, etc.) that you will be able to repeatedly use.&lt;/p&gt;
-
-&lt;h3 id=&quot;kiss---keep-it-simple-stupid&quot;&gt;KISS - Keep it simple, stupid!&lt;/h3&gt;
-&lt;p&gt;Simplicity (and avoiding complexity) should be a priority during programming. The code should be easy to read and understand, requiring as little effort as possible.
-Each method should only solve one small problem, not many use cases. If you have a lot of conditions in the method, break these out into smaller methods.
-This is not only about the way the code is created and written, but also about the names of our classes, methods, variables and objects. Everything should be written in such a way that the name of the variable, object, method or class tells what its purpose or use is.&lt;/p&gt;
-
-&lt;h3 id=&quot;yagni---you-aintt-gona-need-it&quot;&gt;YAGNI - You Aint’t gona need it&lt;/h3&gt;
-&lt;p&gt;This is a nice principle that says that in our program we should put the most important functionalities that we will need at a given moment. We should not write code that will not be useful at the moment, which will be redundant and which will only grow unnecessarily in our program.&lt;/p&gt;
-
-&lt;h3 id=&quot;adp---acyclic-dependencies-principle&quot;&gt;ADP - Acyclic dependencies principle&lt;/h3&gt;
-&lt;p&gt;This principle says that there should be no cycles in the dependency structure.
-An exemplary structure breaking this principle will be when: packet A has a dependency in packet B, which has a relationship in packet C, which in turn has a relationship in packet A:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/adp.JPG&quot; alt=&quot;Acyclic-dependencies-principle&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can prevent this by using the &lt;strong&gt;Dependency inversion principle&lt;/strong&gt;, design patterns (eg Observer) or create a new package and put all the common dependencies there.&lt;/p&gt;
-
-&lt;h3 id=&quot;lod---law-of-demeter&quot;&gt;LoD - Law of Demeter&lt;/h3&gt;
-&lt;p&gt;The Law of Demeter is often described this way:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;“Only talk to your immediate friends.”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;This principle says that a class’s method can only refer to:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;methods of the same class&lt;/li&gt;
-  &lt;li&gt;fields (and their methods) of the same class&lt;/li&gt;
-  &lt;li&gt;parameters (and their methods) passed to this method&lt;/li&gt;
-  &lt;li&gt;objects (and their methods) that this method will create&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Advantages:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;reduction of dependence&lt;/li&gt;
-  &lt;li&gt;the code calling the given method does not have to know the structure of other objects&lt;/li&gt;
-  &lt;li&gt;changes in other objects do not require changing the method&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">During my study, I have collected quite a large and interesting list of object-oriented programming design principles that may be useful to you. This post is a shortened note. I invite you to explore knowledge reading books such as “Clean Architecture”, Martin Robert C. Ready? I invite you to read the 10 most important OOP principles.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/Object-Oriented-Design-Principles.jpg" /></entry><entry><title type="html">java.nio - How to build a simple non-blocking server in Java?</title><link href="https://www.devdiaries.net/blog/java.nio-How-To-Build-a-non-blocking-server-in-java/" rel="alternate" type="text/html" title="java.nio - How to build a simple non-blocking server in Java?" /><published>2019-05-14T00:00:00+00:00</published><updated>2019-05-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/java.nio-How-To-Build-a-non-blocking-server-in-java</id><content type="html" xml:base="https://www.devdiaries.net/blog/java.nio-How-To-Build-a-non-blocking-server-in-java/">&lt;h2 id=&quot;building-non-blocking-server-in-java&quot;&gt;Building non-blocking server in Java&lt;/h2&gt;
-
-&lt;p&gt;Some time ago (after Spring 5 release with WebFlux) I started getting interested in non-blocking http servers (Java reactive frameworks are based on this). That’s why I decided to write a post in which I will show how to create a non-blocking server and a client. We will send messages from the client to the server and display them.&lt;/p&gt;
-
-&lt;p&gt;Let’s start!&lt;/p&gt;
-
-&lt;h3 id=&quot;what-is-non-blocking-server&quot;&gt;What is non-blocking server?&lt;/h3&gt;
-
-&lt;p&gt;In the traditional approach, the server listens in the loop for any traffic on a given port. As soon as a new request appears, it delegates the request to previously created thread pool. This approach has some disadvantages. Firstly, the number of concurrently served clients have to be at most equal to the size of the thread pool. Moreover, if any client has weak internet connection - then the thread assigned to his request wastes most of the time waiting for more bits.&lt;/p&gt;
-
-&lt;p&gt;In non-blocking approach - one thread can handle multiple queries at a time. How? Thanks to the non-blocking IO implemented in &lt;strong&gt;java.nio.package&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;javanio&quot;&gt;java.nio&lt;/h3&gt;
-&lt;p&gt;Java New IO (nio) was created in JDK 1.4 to allow all  programmers to implement very fast input/output without having to deal with custom native code.&lt;/p&gt;
-
-&lt;p&gt;It was built based on three main functionalities: &lt;strong&gt;buffers, channels and selectors&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;bufor&quot;&gt;Bufor&lt;/h3&gt;
-
-&lt;p&gt;Bufor is a block of memory used to temporarily store data while it is being moved from one place to another.&lt;/p&gt;
-
-&lt;h3 id=&quot;channel&quot;&gt;Channel&lt;/h3&gt;
-&lt;p&gt;Channel represents a connection to an objects that are capable of performing I/O operations, such as files and sockets. It uses buffers from which it reads the data to send and writes received information.&lt;/p&gt;
-
-&lt;h3 id=&quot;selector&quot;&gt;Selector&lt;/h3&gt;
-&lt;p&gt;Selector is one of Java NIO class. The priciple of selector is very simple. After creation, we have to register in selector all the channels that we want to listen to. As a result of this operation, each channel is assigned with &lt;strong&gt;selectionKey&lt;/strong&gt;. SelectionKey is an object that identyfying channel and contains information about channel’ status (e.g readiness to accept request). Each key holds information about who is making the request and what type of the request is.
-This is, each instance of Selector can monitor more socket channels and thus more connections. When something happens on the channel, the selector informs the application to process the request.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/java-nio-model.png&quot; alt=&quot;java-non-blocking-server-model&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;create-nio-server&quot;&gt;Create NIO Server&lt;/h3&gt;
-&lt;p&gt;Let’s code! We will create our non-blocking server and client. Server will accept connections on port 8089 on localhost. We set it by using ServerSocket’s &lt;strong&gt;bind()&lt;/strong&gt; method. To make the server non-blocking we will set ServerSocketchannel’s &lt;strong&gt;configureBlocking()&lt;/strong&gt; method to &lt;strong&gt;false&lt;/strong&gt;. Take a look at the following implementation:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NonBlockingServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//            We have to set connection host, port and non-blocking mode&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ServerSocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ServerSocketChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ServerSocket&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serverSocket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;serverSocket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InetSocketAddress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;localhost&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8089&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;configureBlocking&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;validOps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ops&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;selectedKeys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;selectedKeys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;selectedKeys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;iterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-
-                &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hasNext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-
-                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isAcceptable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//                        New client has been accepted&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;handleAccept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isReadable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//                        We can run non-blocking operation READ on our client&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;handleRead&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printStackTrace&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handleAccept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ServerSocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mySocket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                                     &lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Connection Accepted...&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;// Accept the connection and set non-blocking mode&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;SocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mySocket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;configureBlocking&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;// Register that client is reading this channel&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OP_READ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;handleRead&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SelectionKey&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Reading...&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;// create a ServerSocketChannel to read the request&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;SocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SocketChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;channel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-
-        &lt;span class=&quot;c1&quot;&gt;// Create buffer to read data&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;ByteBuffer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ByteBuffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;allocate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//        Parse data from buffer to String&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;trim&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Received message: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;equalsIgnoreCase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;exit&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Connection closed...&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
- &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;You certainly noticed two important methods in the main loop of our server:
-&lt;strong&gt;isAcceptable()&lt;/strong&gt; - checking if client is requesting a connection and &lt;strong&gt;isReadable()&lt;/strong&gt; - method to read data when client has prepared data. IsReadable()will read data from the channel and put it into buffer. Next, we will send data from buffer onto the screen.&lt;/p&gt;
-
-&lt;h3 id=&quot;create-client&quot;&gt;Create Client&lt;/h3&gt;
-
-&lt;p&gt;Our client is simple. We also use SocketChannel to connect to the channel and send messages in the buffer. At the end we close SocketChannel.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ServerClient&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  
-      &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-              &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messages&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;I like non-blocking servers&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello non-blocking world!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;One more message..&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;exit&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-              &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Starting client...&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-              &lt;span class=&quot;n&quot;&gt;SocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SocketChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InetSocketAddress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;localhost&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8089&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-  
-              &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                  &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Prepared message: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                  &lt;span class=&quot;n&quot;&gt;ByteBuffer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ByteBuffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;allocate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                  &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBytes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-                  &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;flip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytesWritten&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                  &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Sending Message: %s\nbufforBytes: %d&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytesWritten&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-              &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-  
-              &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-              &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Client connection closed&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  
-          &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-              &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;printStackTrace&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-          &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-   &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;connecting-client-to-our-server&quot;&gt;Connecting client to our server&lt;/h3&gt;
-
-&lt;p&gt;We have a client and a server ready. Let’s run it! I wll start with the server (it must be ready when the client sends a message).
-  Below you can see the result of client&amp;lt;-&amp;gt;server communication.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Client:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    &lt;span class=&quot;n&quot;&gt;Starting&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Prepared&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;like&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Sending&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;Message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;like&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;bufforBytes:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;27&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Prepared&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Sending&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;Message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;bufforBytes:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Prepared&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;One&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Sending&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;Message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;One&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;bufforBytes:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Prepared&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Sending&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;Message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;bufforBytes:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Client&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;connection&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;closed&lt;/span&gt;
-    &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;Server:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    &lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Accepted&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Reading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Received&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;like&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;servers&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Reading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Received&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;non&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;blocking&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Reading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Received&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;One&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Reading&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Received&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;message:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;closed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-     &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
-&lt;p&gt;I hope you liked this post. The server and client code is available on github: &lt;a href=&quot;https://github.com/MichalFab/non-blocking-server&quot; title=&quot;REPO URL&quot;&gt;REPO URL&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;See you next time!&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Building non-blocking server in Java</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/java_nonblocking_server.jpg" /></entry></feed>
+&lt;p&gt;Thanks for reading the post. See you later!&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to Google. The whole operation takes only a few minutes and can be done in a few steps. Requirements: Purchased domain (I bought it on porkbun.com. You can buy domain anywhere, for example on Google Domains) A github pages repository, e.g. https://github.com/username/username.github.io Add custom domain to Github Pages settings Go to your github repository settings page: Add you custom domain name (www.domain) at Settings -&amp;gt; GitHub Pages -&amp;gt; Custom domain: Point your custom domain to your Github Page`s website If you also use Porkbun, you can easily point the domain to your GitHub pages using the guide: Connect domain to Github Pages If you use Google Domains, select your domain in the Admin panel. Then go to DNS&amp;gt; Custom resource records and add the DNS records: 185.199.111.153 185.199.110.153 185.199.109.153 185.199.108.153 Add the CNAME record: name - www, type - CNAME, answer/value - yoursite.github.io Enable HTTPS for your GitHub pages website Go to your GitHub repository settings. Under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain check the Enforce HTTPS checkbox. After a while (up to several hours) your domain should be available once with an SSL certificate. Go to https://yourdomain and check if you can see your website. NET::ERR_CERT_COMMON_NAME_INVALID error If after entering https: //yourdomain you see a browser warning and NET :: ERR_CERT_COMMON_NAME_INVALID error - make sure that you put www.yourdomain under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain. Adding the www prefix should fix the problem.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/github-custom-domain.jpg" /></entry></feed>
