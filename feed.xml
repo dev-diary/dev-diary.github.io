@@ -1,4 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-07-15T16:44:19+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V</title><link href="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/" rel="alternate" type="text/html" title="Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V" /><published>2019-07-14T00:00:00+00:00</published><updated>2019-07-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1</id><content type="html" xml:base="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/">&lt;p&gt;Today we will start playing with Kubernetes. We will start by installing Ubuntu 19.04 Server on the Hyper-V virtual machine. Next, we will create a &lt;strong&gt;single node Kubernetes cluster&lt;/strong&gt;. You can also use &lt;code class=&quot;highlighter-rouge&quot;&gt;Minikube&lt;/code&gt; (a tool for running Kubernetes locally) for Windows instead of Ubuntu Server - but I wanted it to resemble a real development environment.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-08-25T16:00:31+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">A quick introduction to Prometheus. Metrics on Kubernetes with gork exporter - Part 1</title><link href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/" rel="alternate" type="text/html" title="A quick introduction to Prometheus. Metrics on Kubernetes with gork exporter - Part 1" /><published>2019-08-21T00:00:00+00:00</published><updated>2019-08-21T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1</id><content type="html" xml:base="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/">&lt;p&gt;Prometheus is one of the most popular open-source systems for monitoring and alerting. Very often it is used to collect data from microservices in Kubernetes. In this series you will learn the main blocks of Prometheus: &lt;strong&gt;metrics and labels&lt;/strong&gt;, &lt;strong&gt;push and pull&lt;/strong&gt; information exchange. You will learn how to use Prometheus &lt;strong&gt;without changing the application code&lt;/strong&gt;. We will generate metrics based on &lt;strong&gt;logs&lt;/strong&gt; (in our case, performance logs).&lt;/p&gt;
+
+&lt;h3 id=&quot;prometheus-metrics-and-labels&quot;&gt;Prometheus metrics and labels&lt;/h3&gt;
+
+&lt;p&gt;Metrics are the main concept of Prometheus. Instrumented applications expose them by HTTP endpoint or JMX. Prometheus “scrapes” and stores them in the time-series database. This means that it works very well in a distributed, cloud-native environment. All of the services are unburdened by a load on the monitoring system. &lt;strong&gt;Metric&lt;/strong&gt; is an identifier of data collected by Prometheus. The &lt;strong&gt;metric&lt;/strong&gt; specifies the general feature of a system that is measured - for example &lt;code class=&quot;highlighter-rouge&quot;&gt;http_requests_total&lt;/code&gt; - the total number of HTTP requests received. &lt;strong&gt;Labels&lt;/strong&gt; can be added to each data point to specify which service this counter applies to:&lt;/p&gt;
+
+&lt;p&gt;Imagine a request counter that looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http_requests_total{service=&quot;spring-app&quot;}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;There are many spring-app instances in the cluster so we should add another label - instance:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http_requests_total{service=&quot;spring-app&quot;, instance=&quot;spring-app-1&quot;}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;We can add many other labels that accurately describe the request (HTTP method, endpoint, response HTTP status).  &lt;strong&gt;Metrics with good labels are key to the best use of Prometheus.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;metrics-types&quot;&gt;Metrics types&lt;/h3&gt;
+
+&lt;h4 id=&quot;counter&quot;&gt;Counter&lt;/h4&gt;
+
+&lt;p&gt;It is the most popular metric type. &lt;strong&gt;Counter&lt;/strong&gt; is an incremental value or zero (after initialization/restart). It is most often used to measure the number of requests, errors.&lt;/p&gt;
+
+&lt;h4 id=&quot;gauge&quot;&gt;Gauge&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;Gauge&lt;/strong&gt; is the incremental/decremental value that changes over time. It is used for memory or CPU usage statistics.&lt;/p&gt;
+
+&lt;h4 id=&quot;histogram&quot;&gt;Histogram&lt;/h4&gt;
+
+&lt;p&gt;Metrics such as response time are most commonly monitored using &lt;strong&gt;histograms&lt;/strong&gt;. Before starting measurements, we must first define the possible ranges of results. In the case of measuring the response time, it can be: below one second, between 1 second and 2 seconds, between 2 and 10 and above 10. Then we assign the observed value to the matching range.&lt;/p&gt;
+
+&lt;h4 id=&quot;summary&quot;&gt;Summary&lt;/h4&gt;
+
+&lt;p&gt;The &lt;strong&gt;Summary&lt;/strong&gt; type works very much like a histogram, but it is slightly more extensive, e.g. it stores information about the total number of observations.,&lt;/p&gt;
+
+&lt;h3 id=&quot;push-and-pull-prometheus-model&quot;&gt;Push and Pull Prometheus model&lt;/h3&gt;
+
+&lt;p&gt;The monitoring system based on Prometheus can collect metrics in two main ways: &lt;strong&gt;push or pull&lt;/strong&gt; models.&lt;/p&gt;
+
+&lt;h4 id=&quot;push&quot;&gt;Push&lt;/h4&gt;
+
+&lt;p&gt;In push model applications are active and they are responsible for &lt;strong&gt;sending collected records to Prometheus&lt;/strong&gt; via &lt;strong&gt;Pushgateway&lt;/strong&gt;. This model works best for gathering information, e.g. with test results, or other cyclical tasks that can be performed irregularly and for a longer period.&lt;/p&gt;
+
+&lt;h4 id=&quot;pull&quot;&gt;Pull&lt;/h4&gt;
+
+&lt;p&gt;In this model, the application is passive and only &lt;strong&gt;prepares its metrics in the form of an endpoint&lt;/strong&gt;. Prometheus decides when to download them. This approach is recommended by application developers and should be used in most cases.&lt;/p&gt;
+
+&lt;h3 id=&quot;exposing-and-scraping-metrics&quot;&gt;Exposing and scraping metrics&lt;/h3&gt;
+
+&lt;p&gt;Most languages have an implementation of Prometheus client with functionalities for:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Getting metrics for the language (JVM metrics, GC metrics, Go metrics)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Possibility to registry custom metrics&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;HTTP handler to create and expose metrics on the /metrics endpoint&lt;/p&gt;
+
+    &lt;p&gt;Prometheus scrapes each target regularly (the frequency of meter reading is set by &lt;em&gt;scrape interval&lt;/em&gt; property)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;exporting-metrics-using-side-cars-containers&quot;&gt;Exporting metrics using side-cars containers&lt;/h3&gt;
+
+&lt;p&gt;Sometimes it is impossible to instrument application at the code level.  In this case, the best solution is to use exporters as &lt;strong&gt;side-car&lt;/strong&gt; containers. The most popular are &lt;a href=&quot;https://github.com/prometheus/node_exporter&quot;&gt;Node exporter&lt;/a&gt; and &lt;a href=&quot;https://github.com/fstab/grok_exporter&quot;&gt;Grok exporter&lt;/a&gt; which can read system metrics (CPU, memory…) and expose them for Prometheus.&lt;/p&gt;
+
+&lt;h3 id=&quot;summary-1&quot;&gt;Summary&lt;/h3&gt;
+
+&lt;p&gt;You’ve read the basics of Prometheus. You should have a better understanding of what Prometheus is and how it works. You will need this knowledge in the next post. I will show you how to use Grok exporter to instrument Java application based on application logs.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Prometheus is one of the most popular open-source systems for monitoring and alerting. Very often it is used to collect data from microservices in Kubernetes. In this series you will learn the main blocks of Prometheus: metrics and labels, push and pull information exchange. You will learn how to use Prometheus without changing the application code. We will generate metrics based on logs (in our case, performance logs).</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/kubernetes-login/prometheus-kubernetes1.jpg" /></entry><entry><title type="html">Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V</title><link href="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/" rel="alternate" type="text/html" title="Single Node Kubernetes Cluster - Installing Ubuntu Server on Windiws with Hyper-V" /><published>2019-07-14T00:00:00+00:00</published><updated>2019-07-14T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1</id><content type="html" xml:base="https://www.devdiaries.net/blog/Single-Node-Kubernetes-Cluster-Part-1/">&lt;p&gt;Today we will start playing with Kubernetes. We will start by installing Ubuntu 19.04 Server on the Hyper-V virtual machine. Next, we will create a &lt;strong&gt;single node Kubernetes cluster&lt;/strong&gt;. You can also use &lt;code class=&quot;highlighter-rouge&quot;&gt;Minikube&lt;/code&gt; (a tool for running Kubernetes locally) for Windows instead of Ubuntu Server - but I wanted it to resemble a real development environment.&lt;br /&gt;
 We will use a ssh connection from windows to manage our cluster on Ubuntu Server.&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
@@ -2441,60 +2511,4 @@ There are 3 ways to inject dependencies:&lt;/p&gt;
 
 &lt;p&gt;In this post, I demonstrated basic examples of Dependency Injection in the Spring Framework. I hope you can see how simple Spring makes Dependency Injection.&lt;/p&gt;
 
-&lt;p&gt;If you liked it, I invite you to read the next part in which I described the most popular &lt;strong&gt;creational design patterns&lt;/strong&gt;: &lt;a href=&quot;https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns/&quot;&gt;Design Patterns used in Spring Framework Part 2 - Creational Patterns.&lt;/a&gt;&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A lot of ground will be covered in these posts, but it will all center around Spring Framework. I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better. Requirements: Java knowledge Basic Spring knowledge Object-Oriented Programming What are Design Patterns? Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations. There are three types of patterns: Creational Design Patterns Creational patterns are focused on how to instantiate an object or group of related objects.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-dependency-injection.jpg" /></entry><entry><title type="html">How to set up custom domain for Github Pages with HTTPS</title><link href="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/" rel="alternate" type="text/html" title="How to set up custom domain for Github Pages with HTTPS" /><published>2019-05-25T00:00:00+00:00</published><updated>2019-05-25T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS</id><content type="html" xml:base="https://www.devdiaries.net/blog/How-to-set-up-custom-domain-for-Github-Pages-with-HTTPS/">&lt;p&gt;The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to &lt;a href=&quot;https://www.google.com/webmasters/tools/submit-url&quot; title=&quot;Google&quot;&gt;Google&lt;/a&gt;. The whole operation takes only a few minutes and can be done in a few steps.&lt;/p&gt;
-
-&lt;h3 id=&quot;requirements&quot;&gt;Requirements:&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Purchased domain (I bought it on porkbun.com. You can buy domain anywhere, for example on &lt;a href=&quot;https://domains.google/&quot; title=&quot;Google Domains&quot;&gt;Google Domains&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;A github pages repository, e.g. https://github.com/username/username.github.io&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;add-custom-domain-to-github-pages-settings&quot;&gt;Add custom domain to Github Pages settings&lt;/h3&gt;
-&lt;p&gt;Go to your github repository settings page:&lt;br /&gt;
-&lt;img src=&quot;/images/devdiaries-settings.JPG&quot; alt=&quot;devdiaries-settings&quot; /&gt;&lt;br /&gt;
-Add you custom domain name (www.domain) at Settings -&amp;gt; GitHub Pages -&amp;gt; Custom domain:&lt;br /&gt;
-&lt;img src=&quot;/images/customdomain-devdiaries.JPG&quot; alt=&quot;devdiaries-custom-domain&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;point-your-custom-domain-to-your-github-pages-website&quot;&gt;Point your custom domain to your Github Page`s website&lt;/h3&gt;
-&lt;p&gt;If you also use Porkbun, you can easily point the domain to your GitHub pages using the guide: &lt;a href=&quot;https://kb.porkbun.com/article/64-how-to-connect-your-domain-to-github-pages&quot; title=&quot;Connect domain to Github Pages&quot;&gt;Connect domain to Github Pages&lt;/a&gt;&lt;br /&gt;
-If you use Google Domains, select your domain in the Admin panel. Then go to &lt;strong&gt;DNS&amp;gt; Custom resource records&lt;/strong&gt; and add the DNS records:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;185.199.111.153&lt;/li&gt;
-  &lt;li&gt;185.199.110.153&lt;/li&gt;
-  &lt;li&gt;185.199.109.153&lt;/li&gt;
-  &lt;li&gt;185.199.108.153&lt;br /&gt;
-&lt;img src=&quot;/images/dns-google.JPG&quot; alt=&quot;devdiaries-custom-domain&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;Add the CNAME record: name - www, type - CNAME, answer/value - yoursite.github.io&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;enable-https-for-your-github-pages-website&quot;&gt;Enable HTTPS for your GitHub pages website&lt;/h3&gt;
-&lt;p&gt;Go to your GitHub repository settings. Under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain check the &lt;strong&gt;Enforce HTTPS&lt;/strong&gt; checkbox.&lt;/p&gt;
-
-&lt;p&gt;After a while (up to several hours) your domain should be available once with an SSL certificate. Go to https://yourdomain and check if you can see your website.&lt;/p&gt;
-
-&lt;h3 id=&quot;neterr_cert_common_name_invalid-error&quot;&gt;NET::ERR_CERT_COMMON_NAME_INVALID error&lt;/h3&gt;
-&lt;p&gt;If after entering &lt;strong&gt;https&lt;/strong&gt;: //yourdomain you see a browser warning and &lt;strong&gt;NET :: ERR_CERT_COMMON_NAME_INVALID&lt;/strong&gt; error - make sure that you put &lt;strong&gt;www&lt;/strong&gt;.yourdomain under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain.  Adding the www prefix should fix the problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;verify-domain-in-google-search-console-via-dns&quot;&gt;Verify Domain in Google Search Console via DNS&lt;/h3&gt;
-
-&lt;p&gt;To add your website to Google search, you must verify your domain on &lt;a href=&quot;https://search.google.com/search-console&quot;&gt;Google Search Console &lt;/a&gt;.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Select &lt;strong&gt;Domain&lt;/strong&gt; property type:http://
-&lt;img src=&quot;/images/add-domain.JPG&quot; alt=&quot;devdiaries-custom-domain&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Copy the TXT record you’ll get:
-&lt;img src=&quot;/images/DNS-Verify.JPG&quot; alt=&quot;devdiaries-custom-domain&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;Log into your domain`s admin panel.&lt;/li&gt;
-  &lt;li&gt;Add a new DNS record and select TXT as a record type.&lt;/li&gt;
-  &lt;li&gt;Fill  fields with the following information: &lt;strong&gt;name/host&lt;/strong&gt; - empty, &lt;strong&gt;TTL&lt;/strong&gt; - 86400 or default, &lt;strong&gt;answer/text&lt;/strong&gt; -  your Google verification text from previous step.&lt;/li&gt;
-  &lt;li&gt;Click &lt;strong&gt;Verify&lt;/strong&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Your domain can not be verified right away in Search Console. If you see a similar view to the picture below - this means that your website has not yet been confirmed.
-&lt;img src=&quot;/images/verification-failed.JPG&quot; alt=&quot;verification-failed&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It may take a few minutes (up to 48 hours) to update your DNS. In my case, the domain was verified in 10 minutes. That`s all! There’s no guaranteed time-frame for how long it will take for your website to appear in Google’s search results. It can take anywhere from hours to weeks.&lt;/p&gt;
-
-&lt;p&gt;Thanks for reading the post. See you later!&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">The purpose of this guide is to add a custom domain pointing to the website on Github Pages. The domain will use an SSL certificate. Finally, we’ll add the domain to Google. The whole operation takes only a few minutes and can be done in a few steps. Requirements: Purchased domain (I bought it on porkbun.com. You can buy domain anywhere, for example on Google Domains) A github pages repository, e.g. https://github.com/username/username.github.io Add custom domain to Github Pages settings Go to your github repository settings page: Add you custom domain name (www.domain) at Settings -&amp;gt; GitHub Pages -&amp;gt; Custom domain: Point your custom domain to your Github Page`s website If you also use Porkbun, you can easily point the domain to your GitHub pages using the guide: Connect domain to Github Pages If you use Google Domains, select your domain in the Admin panel. Then go to DNS&amp;gt; Custom resource records and add the DNS records: 185.199.111.153 185.199.110.153 185.199.109.153 185.199.108.153 Add the CNAME record: name - www, type - CNAME, answer/value - yoursite.github.io Enable HTTPS for your GitHub pages website Go to your GitHub repository settings. Under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain check the Enforce HTTPS checkbox. After a while (up to several hours) your domain should be available once with an SSL certificate. Go to https://yourdomain and check if you can see your website. NET::ERR_CERT_COMMON_NAME_INVALID error If after entering https: //yourdomain you see a browser warning and NET :: ERR_CERT_COMMON_NAME_INVALID error - make sure that you put www.yourdomain under Settings &amp;gt; GitHub Pages &amp;gt; Custom domain. Adding the www prefix should fix the problem.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/github-custom-domain.jpg" /></entry></feed>
+&lt;p&gt;If you liked it, I invite you to read the next part in which I described the most popular &lt;strong&gt;creational design patterns&lt;/strong&gt;: &lt;a href=&quot;https://www.devdiaries.net/blog/Spring-Design-Patterns-Creational-Patterns/&quot;&gt;Design Patterns used in Spring Framework Part 2 - Creational Patterns.&lt;/a&gt;&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">A lot of ground will be covered in these posts, but it will all center around Spring Framework. I will show you the most important design patterns used in Spring, thanks to which you will understand this framework better. Requirements: Java knowledge Basic Spring knowledge Object-Oriented Programming What are Design Patterns? Design patterns are solutions to common problems. You can say that Design Patterns are guidelines on how to tackle problems in certain situations. There are three types of patterns: Creational Design Patterns Creational patterns are focused on how to instantiate an object or group of related objects.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-design-patterns-dependency-injection.jpg" /></entry></feed>
