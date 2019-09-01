@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-09-01T08:45:08+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Metrics from unstructured logs on Kubernetes. Sidecar pattern with grok exporter - Part 2</title><link href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2/" rel="alternate" type="text/html" title="Metrics from unstructured logs on Kubernetes. Sidecar pattern with grok exporter - Part 2" /><published>2019-08-31T00:00:00+00:00</published><updated>2019-08-31T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2</id><content type="html" xml:base="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2/">&lt;p&gt;In &lt;a href=&quot;https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/&quot;&gt;previous post&lt;/a&gt;, you have looked into Prometheus basics. In this part, it is time to create Prometheus service on the Kubernetes which can scrape metrics from additional metric exporter.  It’s the perfect solution when you can’t export metrics from the application source code and your application logs the information you want to  expose as metrics.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2019-09-01T08:58:35+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Metrics from unstructured logs on Kubernetes. Sidecar pattern with grok exporter - Part 2</title><link href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2/" rel="alternate" type="text/html" title="Metrics from unstructured logs on Kubernetes. Sidecar pattern with grok exporter - Part 2" /><published>2019-08-31T00:00:00+00:00</published><updated>2019-08-31T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2</id><content type="html" xml:base="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-2/">&lt;p&gt;In &lt;a href=&quot;https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/&quot;&gt;previous post&lt;/a&gt;, you have looked into Prometheus basics. In this part, it is time to create Prometheus service on the Kubernetes which can scrape metrics from additional metric exporter.  It’s the perfect solution when you can’t export metrics from the application source code and your application logs the information you want to  expose as metrics.&lt;/p&gt;
 
 &lt;h3 id=&quot;example-spring-application-with-logging&quot;&gt;Example Spring application with logging&lt;/h3&gt;
 
@@ -127,17 +127,17 @@ log4j.xml code: &lt;a href=&quot;https://github.com/MichalFab/gork-exporter-spri
         &lt;span class=&quot;no&quot;&gt;help: Services call times&lt;/span&gt;
         &lt;span class=&quot;no&quot;&gt;match: '%{DATE} %{TIME} %{WORD:service} connection time= %{INT:val}'&lt;/span&gt;
         &lt;span class=&quot;no&quot;&gt;value: ''&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;buckets: [100, 1000, 3000]&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;labels:&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;service    : ''&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;- type: counter&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;name: hello_requests_total&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;help: Hello controller requests counter&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;match: '%{DATE} %{TIME} HelloController request from: %{USER:user}'&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;labels:&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;user    : ''&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;server:&lt;/span&gt;
-            &lt;span class=&quot;no&quot;&gt;port: 9144&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+  &lt;span class=&quot;no&quot;&gt;buckets: [100, 1000, 3000]&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;labels:&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;service    :'{{.service}}'&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;- type: counter&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;name: hello_requests_total&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;help: Hello controller requests counter&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;match: '%{DATE} %{TIME} HelloController request from: %{USER:user}'&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;labels:&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;user    : '{{.user}}'&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;server:&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;port: 9144&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Configmap will create and mount the &lt;strong&gt;config.yml&lt;/strong&gt; file (configuration for grok exporter). In config.yml we set the path to the mounted volume (/logs/applog.log) and two types of metrics. The &lt;a href=&quot;https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#histogram&quot;&gt;&lt;strong&gt;histogram&lt;/strong&gt;&lt;/a&gt; will inform you about how many connections to external services took less than 100 ms, how many calls took more than 100, but less than 1000, and how many calls lasted more than 3000 ms. &lt;a href=&quot;https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#counter&quot;&gt;&lt;strong&gt;Counter&lt;/strong&gt;&lt;/a&gt; will inform you how many http requests has served our application for a given user.&lt;/p&gt;
 

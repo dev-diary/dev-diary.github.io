@@ -66,17 +66,17 @@
         <span class="no">help: Services call times</span>
         <span class="no">match: '%{DATE} %{TIME} %{WORD:service} connection time= %{INT:val}'</span>
         <span class="no">value: ''</span>
-    <span class="no">buckets: [100, 1000, 3000]</span>
-        <span class="no">labels:</span>
-            <span class="no">service    : ''</span>
-        <span class="no">- type: counter</span>
-            <span class="no">name: hello_requests_total</span>
-            <span class="no">help: Hello controller requests counter</span>
-            <span class="no">match: '%{DATE} %{TIME} HelloController request from: %{USER:user}'</span>
-            <span class="no">labels:</span>
-        <span class="no">user    : ''</span>
-            <span class="no">server:</span>
-            <span class="no">port: 9144</span></code></pre></figure> <p>Configmap will create and mount the <strong>config.yml</strong> file (configuration for grok exporter). In config.yml we set the path to the mounted volume (/logs/applog.log) and two types of metrics. The <a href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#histogram"><strong>histogram</strong></a> will inform you about how many connections to external services took less than 100 ms, how many calls took more than 100, but less than 1000, and how many calls lasted more than 3000 ms. <a href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#counter"><strong>Counter</strong></a> will inform you how many http requests has served our application for a given user.</p> <p>The <code class="highlighter-rouge">match:</code> property is an expression pattern. You can find all grok patterns on the <a href="https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns">Github</a>. Then you can adjust the pattern to catch your logs.</p> <p>Let’s add volume and grok exporter image to the deployment definition from previous point:</p> <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"> 
+  <span class="no">buckets: [100, 1000, 3000]</span>
+    <span class="no">labels:</span>
+      <span class="no">service    :'{{.service}}'</span>
+    <span class="no">- type: counter</span>
+      <span class="no">name: hello_requests_total</span>
+      <span class="no">help: Hello controller requests counter</span>
+      <span class="no">match: '%{DATE} %{TIME} HelloController request from: %{USER:user}'</span>
+      <span class="no">labels:</span>
+        <span class="no">user    : '{{.user}}'</span>
+    <span class="no">server:</span>
+      <span class="no">port: 9144</span></code></pre></figure> <p>Configmap will create and mount the <strong>config.yml</strong> file (configuration for grok exporter). In config.yml we set the path to the mounted volume (/logs/applog.log) and two types of metrics. The <a href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#histogram"><strong>histogram</strong></a> will inform you about how many connections to external services took less than 100 ms, how many calls took more than 100, but less than 1000, and how many calls lasted more than 3000 ms. <a href="https://www.devdiaries.net/blog/Prometheus-On-Kubernetes-Part-1/#counter"><strong>Counter</strong></a> will inform you how many http requests has served our application for a given user.</p> <p>The <code class="highlighter-rouge">match:</code> property is an expression pattern. You can find all grok patterns on the <a href="https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/grok-patterns">Github</a>. Then you can adjust the pattern to catch your logs.</p> <p>Let’s add volume and grok exporter image to the deployment definition from previous point:</p> <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"> 
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
