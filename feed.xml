@@ -1,4 +1,209 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2020-02-09T18:03:54+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Java Recruitment Questions - Immutable Objects</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects/" rel="alternate" type="text/html" title="Java Recruitment Questions - Immutable Objects" /><published>2020-02-04T00:00:00+00:00</published><updated>2020-02-04T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects/">&lt;h1 id=&quot;java-recruitment-questions---immutable-objects&quot;&gt;Java Recruitment Questions - Immutable Objects&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2020-02-11T06:13:05+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Java Recruitment Questions - hashCode() method explained in detail</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/" rel="alternate" type="text/html" title="Java Recruitment Questions - hashCode() method explained in detail" /><published>2020-02-11T00:00:00+00:00</published><updated>2020-02-11T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/">&lt;p&gt;Questions about &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; are asked on most interviews (from junior to senior level). In this post, you will find out what this method is, how it works for particular types, how it works for primitives, what you have to watch out for during your implementations. Enjoy reading!&lt;/p&gt;
+
+&lt;h1 id=&quot;what-is-hashcode-method&quot;&gt;What is hashCode() method&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; is a method that should contain a hash algorithm that calculates a 32-bit integer (hash) from the object data, representing that object.&lt;/p&gt;
+
+&lt;p&gt;This hash is used by some collections (e.g. HashMap and HashSet) to store references to objects, so that access to data is very fast. Access time depends on the performance of our hash algorithm, so it is worth paying attention to it!&lt;/p&gt;
+
+&lt;h1 id=&quot;do-java-primitive-types-have-their-hashcode&quot;&gt;Do java primitive types have their hashcode()?&lt;/h1&gt;
+&lt;p&gt;Primitive types are not treated the same as ordinary objects. It is not possible to call the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method on a primitive type. The only option is to use wrappers such as &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.hashCode(3)&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.hashCode()&lt;/code&gt; returns the value of the int we passed on to the method (in our case 3). Implementation of hashCode from Integer class:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Similar &lt;code class=&quot;highlighter-rouge&quot;&gt;hashcode()&lt;/code&gt; functionality  exists in the &lt;strong&gt;Short&lt;/strong&gt; and &lt;strong&gt;Byte&lt;/strong&gt; classes. First it casts short/byte to the int and returns its value.&lt;br /&gt;
+A little different hashCode() is in &lt;strong&gt;Long&lt;/strong&gt;. Since Long is a 64-bit number we have to do some “compression” so that we can return the int value:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;         
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/code&gt; is the right shift bit operation. &lt;code class=&quot;highlighter-rouge&quot;&gt;value &amp;gt;&amp;gt;&amp;gt; 32&lt;/code&gt;means that we shift 32 bits to right. It leave only 32 bits - and the rest of the position is completed by 0 (32 rightmost bits are discarded). Then, on shifted value a XOR operation is performed &lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Float numbers are more complicated.  Java convert its floating-point values to an equicalent integer value using &lt;code class=&quot;highlighter-rouge&quot;&gt;Float.floatToIntBits(float value)&lt;/code&gt;. The method also checks whether the value is NaN (Not-a-number):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;     
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;floatToIntBits&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;floatToIntBits&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isNaN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;floatToRawIntBits&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7fc00000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;isNaN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;native&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;floatToRawIntBits&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;var0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Implementation of &lt;code class=&quot;highlighter-rouge&quot;&gt;floatToRawIntBits()&lt;/code&gt; depend on the JVM/JDK you are using. For openJDK the source is &lt;a href=&quot;http://hg.openjdk.java.net/jdk7/jdk7/jdk/file/9b8c96f96a0f/src/share/native/java/lang/Float.c&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Double&lt;/strong&gt; convert its floating-point value to long using &lt;code class=&quot;highlighter-rouge&quot;&gt;doubleToLongBits()&lt;/code&gt; then does the same XOR trick as &lt;code class=&quot;highlighter-rouge&quot;&gt;Long&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;does-the-java-enums-have-its-hashcode-&quot;&gt;Does the Java enums have its hashCode() ?&lt;/h1&gt;
+&lt;p&gt;Enums uses Object’s &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; . This is the only way to use hashCode() in the enum.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;     
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition, Enum’s hashcode() is &lt;code class=&quot;highlighter-rouge&quot;&gt;final&lt;/code&gt; to prevent developers from creating their own implementations. It is because within one JVM there can exist &lt;strong&gt;only one instance of each enum object&lt;/strong&gt; (enums are singletons). This is enough to ensure that such implementation makes sense and is correct.&lt;/p&gt;
+
+&lt;h1 id=&quot;hashcode-method-in-java-arrays&quot;&gt;hashCode() method in Java arrays&lt;/h1&gt;
+&lt;p&gt;Arrays do not provide its &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; implementation. Just as enums use a method from the Object class.&lt;br /&gt;
+It can cause a lot of problems because this hash depends on the magic &lt;a href=&quot;https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/#how-is-the-hashcode-calculated-hashcode-jvm-implementation&quot;&gt;described below&lt;/a&gt;. A better practice is to use &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; from the helper class - &lt;code class=&quot;highlighter-rouge&quot;&gt;Arrays&lt;/code&gt;.  &lt;code class=&quot;highlighter-rouge&quot;&gt;Arrays.hashCode()&lt;/code&gt; method returns a hash code based on the contents of the specified array. If the contents of the two arrays are equal then return the same value. You can see an example below:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;     
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;    
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;    
+    
+&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// return 1595428806    &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// return 1072408673    &lt;/span&gt;
+    
+&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// return 918073252    &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// return 918073252  &lt;/span&gt;
+    &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Array&lt;/code&gt; class has several hashCode() methods - for primitive types (e.g. hashCode(float a[]), hashCode(int a[])), which inside use type specific hashcode() from the &lt;a href=&quot;https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/#do-java-primitive-types-have-their-hashcode&quot;&gt;wrapper classes&lt;/a&gt;. For other Objects it use:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+    
+ &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+    
+ &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;element&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;31&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;element&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;    
+    
+ &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, this method adds all the hash from all elements by multiplying them by a multiplier - which in this case is &lt;strong&gt;31&lt;/strong&gt;. You may be wondering why we need a multiplier of 31. Thanks to the multiplier, &lt;strong&gt;arrays with the same elements but different order has different hashcodes&lt;/strong&gt;.  For example, having a table with the elements &lt;code class=&quot;highlighter-rouge&quot;&gt;[10,20]&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;[20,10]&lt;/code&gt; - without a multiplier, hashcode for the first table would be: &lt;code class=&quot;highlighter-rouge&quot;&gt;1 + 10 + 20 = 30&lt;/code&gt;, and for the second table: &lt;code class=&quot;highlighter-rouge&quot;&gt;1 + 20 + 10 = 30&lt;/code&gt;. Both tables would have the same hashcode (30) even though the order of their elements is different. With a multiplier, their hashcode is - for the first array: &lt;code class=&quot;highlighter-rouge&quot;&gt;(31*1 + 10) *31+20 = 1291&lt;/code&gt; and for the second array: &lt;code class=&quot;highlighter-rouge&quot;&gt;(31*1 + 20) *31+10 = 1591&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are interested in why the multiplier is 31 - this is described in detail &lt;a href=&quot;https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/&quot;&gt;in the article&lt;/a&gt;. I recommend reading it!&lt;/p&gt;
+
+&lt;h1 id=&quot;hashcode-method-in-list-map-set&quot;&gt;hashCode() method in List, Map, Set&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ArrayList&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;LinkedList&lt;/code&gt; use the same algorithm as &lt;code class=&quot;highlighter-rouge&quot;&gt;Arrays.hashCode()&lt;/code&gt; for the same reason. &lt;code class=&quot;highlighter-rouge&quot;&gt;Set&lt;/code&gt;, unlike List, uses hashcode() without multiplier:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+  &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
+ &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hasNext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+        &lt;span class=&quot;n&quot;&gt;E&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
+ &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
+            &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In Set a multiplier is not needed - as the order of the elements does not matter (it is the same). This makes the hashCode calculation a bit faster.&lt;/p&gt;
+
+&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;Maps&lt;/code&gt;, hashCode adds all element hashes (element hash is xor from the key hash and hash values).&lt;/p&gt;
+
+&lt;h1 id=&quot;hashcode-method-in-string&quot;&gt;hashCode() method in String&lt;/h1&gt;
+&lt;p&gt;This is String class hashCode() implementation:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+ &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hashIsZero&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+        &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isLatin1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringLatin1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
+                       &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StringUTF16&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+ &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+            &lt;span class=&quot;n&quot;&gt;hashIsZero&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+            &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If the string has Latin encoding, the &lt;code class=&quot;highlighter-rouge&quot;&gt;StringLatin1.hashCode&lt;/code&gt; method is used, and if the string is UTF-16 encoding, the hashcode will be generated in &lt;code class=&quot;highlighter-rouge&quot;&gt;tringUTF16.hashCode&lt;/code&gt;. The difference is that in &lt;strong&gt;latin1&lt;/strong&gt; each &lt;strong&gt;character&lt;/strong&gt; is exactly &lt;strong&gt;one byte&lt;/strong&gt; long. In utf8 a &lt;strong&gt;character&lt;/strong&gt; can consist of more than &lt;strong&gt;one byte&lt;/strong&gt;.  Inside, the hashCode calculating functionality is the same as in List or &lt;code class=&quot;highlighter-rouge&quot;&gt;Arrays.hashCode()&lt;/code&gt;.&lt;br /&gt;
+The advantage of the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode&lt;/code&gt; from the String class is that the &lt;strong&gt;hashcode value is cached and calculated lazily during the first call of the method&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;hashcode-method-in-java-objects&quot;&gt;hashCode() method in java Objects&lt;/h1&gt;
+&lt;p&gt;If your class hasn’t overridden the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method, then it will use the one defined in its super class, probably in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Object&lt;/code&gt; class. &lt;a href=&quot;http://docs.oracle.com/javase/6/docs/api/java/lang/Object.html#hashCode%28%29&quot;&gt;hashCode()&lt;/a&gt; in Object class is a native function (&lt;strong&gt;is dependant on the JVM&lt;/strong&gt;). Documentation says :&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;As much as is reasonably practical, the hashCode method defined by class Object does return distinct integers for distinct objects. (This is typically implemented by converting the internal address of the object into an integer, but this implementation technique is not required by the JavaTM programming language.)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is hard to guess how exactly &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; works, as its implementation is placed in the native code of the JVM. In many places, you can find information that &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; is simply an address in memory.  Given that the JVM can relocate objects (e.g. during garbage collection cycles due to promotion or compaction) - after we calculate an object’s identity hash we must be able to retain it in a way that survives object relocation.&lt;br /&gt;
+One solution is to write the hashcode calculated during the first call of the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method into the object data (e.g object header). This way, if the object is moved to another memory area, it will still have the same, original hashcode. But despite the fact that it is often believed that - this is not the functionality of the most popular JVM implementation - OpenJDK…&lt;/p&gt;
+
+&lt;h1 id=&quot;how-is-the-hashcode-calculated-hashcode-jvm-implementation&quot;&gt;How is the hashCode calculated? hashCode() JVM implementation&lt;/h1&gt;
+&lt;p&gt;If we go deeper, to the JVM code (the implementation can be found &lt;a href=&quot;http://hg.openjdk.java.net/jdk8u/jdk8u/hotspot/file/87ee5ee27509/src/share/vm/prims/jvm.cpp&quot;&gt;here&lt;/a&gt; - line 511) we can deduce that the &lt;strong&gt;hashCode is not calculated from the address in the memory but from the thread state!&lt;/strong&gt; You can find proof of that on &lt;a href=&quot;https://stackoverflow.com/questions/1961146/memory-address-of-variables-in-java/20680667#20680667&quot;&gt;StackOverflow&lt;/a&gt;.&lt;br /&gt;
+There are two important things to remember. First of all, such hashCode calculating exist from OpenJDK 8. Secondly, hashCode calculating is implementation-dependent. In this post we checked OpenJDK. For comparison - J&lt;a href=&quot;https://www.azul.com/products/zing/&quot;&gt;VM Zing implementation&lt;/a&gt; calculates hashCode based on a memory address. &lt;br /&gt;
+This can be considered a tricky recruitment question!  :)&lt;/p&gt;
+
+&lt;h1 id=&quot;hashcode-own-implementations&quot;&gt;hashCode() own implementations&lt;/h1&gt;
+&lt;p&gt;Finally, it is important to mention the good practices when creating your own hashCode().&lt;br /&gt;
+I will share with you the 3 most common ways to create your own hashCode():&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Using IDE (e.g. generating in IntelliJ, you can press ALT + Insert and select “equals and hashCode” from the context menu).&lt;/li&gt;
+  &lt;li&gt;Using libraries. For example, Lombok library, which will generate &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; during compilation.&lt;/li&gt;
+  &lt;li&gt;Writing your own implementation of &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; - you must be careful not to make a mistake. A wrong &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; can spoil the effectiveness of HashMap and bring many problems!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A simple example! Everyone likes simple examples! We have a well-known Person class:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;surname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Remember that when overwriting the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method you must also overwrite the &lt;code class=&quot;highlighter-rouge&quot;&gt;equals()&lt;/code&gt; method, so as not to break the hashCode() &amp;amp; equals() contract. The equals and hashCode methods should meet the following conditions:&lt;br /&gt;
+If &lt;strong&gt;x == y then x.equals(y) == true&lt;/strong&gt;&lt;br /&gt;
+If &lt;strong&gt;x.equals(y) == true then x.hashCode() == y.hashCode()&lt;/strong&gt;&lt;br /&gt;
+If &lt;strong&gt;x.hashCode() == y.hashCode() then x.equals(y) can either return true or return false&lt;/strong&gt;&lt;br /&gt;
+The last point is based on int scope (hashCode() returns int value). As a result, &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; can return a finite number of results: from -2 147 483 648 to +2 147 483 647 - so, around 4 billion unique values. Let’s imagine, that we are building the application, that keeps more data. If we start invoking the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method from more than 4 billion elements, it is possible, that first 4 billion ones will produce a unique result, but each next call will produce the integer value, that has been produced before. Therefore, it is important to combine &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;equals()&lt;/code&gt; to make sure that objects that have the same hashcodes are not different.&lt;/p&gt;
+
+&lt;h1 id=&quot;additional-hashcode-doubts&quot;&gt;Additional hashCode() doubts&lt;/h1&gt;
+&lt;h2 id=&quot;do-i-have-to-implement-hashcodeequals-in-each-class&quot;&gt;Do I have to implement hashCode/equals in each class?&lt;/h2&gt;
+&lt;p&gt;Answer: No, if you don’t expect to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;equals&lt;/code&gt; method (e.g., aren’t using &lt;code class=&quot;highlighter-rouge&quot;&gt;assertEquals&lt;/code&gt; from JUnit, or never mean to use this class as a key in a &lt;code class=&quot;highlighter-rouge&quot;&gt;Map&lt;/code&gt;, etc), the implementation will not be used -&amp;gt;  it not necessary.&lt;/p&gt;
+&lt;h2 id=&quot;what-will-be-the-effect-of-badly-implemented-hashcode&quot;&gt;What will be the effect of badly implemented hashCode()&lt;/h2&gt;
+&lt;p&gt;Anwer: Even if in hashCode you will return the same int for each element, e.g:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Your program will compile and run. The problem can be when you want to use collections using hashCode (HashMap, HashSet or other). In the above example hashCode - all elements will be placed into the same bucket in HashMap (as LinkedList elements). Effectiveness will decrease significantly.&lt;/p&gt;
+&lt;h2 id=&quot;does-null-have-its-hashcode&quot;&gt;Does null have its hashCode?&lt;/h2&gt;
+&lt;p&gt;Of course you can’t call the &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; method (like any other method) on null value. But we can pass null to &lt;code class=&quot;highlighter-rouge&quot;&gt;Objects.hashCode()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, Objects.hashCode() for null will return 0. You’re probably wondering how HashMap’s doing in that case.  &lt;code class=&quot;highlighter-rouge&quot;&gt;HashMap&lt;/code&gt; has a &lt;a href=&quot;https://stackoverflow.com/questions/17268212/hashcode-for-null-key-in-hashmap&quot;&gt;special handling&lt;/a&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; keys. &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; values are fine as you don’t compute hash code for them in a &lt;code class=&quot;highlighter-rouge&quot;&gt;HashMap&lt;/code&gt;. This is the reason why &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; keys work fine in &lt;code class=&quot;highlighter-rouge&quot;&gt;HashMap&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;summary&quot;&gt;Summary&lt;/h1&gt;
+
+&lt;p&gt;I hope you liked the article. If you have any questions, please feel free to comment. Thank you for your comments under the &lt;a href=&quot;https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects/&quot;&gt;last post&lt;/a&gt; :)&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Questions about hashCode() are asked on most interviews (from junior to senior level). In this post, you will find out what this method is, how it works for particular types, how it works for primitives, what you have to watch out for during your implementations. Enjoy reading! What is hashCode() method hashCode() is a method that should contain a hash algorithm that calculates a 32-bit integer (hash) from the object data, representing that object. This hash is used by some collections (e.g. HashMap and HashSet) to store references to objects, so that access to data is very fast. Access time depends on the performance of our hash algorithm, so it is worth paying attention to it! Do java primitive types have their hashcode()? Primitive types are not treated the same as ordinary objects. It is not possible to call the hashCode() method on a primitive type. The only option is to use wrappers such as Integer.hashCode(3). Integer.hashCode() returns the value of the int we passed on to the method (in our case 3). Implementation of hashCode from Integer class: public static int hashCode(int value) { return value; } Similar hashcode() functionality exists in the Short and Byte classes. First it casts short/byte to the int and returns its value. A little different hashCode() is in Long. Since Long is a 64-bit number we have to do some “compression” so that we can return the int value: public static int hashCode(long value) { return (int)(value ^ (value &amp;gt;&amp;gt;&amp;gt; 32)); } The &amp;gt;&amp;gt;&amp;gt; is the right shift bit operation. value &amp;gt;&amp;gt;&amp;gt; 32means that we shift 32 bits to right. It leave only 32 bits - and the rest of the position is completed by 0 (32 rightmost bits are discarded). Then, on shifted value a XOR operation is performed ^.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/hashcode/hashcode-header-image.jpg" /></entry><entry><title type="html">Java Recruitment Questions - Immutable Objects</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects/" rel="alternate" type="text/html" title="Java Recruitment Questions - Immutable Objects" /><published>2020-02-04T00:00:00+00:00</published><updated>2020-02-04T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Immutable-Objects/">&lt;h1 id=&quot;java-recruitment-questions---immutable-objects&quot;&gt;Java Recruitment Questions - Immutable Objects&lt;/h1&gt;
 
 &lt;p&gt;In Java, object variability is something very common. Until recently, it was normal for most beans to have getters and setters (In many projects this trend is still continuing).
 Increasingly, at interviews, interviewers ask: “What are immutable objects and what are their advantages and disadvantages?”&lt;/p&gt;
@@ -2027,290 +2232,4 @@ We will also add a method with the &lt;code class=&quot;highlighter-rouge&quot;&
 &lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
 
 &lt;p&gt;Congratulations! That’s all. We have created a controller with which the frontend of our application will communicate via REST. In the next post, we will take care of securing the backend of our application.
-I invite you to read &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-3/&quot;&gt;the next part&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Our application works quite well, but we would like to use the REST principles and manage data via HTTP requests. In Spring Boot, HTTP requests are handled by controller classes. In the previous post, we have created an application that automatically creates a database and adds some data to it. Let’s add controllers to it! REST basics REST (Representational State Transfer) is an architectural style for designing distributed systems. It’s not a standard, but it defines a set of constraints such as being stateless or having a client/server relationship. The six constraints defined by Roy Fielding (REST creator): Stateless: The server doesn’t hold any information about users, Cacheable: Many users request the same resources. It is useful to cache responses, Uniform interface between components: This simplifies the architecture, as all components follow the same rules to speak to one another, Layered system: individual components cannot see beyond the immediate layer with which they are interacting, Client-server architecture: the client and the server both have a different set of concerns. The server does not send any information without a request from the client, Code on demand: code may be downloaded to extend client functionality. This is an optional constraint. RESTful Spring Boot service In Spring boot all requests are handled by controller classes. We have to create our own controller class. To do this, let’s first create the java package for our controller (I created net.devdiaries.wallet.controllers package). Next, create the controller class: CurrenciesController.java. Now, add the @RestController annotation before the class definition. @RestController is used to mark classes as Spring MVC Controller. Our controller class looks like this: package net.devdiaries.wallet.controllers; import org.springframework.web.bind.annotation.RestController; @RestController public class CurrencyController { } To be able to return currencies from the database, we have to inject CurrencyRepository created in previous post. We will also add a method with the @RequestMapping annotation, which will fetch all currencies from CurrencyRepository. @RequestMapping maps the URL address and/or HTTP method to the controller. Now our code looks like this: package net.devdiaries.wallet.controllers; import net.devdiaries.wallet.domain.Currency; import net.devdiaries.wallet.domain.CurrencyRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.web.bind.annotation.*; @RestController public class CurrencyController { private final CurrencyRepository currencyRepository; @Autowired public CurrencyController(CurrencyRepository currencyRepository) { this.currencyRepository = currencyRepository; } @GetMapping(&quot;/currencies&quot;) public Iterable&amp;lt;Currency&amp;gt; getCurrencies() { return currencyRepository.findAll(); } } We are ready to run the application. After run navigates to localhost:8080/currencies. We can see that application get all the currencies from the database and return it in JSON format: We must add a few more methods that we will need in our Wallet application. 1 - addCurrency() method marked by @PostMapping annotation: @PostMapping(&quot;/currencies&quot;) void addCurrency(@RequestBody Currency currency) { currencyRepository.save(currency); } Annotation @PostMapping ( &quot;/currencies&quot;) maps the given path to the appropriate method that will handle the HTTP request (POST). @RequestBody annotation maps the HttpRequest body to a transfer or domain object (Currency object).</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part2.jpg" /></entry><entry><title type="html">Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 1 Spring Initialzr and JPA</title><link href="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-1/" rel="alternate" type="text/html" title="Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 1 Spring Initialzr and JPA" /><published>2019-06-21T00:00:00+00:00</published><updated>2019-06-21T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-1</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-1/">&lt;p&gt;In this series, we will create a modern web application using Spring Boot 2.1.5 and React. We will start from the backend creating an API in Spring Boot and using the PostgreSQL database. The frontend will be created using the React.&lt;br /&gt;
-The application that we will develop will be a &lt;strong&gt;currency portfolio&lt;/strong&gt;. We will be able to add, edit and delete currencies from the database. In addition, we will secure our application using the &lt;strong&gt;JWT token&lt;/strong&gt;, so that we only have access to our data.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/spring-react-currency-walet/final-application.jpg&quot; alt=&quot;react-loging&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java knowledge&lt;/li&gt;
-  &lt;li&gt;Basic Spring Boot knowledge&lt;/li&gt;
-  &lt;li&gt;Basic JavaScript knowledge&lt;/li&gt;
-  &lt;li&gt;Basic Maven knowledge&lt;/li&gt;
-  &lt;li&gt;Basic knowledge of SQL databases&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;setting-up-the-backend-environment&quot;&gt;Setting Up the backend environment&lt;/h3&gt;
-&lt;p&gt;We are going to create and run Spring Boot project. To do this you must have Java SDK installed (version 8 or higher) any IDE (I will use Intellij).&lt;/p&gt;
-
-&lt;h3 id=&quot;creating-the-project-with-spring-initializr&quot;&gt;Creating the project with Spring Initializr&lt;/h3&gt;
-&lt;p&gt;We will create the Spring Boot project with &lt;code class=&quot;highlighter-rouge&quot;&gt;Spring Initializr&lt;/code&gt;. It is a web tool that’s used to create Spring projects. You can use web-based initializr (&lt;a href=&quot;https://start.spring.io/&quot;&gt;https://start.spring.io/&lt;/a&gt;) or provided by IDE (in the case of Intellij).&lt;/p&gt;
-
-&lt;p&gt;We will generate a Maven project with the latest Spring Boot version (2.1.5). In the &lt;strong&gt;Dependencies&lt;/strong&gt; section, we will select dependencies that are needed in our project. Please start with following dependencies:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Web: Spring Web Starter&lt;/li&gt;
-  &lt;li&gt;JPA: Spring Data JPA&lt;/li&gt;
-  &lt;li&gt;H2 Database&lt;/li&gt;
-  &lt;li&gt;PostgreSQL Driver&lt;/li&gt;
-  &lt;li&gt;Lombok&lt;/li&gt;
-  &lt;li&gt;Spring Boot DevTools&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The &lt;strong&gt;DevTools&lt;/strong&gt; provides facilities for developers (e.g. automatic restart after changes). Development is much faster because the application is automatically restarted after new changes have been detected. &lt;br /&gt;
-After all, your pom.xml should look something like this:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;          
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;    
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;project&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:xsi=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&lt;/span&gt;    
-  &lt;span class=&quot;na&quot;&gt;xsi:schemaLocation=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;modelVersion&amp;gt;&lt;/span&gt;4.0.0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/modelVersion&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;parent&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-parent&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2.1.5.RELEASE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;relativePath/&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- lookup parent from repository --&amp;gt;&lt;/span&gt;    
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/parent&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;net.devdiaries&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;wallet&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;0.0.1-SNAPSHOT&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;name&amp;gt;&lt;/span&gt;wallet&lt;span class=&quot;nt&quot;&gt;&amp;lt;/name&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;description&amp;gt;&lt;/span&gt;Application for devdiaries.net&lt;span class=&quot;nt&quot;&gt;&amp;lt;/description&amp;gt;&lt;/span&gt;    
-    
- &lt;span class=&quot;nt&quot;&gt;&amp;lt;properties&amp;gt;&lt;/span&gt;        &lt;span class=&quot;nt&quot;&gt;&amp;lt;java.version&amp;gt;&lt;/span&gt;12&lt;span class=&quot;nt&quot;&gt;&amp;lt;/java.version&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/properties&amp;gt;&lt;/span&gt;    
-    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependencies&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-web&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-devtools&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;runtime&lt;span class=&quot;nt&quot;&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;optional&amp;gt;&lt;/span&gt;true&lt;span class=&quot;nt&quot;&gt;&amp;lt;/optional&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-data-jpa&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2.1.5.RELEASE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.h2database&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;h2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.4.199&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;runtime&lt;span class=&quot;nt&quot;&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.projectlombok&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;lombok&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.18.8&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class=&quot;nt&quot;&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.postgresql&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;postgresql&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;42.2.5&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-test&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;test&lt;span class=&quot;nt&quot;&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependencies&amp;gt;&lt;/span&gt;    
-    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;build&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;    
-                &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;    
-                &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;    
-            &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;    
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;    
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;    
- &lt;span class=&quot;nt&quot;&gt;&amp;lt;/project&amp;gt;&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;em&gt;If you do not want to generate a project in the initializr - you can use my pom.xml.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Initializer has generated a directory structure with the main application class:&lt;br /&gt;
-&lt;img src=&quot;/images/spring-react-currency-walet/files-structure.JPG&quot; alt=&quot;files-structure-spring-boot&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;WalletApplication.java:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;          
-&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;  
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WalletApplication&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
-  
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WalletApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In addition to the usual class with the &lt;code class=&quot;highlighter-rouge&quot;&gt;main()&lt;/code&gt; method, you probably noticed the @SpringBootApplication annotation. It is a combination of multiple annotations. The most important of them are:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;@EnableAutoConfiguration&lt;/strong&gt; - tells Spring Boot how you will want to configure Spring, based on the jar dependencies that you have added to the pom.xml.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;@ComponentScan&lt;/strong&gt;  - tells Spring to look for other components, configurations, and services in the specified package.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;@Configure&lt;/strong&gt; - Defines the class that can be used as a source of bean definitions.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;spring-boot-jpa-configuration&quot;&gt;Spring Boot JPA Configuration&lt;/h3&gt;
-&lt;p&gt;Now, we will create a database by using JPA. Firstly, we will use &lt;strong&gt;H2&lt;/strong&gt; in-memory SQL database (good for fast development, we do not have to run any databases - Spring will do it for us, storing data in memory).&lt;/p&gt;
-
-&lt;h4 id=&quot;jpa-and-hibernate&quot;&gt;JPA and Hibernate&lt;/h4&gt;
-&lt;p&gt;&lt;strong&gt;JPA&lt;/strong&gt; (Java Persistent API) provides object-relational mapping for Java applications. In the case of databases, we are talking about entities and therefore the most important annotation in the case of JPA is &lt;code class=&quot;highlighter-rouge&quot;&gt;@Entity&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;@Entity&lt;/code&gt; class presents the &lt;strong&gt;structure of a database table&lt;/strong&gt; and the fields of an &lt;code class=&quot;highlighter-rouge&quot;&gt;@Entity&lt;/code&gt; class present the &lt;strong&gt;columns&lt;/strong&gt;. &lt;br /&gt;
-&lt;strong&gt;Hibernate&lt;/strong&gt; is the most popular JPA implementation and is used in Spring Boot by default.&lt;/p&gt;
-
-&lt;h4 id=&quot;creating-the-entity-classes-in-spring-boot&quot;&gt;Creating the entity classes in Spring Boot&lt;/h4&gt;
-&lt;p&gt;Entity classes use the standard JavaBean naming convention and have getters/setters. All fields have private visibility.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;JPA creates tables with the names of the classes. If you want to use another name for the table, you should use @Table annotation&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Let’s create a package for our Entity class and classes related to retrieving records from the database (repositories). We will use &lt;code class=&quot;highlighter-rouge&quot;&gt;domain&lt;/code&gt; name: net.devdiaries.wallet.domain.  Next, we create entity classes - Our database will contain currency portfolios. 
-My &lt;code class=&quot;highlighter-rouge&quot;&gt;Currency.java&lt;/code&gt; class:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;          
-&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;devdiaries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wallet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;lombok.Getter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;lombok.Setter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;javax.persistence.*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.math.BigDecimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;nd&quot;&gt;@Entity&lt;/span&gt;    
-&lt;span class=&quot;nd&quot;&gt;@Getter&lt;/span&gt;    
-&lt;span class=&quot;nd&quot;&gt;@Setter&lt;/span&gt;    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Currency&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;amount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;rate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
-    &lt;span class=&quot;nd&quot;&gt;@Id&lt;/span&gt;    
-    &lt;span class=&quot;nd&quot;&gt;@GeneratedValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strategy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GenerationType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;AUTO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;amount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; 
-    
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;@Id&lt;/code&gt; annotation defines the &lt;strong&gt;primary key&lt;/strong&gt;.  The &lt;code class=&quot;highlighter-rouge&quot;&gt;@GeneratedValue&lt;/code&gt; tells that the ID is automatically generated by the database. We use &lt;strong&gt;AUTO&lt;/strong&gt; strategy. It means that the JPA provider selects the best strategy for a particular database. &lt;br /&gt;
-Instead of creating getters/setters methods, we used &lt;strong&gt;Lombok&lt;/strong&gt; (@Getter, @Setter), which will create it for us during compilation.&lt;/p&gt;
-
-&lt;p&gt;We already have a class that will create a table with columns in the database. Now it’s time to create &lt;strong&gt;Repository&lt;/strong&gt; class - which provides functionality for &lt;strong&gt;C&lt;/strong&gt;reating/&lt;strong&gt;R&lt;/strong&gt;emoving/&lt;strong&gt;U&lt;/strong&gt;pdating/&lt;strong&gt;D&lt;/strong&gt;eleting data from the database. We will start from repository for &lt;code class=&quot;highlighter-rouge&quot;&gt;Currency&lt;/code&gt; class:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
-&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;devdiaries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wallet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.data.repository.CrudRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CrudRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CurrencyRepository&lt;/code&gt; extends the &lt;code class=&quot;highlighter-rouge&quot;&gt;CrudRepository&amp;lt;Currency, Long&amp;gt;&lt;/code&gt;. It defines that this repository is for the Currency entity class and the type of Id is long.&lt;/p&gt;
-
-&lt;p&gt;CrudRepository provides multiple CRUD methods. Most important of them:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;Method&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;Description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;long count()&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;returns number of entities&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;&amp;lt; S extends T &amp;gt; save(S entity)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;saves an entity&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;Iterable&lt;T&gt; findAll()&lt;/T&gt;&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;returns all records of provided type&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;Optional&lt;T&gt; findById(ID id)&lt;/T&gt;&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;returns one record for given ID&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;void delete(T entity)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;deletes entity&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;Let`s check that everything is done correctly:&lt;br /&gt;
-1 - Add settings to application.properties&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yml&quot; data-lang=&quot;yml&quot;&gt;    
-&lt;span class=&quot;s&quot;&gt;spring.jpa.show-sql=true&lt;/span&gt;    
-&lt;span class=&quot;s&quot;&gt;spring.h2.console.enabled=true&lt;/span&gt;    
-&lt;span class=&quot;s&quot;&gt;spring.h2.console.path=/h2-console&lt;/span&gt;        &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;It enables the H2 console and logs all Hibernate queries.&lt;br /&gt;
-2 - Run WalletApplication application&lt;br /&gt;
-3 - Go to localhost:8080/h2-console and use &lt;code class=&quot;highlighter-rouge&quot;&gt;jdbc:h2:mem:testdb&lt;/code&gt; as JDBC URL:&lt;br /&gt;
-&lt;img src=&quot;/images/spring-react-currency-walet/h2-login.JPG&quot; alt=&quot;files-structure-spring-boot&quot; /&gt;&lt;br /&gt;
-4 - Use &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT * FROM CURRENCY &lt;/code&gt; query and click &lt;strong&gt;Run&lt;/strong&gt; button. H2 console should return no rows:&lt;br /&gt;
-&lt;img src=&quot;/images/spring-react-currency-walet/no-rows-h2.JPG&quot; alt=&quot;files-structure-spring-boot&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;use-commandlinerunner-to-inject-demo-data&quot;&gt;Use &lt;code class=&quot;highlighter-rouge&quot;&gt;CommandLineRunner&lt;/code&gt; to inject demo data&lt;/h4&gt;
-
-&lt;p&gt;Now we will add some demo data to the H2 database. For that, we will use the &lt;code class=&quot;highlighter-rouge&quot;&gt;CommandLineRunner&lt;/code&gt; class. This class provides the functionality to run specific pieces of code when the application is fully started. Let’s use it in the main application class:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  
-&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WalletApplication&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    
- &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-        
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;        
-    &lt;span class=&quot;n&quot;&gt;SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WalletApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
-    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;    
- &lt;span class=&quot;n&quot;&gt;CommandLineRunner&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;runner&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-&lt;span class=&quot;c1&quot;&gt;//            Save demo data after start    &lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;US Dolar&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;USD&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;3.92&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)));&lt;/span&gt;    
-            &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Euro&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;EUR&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BigDecimal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;4.52&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)));&lt;/span&gt;    
-        &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We injected CurrencyRepository using &lt;code class=&quot;highlighter-rouge&quot;&gt;@Autowired&lt;/code&gt; which enables dependency injection (described in &lt;a href=&quot;https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/#dependency-injection-in-spring-framework&quot;&gt;https://www.devdiaries.net/blog/Spring-Design-Patterns-Dependency-Injection/&lt;/a&gt; post).&lt;br /&gt;
-Next, we used the &lt;code class=&quot;highlighter-rouge&quot;&gt;save()&lt;/code&gt; method from CrudRepository to save objects in the database.&lt;br /&gt;
-Now repeat the 4. point described above. You will see that new records have appeared in the database:&lt;br /&gt;
-&lt;img src=&quot;/images/spring-react-currency-walet/currency-query-h2.JPG&quot; alt=&quot;files-structure-spring-boot&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Hibernate logs:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-txt&quot; data-lang=&quot;txt&quot;&gt;        
-Hibernate: call next value for hibernate_sequence  
-Hibernate: insert into currency (amount, code, name, rate, id) values (?, ?, ?, ?, ?)  
-Hibernate: call next value for hibernate_sequence  
-Hibernate: insert into currency (amount, code, name, rate, id) values (?, ?, ?, ?, ?)    &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
-
-&lt;p&gt;The first part was done! In the next post, we will create a RESTful service. We will add the controller and use Spring MVC.
-The second part of the tutorial is available at &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-2/&quot;&gt;PART 2&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">In this series, we will create a modern web application using Spring Boot 2.1.5 and React. We will start from the backend creating an API in Spring Boot and using the PostgreSQL database. The frontend will be created using the React. The application that we will develop will be a currency portfolio. We will be able to add, edit and delete currencies from the database. In addition, we will secure our application using the JWT token, so that we only have access to our data. Requirements Java knowledge Basic Spring Boot knowledge Basic JavaScript knowledge Basic Maven knowledge Basic knowledge of SQL databases Setting Up the backend environment We are going to create and run Spring Boot project. To do this you must have Java SDK installed (version 8 or higher) any IDE (I will use Intellij). Creating the project with Spring Initializr We will create the Spring Boot project with Spring Initializr. It is a web tool that’s used to create Spring projects. You can use web-based initializr (https://start.spring.io/) or provided by IDE (in the case of Intellij). We will generate a Maven project with the latest Spring Boot version (2.1.5). In the Dependencies section, we will select dependencies that are needed in our project. Please start with following dependencies: Web: Spring Web Starter JPA: Spring Data JPA H2 Database PostgreSQL Driver Lombok Spring Boot DevTools The DevTools provides facilities for developers (e.g. automatic restart after changes). Development is much faster because the application is automatically restarted after new changes have been detected. After all, your pom.xml should look something like this: &amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt; &amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&amp;gt; &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt; &amp;lt;parent&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt; &amp;lt;relativePath/&amp;gt; &amp;lt;!-- lookup parent from repository --&amp;gt; &amp;lt;/parent&amp;gt; &amp;lt;groupId&amp;gt;net.devdiaries&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;wallet&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;0.0.1-SNAPSHOT&amp;lt;/version&amp;gt; &amp;lt;name&amp;gt;wallet&amp;lt;/name&amp;gt; &amp;lt;description&amp;gt;Application for devdiaries.net&amp;lt;/description&amp;gt; &amp;lt;properties&amp;gt; &amp;lt;java.version&amp;gt;12&amp;lt;/java.version&amp;gt; &amp;lt;/properties&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-devtools&amp;lt;/artifactId&amp;gt; &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;optional&amp;gt;true&amp;lt;/optional&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-data-jpa&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.h2database&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;h2&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.4.199&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.18.8&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.postgresql&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;postgresql&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;42.2.5&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt; &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt; &amp;lt;build&amp;gt; &amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;/plugins&amp;gt; &amp;lt;/build&amp;gt; &amp;lt;/project&amp;gt; If you do not want to generate a project in the initializr - you can use my pom.xml. Initializer has generated a directory structure with the main application class: WalletApplication.java: @SpringBootApplication public class WalletApplication { public static void main(String[] args) { SpringApplication.run(WalletApplication.class, args); } } In addition to the usual class with the main() method, you probably noticed the @SpringBootApplication annotation. It is a combination of multiple annotations. The most important of them are: @EnableAutoConfiguration - tells Spring Boot how you will want to configure Spring, based on the jar dependencies that you have added to the pom.xml.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part1.jpg" /></entry></feed>
+I invite you to read &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-3/&quot;&gt;the next part&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Our application works quite well, but we would like to use the REST principles and manage data via HTTP requests. In Spring Boot, HTTP requests are handled by controller classes. In the previous post, we have created an application that automatically creates a database and adds some data to it. Let’s add controllers to it! REST basics REST (Representational State Transfer) is an architectural style for designing distributed systems. It’s not a standard, but it defines a set of constraints such as being stateless or having a client/server relationship. The six constraints defined by Roy Fielding (REST creator): Stateless: The server doesn’t hold any information about users, Cacheable: Many users request the same resources. It is useful to cache responses, Uniform interface between components: This simplifies the architecture, as all components follow the same rules to speak to one another, Layered system: individual components cannot see beyond the immediate layer with which they are interacting, Client-server architecture: the client and the server both have a different set of concerns. The server does not send any information without a request from the client, Code on demand: code may be downloaded to extend client functionality. This is an optional constraint. RESTful Spring Boot service In Spring boot all requests are handled by controller classes. We have to create our own controller class. To do this, let’s first create the java package for our controller (I created net.devdiaries.wallet.controllers package). Next, create the controller class: CurrenciesController.java. Now, add the @RestController annotation before the class definition. @RestController is used to mark classes as Spring MVC Controller. Our controller class looks like this: package net.devdiaries.wallet.controllers; import org.springframework.web.bind.annotation.RestController; @RestController public class CurrencyController { } To be able to return currencies from the database, we have to inject CurrencyRepository created in previous post. We will also add a method with the @RequestMapping annotation, which will fetch all currencies from CurrencyRepository. @RequestMapping maps the URL address and/or HTTP method to the controller. Now our code looks like this: package net.devdiaries.wallet.controllers; import net.devdiaries.wallet.domain.Currency; import net.devdiaries.wallet.domain.CurrencyRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.web.bind.annotation.*; @RestController public class CurrencyController { private final CurrencyRepository currencyRepository; @Autowired public CurrencyController(CurrencyRepository currencyRepository) { this.currencyRepository = currencyRepository; } @GetMapping(&quot;/currencies&quot;) public Iterable&amp;lt;Currency&amp;gt; getCurrencies() { return currencyRepository.findAll(); } } We are ready to run the application. After run navigates to localhost:8080/currencies. We can see that application get all the currencies from the database and return it in JSON format: We must add a few more methods that we will need in our Wallet application. 1 - addCurrency() method marked by @PostMapping annotation: @PostMapping(&quot;/currencies&quot;) void addCurrency(@RequestBody Currency currency) { currencyRepository.save(currency); } Annotation @PostMapping ( &quot;/currencies&quot;) maps the given path to the appropriate method that will handle the HTTP request (POST). @RequestBody annotation maps the HttpRequest body to a transfer or domain object (Currency object).</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part2.jpg" /></entry></feed>
