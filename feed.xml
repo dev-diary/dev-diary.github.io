@@ -1,4 +1,394 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2020-02-11T21:02:56+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Java Recruitment Questions - hashCode() method explained in detail</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/" rel="alternate" type="text/html" title="Java Recruitment Questions - hashCode() method explained in detail" /><published>2020-02-11T00:00:00+00:00</published><updated>2020-02-11T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/">&lt;p&gt;Questions about &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; are asked on most interviews (from junior to senior level). In this post, you will find out what this method is, how it works for particular types, how it works for primitives, what you have to watch out for during your implementations. Enjoy reading!&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://www.devdiaries.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.devdiaries.net/" rel="alternate" type="text/html" /><updated>2020-02-29T16:08:33+00:00</updated><id>https://www.devdiaries.net/feed.xml</id><title type="html">Devdiaries</title><subtitle>Programming tips, tricks, news for the Java programming language, Openhift, Cloud Native Microservices and Security</subtitle><entry><title type="html">Multithreading in Java. Thread synchronization and concurrency. The most important information for a Java Developer interview</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Multithreading/" rel="alternate" type="text/html" title="Multithreading in Java. Thread synchronization and concurrency. The most important information for a Java Developer interview" /><published>2020-02-29T00:00:00+00:00</published><updated>2020-02-29T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-Multithreading</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-Multithreading/">&lt;h1 id=&quot;introduction-to-java-threads&quot;&gt;Introduction to Java Threads&lt;/h1&gt;
+&lt;p&gt;Being a Java programmer, most of us have had any contact with multithreading. One of the biggest challenges is to properly synchronize the code between threads. Fortunately, the language developers have prepared for us a full set of tools that help us achieve this goal. 
+If you are curious or you are preparing for an interview - read this post.&lt;/p&gt;
+
+&lt;h1 id=&quot;application-without-multithreading&quot;&gt;Application without multithreading&lt;/h1&gt;
+
+&lt;p&gt;Single-threaded programs are simple applications that do not require concurrent execution of tasks. Each of the tasks is run after the previous one is finished. It looks like this:
+&lt;img src=&quot;/images/concurrency/3tasksonecpu.jpg&quot; alt=&quot;3threads-on-cpu-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;These rectangles represent three tasks to be performed. The length of the rectangles represents the duration of each task. The tasks are started one by one - after the green task ends, the red task begins. You can say that the tasks are executed sequentially.&lt;/p&gt;
+
+&lt;h1 id=&quot;application-with-multithreading&quot;&gt;Application with multithreading&lt;/h1&gt;
+&lt;h2 id=&quot;what-is-a-java-threads&quot;&gt;What is a Java Threads&lt;/h2&gt;
+&lt;p&gt;The threads are a way for the processor to do many things at once. At a given point in time, the processor can only do as many instructions as it has cores (it’s more complicated, but this simplification will allow us to explain more easily). This would mean that you could only have as many programs running at once as you have processor cores - usually two or four on modern computers. To work around this limitation, the processor runs on threads - one program is one (or more) threads.&lt;/p&gt;
+
+&lt;p&gt;From the developer’s point of view, a thread is a set of instructions that he/she is going to write in the application, and execute in a certain way. An application itself can be composed of several threads and different threads can be executed at the same time.&lt;/p&gt;
+&lt;h2 id=&quot;what-is-time-slicing&quot;&gt;What is Time Slicing&lt;/h2&gt;
+&lt;p&gt;Going further, does that mean we can only run one thread on a single-core processor? And on a dual-core processor, two threads? Not exactly. This problem was solved by creating a &lt;strong&gt;time-slicing&lt;/strong&gt; mechanism. A mechanism that allows one processor core to run multiple threads. However, this &lt;strong&gt;does not happen in parallel&lt;/strong&gt;.
+The image below shows the tasks from the previous point. This time each of them is run in a separate thread, so we have three threads.  The mechanism that supervises their work (&lt;strong&gt;Thread Scheduler&lt;/strong&gt;) ensures that from time to time the current thread is stopped. Another thread is woken up, gets processor time and is executed by it. This is known as &lt;strong&gt;Context switch&lt;/strong&gt;. The sum of the lengths of rectangles in a given color is the same as in the previous example.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/time-slicing.jpg&quot; alt=&quot;time-slicing-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It should be remembered that such an approach does not speed up the execution of tasks (it takes time to stop and wake up the threads) - but it does allow to process each “rectangle” a bit. For what purpose? Imagine such tasks:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/long-short-task.jpg&quot; alt=&quot;time-slicing-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The green rectangle is a task to open the browser with the last tabs saved (one million tabs).
+In the meantime, the user presses the night-mode button, which is a very quick task (red rectangle). Unfortunately, it has to wait until the browser is finished opening tabs. Only then will the next task be executed.
+The same task can be split, and even though each task will take the same amount of time - the user will start the night-mode much faster. He will not have to wait for the browser to open:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/time-slicing-advantage.jpg&quot; alt=&quot;time-slicing-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This approach avoids starving the threads. In the above example, without time slicing, the thread with the green task would starve the threads with the blue and red tasks.&lt;/p&gt;
+&lt;h2 id=&quot;multi-threading-on-multicore-processors&quot;&gt;Multi-threading on multicore processors&lt;/h2&gt;
+&lt;p&gt;Multi-core processors give you the &lt;strong&gt;real ability to run multiple tasks in parallel&lt;/strong&gt;. In this case, if each of the tasks is run in a separate thread, the situation looks like in the picture below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/multicore.jpg&quot; alt=&quot;time-slicing-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In your applications, you’ll meet a combination of both approaches. The image below shows an example of how the task is executed on two cores.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/2cores3tasks.jpg&quot; alt=&quot;time-slicing-devdiaries&quot; /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;concurrency-vs-parallelism&quot;&gt;Concurrency vs Parallelism&lt;/h2&gt;
+
+&lt;p&gt;As I mentioned earlier, parallel tasks are only possible on a multi-core CPU. It is important to remember that&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When there is just one processor, the OS scheduler context switches
+between different threads to provide &lt;strong&gt;concurrent execution&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;and&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When there are multiple CPUs, each CPU essentially runs an instance of
+the OS scheduler, thereby executing threads that are waiting to be
+run. The result is &lt;strong&gt;parallel execution&lt;/strong&gt; of the set of threads to be
+executed.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;concurrent-data-processing&quot;&gt;Concurrent data processing&lt;/h2&gt;
+
+&lt;p&gt;The threads use the same data (they share the address space). This means that objects available for one thread are also visible in other threads.&lt;/p&gt;
+
+&lt;p&gt;Variables are available for all threads. Therefore, all threads can modify these variables. This has very serious consequences. I will describe them in more detail later in this post.&lt;/p&gt;
+
+&lt;h1 id=&quot;java-thread-creation&quot;&gt;Java Thread creation&lt;/h1&gt;
+&lt;p&gt;Every thread in Java is related to the Thread class. There are several ways to create a thread.&lt;/p&gt;
+
+&lt;h2 id=&quot;extending-thread-class&quot;&gt;Extending Thread class&lt;/h2&gt;
+&lt;p&gt;The first way is to create your class, which inherits from Thread class:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstThread&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Heellooo!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+&lt;span class=&quot;c1&quot;&gt;// Creating Thread  &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FirstThread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this case, you have to override &lt;code class=&quot;highlighter-rouge&quot;&gt;run()&lt;/code&gt; method - it will be executed in a thread.
+&lt;strong&gt;Extending the Thread class is not good practice.&lt;/strong&gt; Note that in Java each class can extend only one class. When you extend the Thread class, after that you can’t extend any other class which you required.
+Additionally, &lt;code class=&quot;highlighter-rouge&quot;&gt;extends&lt;/code&gt; in Java is used to add/modify some functionality from a subclass.  In this case, we do not add/modify anything to Thread class.&lt;/p&gt;
+
+&lt;h2 id=&quot;implementation-of-the-runnable-interface&quot;&gt;Implementation of the Runnable interface&lt;/h2&gt;
+&lt;p&gt;The second way is to create a thread using the Thread’s constructor, which accepts the object implementing the &lt;code class=&quot;highlighter-rouge&quot;&gt;Runnable&lt;/code&gt; interface:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstThread&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Runnable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Heellooo from Runnable :)&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+&lt;span class=&quot;c1&quot;&gt;// Creating Thread  &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FirstThread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This time the body of the thread is the implementation of the &lt;code class=&quot;highlighter-rouge&quot;&gt;run()&lt;/code&gt; interface method (the thread will run this method and will work until it is done).
+Note that you can create a thread using anonymous classes:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;    
+&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newThread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Runnable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+  &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;  
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello from the thread!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Additionally, the Runnable interface is a function interface. Therefore, this can be simplified by using lambda expressions:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt; 
+&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newThread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello from the thread!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;creating-threads-in-executorservice&quot;&gt;Creating threads in ExecutorService&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ExecutorService&lt;/code&gt; is an interface that we do not have to implement on our own, the Java provides us with ready-made implementations. Thanks to that we can easily create a thread or a pool of threads, which will work according to our expectations. The most important methods that this interface provides are:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;submit(Runnable task)&lt;/code&gt; - allows you to send ‘task’ (implementation of the Runnable interface) to be executed (note: &lt;strong&gt;we have no guarantee that it will be started immediately!&lt;/strong&gt; It depends on the current status of ExecutorService, task queue, available threads, etc).&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;shutdown()&lt;/code&gt; - allows you to finish threads correctly, previously completing all tasks and releasing all resources. Calling this method is required before the application is finished!&lt;/p&gt;
+
+&lt;p&gt;A detailed explanation of how ExecutorService works and examples will be presented in the next post.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-java-threads-life-cycle&quot;&gt;The Java thread’s life cycle&lt;/h1&gt;
+&lt;p&gt;Creating a thread is just the beginning. &lt;strong&gt;Each thread has its life cycle&lt;/strong&gt;. Threads can be in one of six states. Permissible states of the thread are in the Thread.State enumeration class:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;NEW&lt;/strong&gt; - a new thread that has not yet been launched,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;RUNNABLE&lt;/strong&gt; - a thread that can execute its code,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;TERMINATED&lt;/strong&gt; - a thread that has ended,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;BLOCKED&lt;/strong&gt; - thread blocked, waiting for the release of the shared
+resource,&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;WAITING&lt;/strong&gt; - a thread goes to wait state once it calls &lt;code class=&quot;highlighter-rouge&quot;&gt;wait()&lt;/code&gt; on an Object. Once a thread reaches waiting state, &lt;strong&gt;it will need to wait till some other thread calls &lt;code class=&quot;highlighter-rouge&quot;&gt;notify()&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;notifyAll()&lt;/code&gt;&lt;/strong&gt; on the object.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;TIMED_WAITING&lt;/strong&gt; - a thread is waiting for a certain time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/threads-states.jpg&quot; alt=&quot;thread-states-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The change from the NEW state to the RUNNABLE state is made after calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;start()&lt;/code&gt; method on the thread instance. Only then the thread can be executed. &lt;strong&gt;Each thread can be run exactly once&lt;/strong&gt; - the start() method can be called on it only once. Otherwise, the &lt;code class=&quot;highlighter-rouge&quot;&gt;IllegalThreadStateException&lt;/code&gt; exception will be thrown.&lt;/p&gt;
+
+&lt;h1 id=&quot;synchronization-in-java&quot;&gt;Synchronization in Java&lt;/h1&gt;
+&lt;h2 id=&quot;race-condition&quot;&gt;Race Condition&lt;/h2&gt;
+&lt;p&gt;You already know that threads share the address space. I’ve described it in the subsection &lt;a href=&quot;https://www.devdiaries.net/blog/Java-Recruitment-Questions-Multithreading/#concurrent-data-processing&quot;&gt;#concurrent-data-processing&lt;/a&gt;. It has very important consequences.  See the example below:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+ &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;increment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++;&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RaceCondition&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InterruptedException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;Runnable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+                &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;increment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+        &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;  
+  
+  &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;  
+  
+  &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;t3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  
+  &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  &lt;span class=&quot;n&quot;&gt;t3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;  
+  
+  &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see I used a &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.joint()&lt;/code&gt; method. This method &lt;strong&gt;ensures that the current thread waits for the end of the thread on which the joint was called&lt;/strong&gt;.  the default main thread waits for the end of the t1 thread, when t1 ends - waits for t2 to end, then it waits for t3 end (the order may be different).&lt;/p&gt;
+
+&lt;p&gt;There are three threads in the above code, each of them 50 000 times increment the value of the variable by 1, so the finish counter value should be 150 000, right? Try to run this code several times. What results do you get? In my case, the results were returned:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;111772&lt;/li&gt;
+  &lt;li&gt;102556&lt;/li&gt;
+  &lt;li&gt;132565&lt;/li&gt;
+  &lt;li&gt;92146&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;What you’ve seen above is &lt;strong&gt;race condition&lt;/strong&gt;. This happens if several threads at the same time modify a variable that is not adapted to such a parallel change. But why did the value attribute have such different values? This is because the &lt;strong&gt;value++ operation (value = value + 1) is not an atomic operation&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;An atomic operation is an operation that is indivisible. An atomic
+operation is performed by a single instruction in the bytecode (in a
+compiled class).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The execution of value++ (value = value + 1) operation consists of several steps:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Get the current value to a temporary variable (not visible in the source code),&lt;/li&gt;
+  &lt;li&gt;Add 1 to the temporary variable,&lt;/li&gt;
+  &lt;li&gt;Assigning an increased value to value variable.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the subsection, I described time-slicing &lt;dodac link=&quot;&quot;&gt;. It plays a key role here.  Imagine a situation in which the T1 thread execute steps 1, 2 and 3 and was context-switching started. Then threads T2 and T3 took step 1. Then thread T2 took steps 2 and 3. After a while, the same happened to thread T3. As a result, threads overwrite outdated values. One of the scenarios is shown in the table below:&lt;/dodac&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Operation&lt;/th&gt;
+      &lt;th&gt;Thread&lt;/th&gt;
+      &lt;th&gt;Step&lt;/th&gt;
+      &lt;th&gt;Value variable&lt;/th&gt;
+      &lt;th&gt;Temp variable value&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1.&lt;/td&gt;
+      &lt;td&gt;T1&lt;/td&gt;
+      &lt;td&gt;1.&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2.&lt;/td&gt;
+      &lt;td&gt;T1&lt;/td&gt;
+      &lt;td&gt;2.&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3.&lt;/td&gt;
+      &lt;td&gt;T1&lt;/td&gt;
+      &lt;td&gt;3.&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4.&lt;/td&gt;
+      &lt;td&gt;T2&lt;/td&gt;
+      &lt;td&gt;1.&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5.&lt;/td&gt;
+      &lt;td&gt;T3&lt;/td&gt;
+      &lt;td&gt;1.&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;6.&lt;/td&gt;
+      &lt;td&gt;T2&lt;/td&gt;
+      &lt;td&gt;2.&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;7.&lt;/td&gt;
+      &lt;td&gt;T2&lt;/td&gt;
+      &lt;td&gt;3.&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;8.&lt;/td&gt;
+      &lt;td&gt;T3&lt;/td&gt;
+      &lt;td&gt;2.&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;9.&lt;/td&gt;
+      &lt;td&gt;T3&lt;/td&gt;
+      &lt;td&gt;3.&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;In the example above, operation 9. sets the value to 2 in the T3 thread ignoring the increase in value made by the T2 thread in operation 7.
+To avoid &lt;em&gt;race condition&lt;/em&gt;, it is necessary to &lt;strong&gt;synchronize the threads.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;java-threads-synchronization&quot;&gt;Java Threads Synchronization&lt;/h2&gt;
+
+&lt;p&gt;In general, thread states are intuitive. The descriptions in the previous section help you understand what happens to a thread in a given state. Well, maybe apart from the &lt;strong&gt;BLOCKED&lt;/strong&gt; state. &lt;strong&gt;When is the thread BLOCKED&lt;/strong&gt;?&lt;/p&gt;
+
+&lt;p&gt;A thread that is in the BLOCKED state is waiting for a blocked resource. In Java, blocking is done with &lt;strong&gt;monitors&lt;/strong&gt;, which are used to synchronize the threads.  Each object in Java is associated with a monitor, which a thread can &lt;em&gt;lock&lt;/em&gt; or &lt;em&gt;unlock&lt;/em&gt;. &lt;strong&gt;The monitor can only be blocked by one thread at a time&lt;/strong&gt;. Thanks to this, objects are used to synchronize threads. For this purpose, the &lt;code class=&quot;highlighter-rouge&quot;&gt;synchronized&lt;/code&gt; keyword is used.&lt;/p&gt;
+&lt;h2 id=&quot;synchronized-block&quot;&gt;Synchronized block&lt;/h2&gt;
+&lt;p&gt;With a &lt;code class=&quot;highlighter-rouge&quot;&gt;synchronized&lt;/code&gt; block, you can be sure that &lt;strong&gt;everything inside the block is running on up to one thread at a time.&lt;/strong&gt;
+Try to run the modified example from the previous subsection several times:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  
+ &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;increment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;kd&quot;&gt;synchronized&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+            &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++;&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Each time the application returns the correct result - 150 000.&lt;/p&gt;
+&lt;h2 id=&quot;synchronized-method&quot;&gt;Synchronized method&lt;/h2&gt;
+&lt;p&gt;You can also use the &lt;code class=&quot;highlighter-rouge&quot;&gt;synchronized&lt;/code&gt; keyword for the method:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;synchronized&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;increment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In practice, both versions of the increment method are equivalent. Marking the method with the &lt;code class=&quot;highlighter-rouge&quot;&gt;synchronized &lt;/code&gt;keyword is equivalent to placing the whole body of the method in the synchronized block. Which object is used as a monitor depends on the type of method:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;standard method - a class (this) instance is used as a monitor.&lt;/li&gt;
+  &lt;li&gt;static method - the whole class is used as a monitor&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Remember not to abuse synchronized. The code in a synchronized block
+can only be executed by one thread (it loses the possibility of
+concurrent execution), which makes the execution of such a program slower.
+Use synchronized only in places where it is necessary.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;java-thread-in-waiting-state&quot;&gt;Java Thread in WAITING state&lt;/h2&gt;
+&lt;p&gt;One of the ways to put the thread in WAITING state is to call the &lt;code class=&quot;highlighter-rouge&quot;&gt;Object.wait()&lt;/code&gt; method. What the &lt;code class=&quot;highlighter-rouge&quot;&gt;wait() &lt;/code&gt;method does?
+Imagine a situation where you have two threads. One produces some data, the other consumes it (Producer-Consumer Pattern). 
+&lt;img src=&quot;/images/concurrency/producer-consument-pattern.jpg&quot; alt=&quot;producer-consument-pattern-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The data-consuming thread (T2) uses a while loop, which is executed until the expected number of items is taken from the queue. The program works. However, it has a subtle problem. Consumer thread works all the time. It takes up CPU time continuously! What’s more, for most of its time, it revolves inside the loop, checking if there are any new messages in the queue. 
+How can this problem be solved? One way may be to put the consumer’s thread to sleep using the Thread.sleep() method. This would also be a waste of time - how do you know how long it will take to produce the next message? For this purpose, it is better to use the &lt;strong&gt;notification mechanism&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;thread-notification&quot;&gt;Thread Notification&lt;/h2&gt;
+&lt;p&gt;All Java objects, except monitors, contain a special &lt;strong&gt;wait set&lt;/strong&gt;. The elements of this set are threads that wait for notification about this object. The only way to modify the content of waiting set is to use methods available in the Object class:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Object.wait()&lt;/code&gt; - adding the current thread to the waiting set threads,&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Object.notify()&lt;/code&gt; - notification and waking up one of the pending threads,&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Object.notifyAll() &lt;/code&gt;- to notify and wake up all pending threads.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The producer from the previous section should use the &lt;code class=&quot;highlighter-rouge&quot;&gt;notify&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;notifyAll&lt;/code&gt; method to inform consumers of the new message. Consumers should use the &lt;code class=&quot;highlighter-rouge&quot;&gt;wait&lt;/code&gt; method so that they can wait for notifications from the producer.&lt;/p&gt;
+&lt;h2 id=&quot;interruption-of-the-thread&quot;&gt;Interruption of the thread&lt;/h2&gt;
+&lt;p&gt;Interruption of a thread is indicated by an &lt;code class=&quot;highlighter-rouge&quot;&gt;InterruptedException&lt;/code&gt; exception .  A thread can be interrupted when &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.interrupt&lt;/code&gt; method is called on its instance. When a thread is interrupted, a special flag is set on it, which informs about it (&lt;a href=&quot;https://docs.oracle.com/en/java/javase/12/docs/api/java.base/java/lang/Thread.html#interrupted()&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Thread.interrupted&lt;/code&gt;&lt;/a&gt;).&lt;/p&gt;
+&lt;h2 id=&quot;java-volatile-keyword&quot;&gt;Java Volatile keyword&lt;/h2&gt;
+&lt;p&gt;Java provides another mechanism which is connected to synchronization - &lt;strong&gt;volatile&lt;/strong&gt;. The Java specification says that every read of an attribute preceded by this keyword follows its writing. In other words, the &lt;strong&gt;volatile modifier ensures that every thread reading a given attribute will see the latest saved value of that attribute&lt;/strong&gt;.
+However, you have to watch out for modifications that are not atomic - unfortunately, volatile will not protect you. In this case, you will need the synchronization described earlier.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Volatile --&amp;gt; Guarantees visibility and NOT atomicity
+Synchronization (Locking) --&amp;gt; Guarantees visibility and atomicity (if done properly)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You’re probably wondering what this mechanism is for and what the risk is not using volatile. Imagine a multi-threaded application on a single-core processor:
+&lt;img src=&quot;/images/concurrency/Volatile-1core.jpg&quot; alt=&quot;Volatile-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The variables are copied from the main memory to CPU cache (due to a much faster access to the CPU cache compared to RAM access time), Now the threads access the memory from the CPU cache rather than computer memory to save time and increase the performance.
+There’s nothing dangerous here. Let’s go to the 2-core processor:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/concurrency/Volatile-2core.jpg&quot; alt=&quot;Volatile-devdiaries&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In Multi-CPU computer each thread may run in different CPUs, which means, that each thread may copy the variables into the CPU cache of different CPUs.
+Imagine a situation in which two or more threads have access to a shared object which contains a value variable from the previous point:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;  
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;  
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, T1 and T2 can have different CPU cores. When T1 will make changes to &lt;em&gt;value&lt;/em&gt; variable - the changes have occurred in CPU cache and &lt;strong&gt;there is no guarantee that every change in CPU cache will be reflected to the Main Memory immediately&lt;/strong&gt;.
+So when T2 tries to read the updated &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; variable value from the main memory, T2 may or may not find the updated value.&lt;/p&gt;
+
+&lt;p&gt;To protect from this problem, just use the &lt;strong&gt;volatile&lt;/strong&gt; keyword.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;volatile is keyword used with variable to make sure the value are read
+from and written to main memory rather than CPU cache.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This ensures that you get the “really” correct value of the variable.&lt;/p&gt;
+
+&lt;h1 id=&quot;summary&quot;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;As you can see, there are many thread synchronization mechanisms available in Java. Please take a look at them to better decide which ones to use when.
+If you want to know more about concurrency, there will be a post about ExecutorService soon!&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Introduction to Java Threads Being a Java programmer, most of us have had any contact with multithreading. One of the biggest challenges is to properly synchronize the code between threads. Fortunately, the language developers have prepared for us a full set of tools that help us achieve this goal. If you are curious or you are preparing for an interview - read this post.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/concurrency/concurrency-header-image.jpg" /></entry><entry><title type="html">Java Recruitment Questions - hashCode() method explained in detail</title><link href="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/" rel="alternate" type="text/html" title="Java Recruitment Questions - hashCode() method explained in detail" /><published>2020-02-11T00:00:00+00:00</published><updated>2020-02-11T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode</id><content type="html" xml:base="https://www.devdiaries.net/blog/Java-Recruitment-Questions-HashCode/">&lt;p&gt;Questions about &lt;code class=&quot;highlighter-rouge&quot;&gt;hashCode()&lt;/code&gt; are asked on most interviews (from junior to senior level). In this post, you will find out what this method is, how it works for particular types, how it works for primitives, what you have to watch out for during your implementations. Enjoy reading!&lt;/p&gt;
 
 &lt;h1 id=&quot;what-is-hashcode-method&quot;&gt;What is hashCode() method&lt;/h1&gt;
 
@@ -2085,151 +2475,4 @@ Each JWT token contains three parts separated by dots:&lt;/p&gt;
 
 &lt;p&gt;As you can see, we got JWT in response (Authorization header - at the bottom of the picture). Copy this token and add it to the Authorization header in the request for localhost:8080/currencies. In response, you will receive all the currencies.&lt;/p&gt;
 
-&lt;p&gt;Congratulations, the backend is almost ready! &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/&quot;&gt;In the next post, we will start to create a frontend in React&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Our application already has a controller, thanks to which we can manage data using HTTP requests. However, we must set security so that only authorized persons can manage these data. Spring Security Spring Security provides security services for Spring-based applications: Single sign-on Protection against attacks like session fixation, clickjacking, cross-site request forgery, etc Basic Access Authentication Digest Access Authentication Remember-me feature Web Form Authentication Authorization HTTP Authorization You can add Spring Security in your application by adding spring-boot-starter-security dependency to your pom.xml file. By the way, we’ll also add dependency to JWT. We will need it later: &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.jsonwebtoken&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;jjwt&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;0.9.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; WebSecurityConfigurerAdapter configuration To configure Spring Security in our project, we have to add new configuration class that extends the WebSecurityConfigurerAdapter class in net.devdiaries.wallet.configuration package: package net.devdiaries.wallet.configuration; import org.springframework.context.annotation.Configuration; import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity; import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter; @Configuration @EnableWebSecurity public class SecurityConfiguration extends WebSecurityConfigurerAdapter { } The @Configuration and @EnableWebSecurity annotations provide the default security configuration. Now, we can define which endpoints should be secured. We have to override the configure(HttpSecurity HTTP method. Adding user/password feature We can use an in-memory user provided by Spring Security, but the real backend application should save the users in the database. We are going to create an entity class for the user (User.java) and repository class. It will be very similar to creating Currency.java and CurrencyRepository in the first post: 1 - User.java in the net.devdiaries.wallet.domain package: package net.devdiaries.wallet.domain; import lombok.Getter; import lombok.Setter; import javax.persistence.Entity; import javax.persistence.Column; import javax.persistence.Id; import javax.persistence.GeneratedValue; import javax.persistence.GenerationType; @Entity @Getter @Setter public class User { @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(nullable = false, updatable = false) private Long id; private String userName; private String password; public User(String userName, String password) { this.userName = userName; this.password = password; } public User() { } } 2 - UserRepository.java in the net.devdiaries.wallet.domain package: package net.devdiaries.wallet.domain; import org.springframework.data.repository.CrudRepository; import org.springframework.stereotype.Repository; import java.util.Optional; @Repository public interface UserRepository extends CrudRepository&amp;lt;User, Long&amp;gt; { Optional&amp;lt;User&amp;gt; findByUserName(String username); } Now, we have to create the UserDetailsService implementation. This class (provided by Spring Security) is used for finding and authenticating users. Let’s create a new package: net.devdiaries.wallet.services with UserDetailsServiceImpl class and inject UserRepository: package net.devdiaries.wallet.services; import net.devdiaries.wallet.domain.User; import net.devdiaries.wallet.domain.UserRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.security.core.authority.SimpleGrantedAuthority; import org.springframework.security.core.userdetails.UserDetails; import org.springframework.security.core.userdetails.UserDetailsService; import org.springframework.security.core.userdetails.UsernameNotFoundException; import org.springframework.stereotype.Service; import java.util.Arrays; @Service public class UserDetailsServiceImpl implements UserDetailsService { private UserRepository userRepository; @Autowired public UserDetailsServiceImpl(UserRepository userRepository) { this.userRepository = userRepository; } @Override public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException { User user = userRepository.findByUserName(userName) .orElseThrow(() -&amp;gt; new UsernameNotFoundException(&quot;User: &quot; + userName + &quot; not found&quot;)); return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(&quot;user&quot;))); } } We had to override loadUserByUsername(..) method. This method checks if the user was found or not. Finally, the method returns a Spring Security Userobject with the username, password, and role (we use new SimpleGrantedAuthority(“user”) for this tutorial) of the authenticated user. Configure UserDetailsServiceImpl in the SecurityConfiguration Let’s return to our SecurityConfiguration class (created above). Now we can complete its configuration: @Configuration @EnableWebSecurity public class SecurityConfiguration extends WebSecurityConfigurerAdapter { @Autowired private UserDetailsServiceImpl customUserDetailsService; @Bean public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); } @Autowired public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder()); } We have added a configureGlobal(...) method to enable fetching and authorizing users from the database. We’ve also defined PasswordEncoder bean (BCryptPasswordEncoder) which uses the BCrypt hashing algorithm - our password has to be encrypted. Now We can save new users in the CommandLineRunner. Inject UserRepository to the WalletApplication and add users: package net.devdiaries.wallet; import net.devdiaries.wallet.domain.Currency; import net.devdiaries.wallet.domain.CurrencyRepository; import net.devdiaries.wallet.domain.User; import net.devdiaries.wallet.domain.UserRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.CommandLineRunner; import org.springframework.boot.SpringApplication; import org.springframework.boot.autoconfigure.SpringBootApplication; import org.springframework.context.annotation.Bean; import java.math.BigDecimal; @SpringBootApplication public class WalletApplication { @Autowired private CurrencyRepository currencyRepository; @Autowired private UserRepository userRepository; public static void main(String[] args) { SpringApplication.run(WalletApplication.class, args); } @Bean CommandLineRunner runner() { return args -&amp;gt; { // Save demo data after start userRepository.save(new User(&quot;admin&quot;, &quot;$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG&quot;)); currencyRepository.save(new Currency(&quot;US Dolar&quot;, &quot;USD&quot;, new BigDecimal(100), new BigDecimal(3.92))); currencyRepository.save(new Currency(&quot;Euro&quot;, &quot;EUR&quot;, new BigDecimal(300), new BigDecimal(4.52))); }; } } We have just saved the “admin” user to our database. $2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG is BCrypt-encrypted “admin” password (You can use online encryptors to encrypt another password). Now, if you do GET request to the localhost:8080/currencies you will get a 401 Unauthorized HTTP error. You should authenticate to be able to get currencies (You can do this using the Authorization function in Postman or using curl -u admin). Securing application using JWT token Our authentication method is not usable when we are going to use our own frontend app. We are going to use the JSON Web Token (JWT) authentication. JWT defines how to exchange data between web services in a secure way through a JSON object. The information sent can be verified thanks to a digital signature, which is an element of the token. The JWT token is signed using the signature - the HMAC algorithm or with the RSA public/private key. Each JWT token contains three parts separated by dots: Header: defines the type of the token and the hashing algorithm, Payload: contains information about the user Signature: used to verify that JWT has not been changed. You can see the main idea of the JWT in the following image: Creating Authentication Functionality Let’s create a service (in the net.devdiaries.wallet.services package) that will create and validate the JWT token. The service will be called AuthenticationService: package net.devdiaries.wallet.services; import io.jsonwebtoken.Jwts; import io.jsonwebtoken.SignatureAlgorithm; import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; import org.springframework.security.core.Authentication; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.util.Date; import static java.util.Collections.emptyList; public class AuthenticationService { static final long EXPIRATIONTIME = 864_000_00; static final String SIGNINGKEY = &quot;signingKey&quot;; static final String BEARER_PREFIX = &quot;Bearer&quot;; static public void addJWTToken(HttpServletResponse response, String username) { String JwtToken = Jwts.builder().setSubject(username) .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME)) .signWith(SignatureAlgorithm.HS512, SIGNINGKEY) .compact(); response.addHeader(&quot;Authorization&quot;, BEARER_PREFIX + &quot; &quot; + JwtToken); response.addHeader(&quot;Access-Control-Expose-Headers&quot;, &quot;Authorization&quot;); } static public Authentication getAuthentication(HttpServletRequest request) { String token = request.getHeader(&quot;Authorization&quot;); if (token != null) { String user = Jwts.parser() .setSigningKey(SIGNINGKEY) .parseClaimsJws(token.replace(BEARER_PREFIX, &quot;&quot;)) .getBody() .getSubject(); if (user != null) { return new UsernamePasswordAuthenticationToken(user, null, emptyList()); } else { throw new RuntimeException(&quot;Authentication failed&quot;); } } return null; } } In the beginning, we defined several constants. EXPIRATIONTIME defines the expiration time of the token (24 hours), SIGNINGKEY is used to sign the JWT (by verifying the JWT token we have a guarantee that it comes from our application), BEARER_PREFIX is the prefix of Authorization token - we use Bearer schema. The addJWTToken() creates the JWT and adds it to the Authorization header. We also had to add Access-Control-Expose-Headers header due to JS limitations on the frontend side. The getAuthentication() method gets the JWT token from the Authorization header.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part3.jpg" /></entry><entry><title type="html">Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 2 RESTful Web Service</title><link href="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-2/" rel="alternate" type="text/html" title="Spring Boot 2 + PostgreSQL + JWT + React - Full Stack Web Development - Part 2 RESTful Web Service" /><published>2019-06-22T00:00:00+00:00</published><updated>2019-06-22T00:00:00+00:00</updated><id>https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-2</id><content type="html" xml:base="https://www.devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-2/">&lt;p&gt;Our application works quite well, but we would like to use the REST principles and manage data via HTTP requests.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;In Spring Boot, HTTP requests are handled by controller classes.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In the previous post, we have created an application that automatically creates a database and adds some data to it. Let’s add controllers to it!&lt;/p&gt;
-
-&lt;h3 id=&quot;rest-basics&quot;&gt;REST basics&lt;/h3&gt;
-&lt;p&gt;&lt;em&gt;REST (Representational State Transfer)&lt;/em&gt; is an architectural style for designing distributed systems. It’s not a standard, but it defines a set of constraints such as being stateless or having a client/server relationship. The six constraints defined by Roy Fielding (REST creator):&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Stateless&lt;/strong&gt;: The server doesn’t hold any information about users,&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Cacheable&lt;/strong&gt;: Many users request the same resources. It is useful to cache responses,&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Uniform interface&lt;/strong&gt; between components: This simplifies the architecture, as all components follow the same rules to speak to one another,&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Layered system&lt;/strong&gt;: individual components cannot see beyond the immediate layer with which they are interacting,&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Client-server&lt;/strong&gt; architecture: the client and the server both have a different set of concerns. The server does not send any information without a request from the client,&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Code on demand&lt;/strong&gt;: code may be downloaded to extend client functionality. This is an optional constraint.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;restful-spring-boot-service&quot;&gt;RESTful Spring Boot service&lt;/h3&gt;
-&lt;p&gt;In Spring boot all requests are handled by controller classes. We have to create our own controller class. To do this, let’s first create the java package for our controller (I created &lt;code class=&quot;highlighter-rouge&quot;&gt;net.devdiaries.wallet.controllers&lt;/code&gt; package). Next, create the controller class: &lt;code class=&quot;highlighter-rouge&quot;&gt;CurrenciesController.java&lt;/code&gt;.&lt;br /&gt;
-Now, add the &lt;code class=&quot;highlighter-rouge&quot;&gt;@RestController&lt;/code&gt; annotation before the class definition.  &lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;@RestController&lt;/code&gt; is used to mark classes as Spring MVC Controller. Our controller class looks like this:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;         
-&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;devdiaries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wallet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RestController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CurrencyController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;To be able to return currencies from the database, we have to inject &lt;code class=&quot;highlighter-rouge&quot;&gt;CurrencyRepository&lt;/code&gt; created in &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Full-Stack-Web-Development-Part-1/&quot;&gt;previous post&lt;/a&gt;.&lt;br /&gt;
-We will also add a method with the &lt;code class=&quot;highlighter-rouge&quot;&gt;@RequestMapping&lt;/code&gt; annotation, which will fetch all currencies from &lt;code class=&quot;highlighter-rouge&quot;&gt;CurrencyRepository&lt;/code&gt;.  &lt;code class=&quot;highlighter-rouge&quot;&gt;@RequestMapping&lt;/code&gt; maps the URL address and/or HTTP method to the controller. Now our code looks like this:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;           
-&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;devdiaries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wallet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.devdiaries.wallet.domain.Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.devdiaries.wallet.domain.CurrencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.beans.factory.annotation.Autowired&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    
-&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CurrencyController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    
- &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
- &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;    
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CurrencyController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;currencyRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
- &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCurrencies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findAll&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We are ready to run the application. After run navigates to &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:8080/currencies&lt;/code&gt;. We can see that application get all the currencies from the database and return it in JSON format:&lt;br /&gt;
-&lt;img src=&quot;/images/spring-react-currency-walet/getCurrencies.JPG&quot; alt=&quot;getCurrencies-spring-controller&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We must add a few more methods that we will need in our Wallet application.&lt;/p&gt;
-
-&lt;p&gt;1 - &lt;code class=&quot;highlighter-rouge&quot;&gt;addCurrency()&lt;/code&gt; method marked by &lt;code class=&quot;highlighter-rouge&quot;&gt;@PostMapping&lt;/code&gt; annotation:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;            
-&lt;span class=&quot;nd&quot;&gt;@PostMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Annotation &lt;code class=&quot;highlighter-rouge&quot;&gt;@PostMapping ( &quot;/currencies&quot;)&lt;/code&gt; maps the given path to the appropriate method that will handle the HTTP request (POST). &lt;code class=&quot;highlighter-rouge&quot;&gt;@RequestBody&lt;/code&gt; annotation maps the &lt;em&gt;HttpRequest&lt;/em&gt; body to a transfer or domain object (Currency object).&lt;/p&gt;
-
-&lt;p&gt;2 - &lt;code class=&quot;highlighter-rouge&quot;&gt;updateCurrency()&lt;/code&gt; method which will be used to update the currency status:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;        
-&lt;span class=&quot;nd&quot;&gt;@PutMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;updateCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;      &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;3 - &lt;code class=&quot;highlighter-rouge&quot;&gt;deleteCurrency()&lt;/code&gt; method for removing Currency objects from database:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;            
-&lt;span class=&quot;nd&quot;&gt;@DeleteMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies/{id}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deleteCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@PathVariable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;deleteById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;deleteCurrency()&lt;/code&gt; we used the &lt;code class=&quot;highlighter-rouge&quot;&gt;@PathVariable&lt;/code&gt; annotation that will retrieve the currency id from the URI.&lt;/p&gt;
-
-&lt;p&gt;The following source code shows the controller final code:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;   
-&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;devdiaries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wallet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;controllers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.devdiaries.wallet.domain.Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.devdiaries.wallet.domain.CurrencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.beans.factory.annotation.Autowired&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RestController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.DeleteMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.PostMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.PutMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.PathVariable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RequestBody&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
-    
-&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;    
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CurrencyController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-    
- &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    
- &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;    
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CurrencyController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CurrencyRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;currencyRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
- &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
- &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCurrencies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findAll&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
-    &lt;span class=&quot;nd&quot;&gt;@DeleteMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies/{id}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deleteCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@PathVariable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;deleteById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
-    &lt;span class=&quot;nd&quot;&gt;@PostMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    
-    
-    &lt;span class=&quot;nd&quot;&gt;@PutMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/currencies&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    
-    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;updateCurrency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Currency&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;    
-        &lt;span class=&quot;n&quot;&gt;currencyRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;currency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;           &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;summary&quot;&gt;Summary&lt;/h3&gt;
-
-&lt;p&gt;Congratulations! That’s all. We have created a controller with which the frontend of our application will communicate via REST. In the next post, we will take care of securing the backend of our application.
-I invite you to read &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-3/&quot;&gt;the next part&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Our application works quite well, but we would like to use the REST principles and manage data via HTTP requests. In Spring Boot, HTTP requests are handled by controller classes. In the previous post, we have created an application that automatically creates a database and adds some data to it. Let’s add controllers to it! REST basics REST (Representational State Transfer) is an architectural style for designing distributed systems. It’s not a standard, but it defines a set of constraints such as being stateless or having a client/server relationship. The six constraints defined by Roy Fielding (REST creator): Stateless: The server doesn’t hold any information about users, Cacheable: Many users request the same resources. It is useful to cache responses, Uniform interface between components: This simplifies the architecture, as all components follow the same rules to speak to one another, Layered system: individual components cannot see beyond the immediate layer with which they are interacting, Client-server architecture: the client and the server both have a different set of concerns. The server does not send any information without a request from the client, Code on demand: code may be downloaded to extend client functionality. This is an optional constraint. RESTful Spring Boot service In Spring boot all requests are handled by controller classes. We have to create our own controller class. To do this, let’s first create the java package for our controller (I created net.devdiaries.wallet.controllers package). Next, create the controller class: CurrenciesController.java. Now, add the @RestController annotation before the class definition. @RestController is used to mark classes as Spring MVC Controller. Our controller class looks like this: package net.devdiaries.wallet.controllers; import org.springframework.web.bind.annotation.RestController; @RestController public class CurrencyController { } To be able to return currencies from the database, we have to inject CurrencyRepository created in previous post. We will also add a method with the @RequestMapping annotation, which will fetch all currencies from CurrencyRepository. @RequestMapping maps the URL address and/or HTTP method to the controller. Now our code looks like this: package net.devdiaries.wallet.controllers; import net.devdiaries.wallet.domain.Currency; import net.devdiaries.wallet.domain.CurrencyRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.web.bind.annotation.*; @RestController public class CurrencyController { private final CurrencyRepository currencyRepository; @Autowired public CurrencyController(CurrencyRepository currencyRepository) { this.currencyRepository = currencyRepository; } @GetMapping(&quot;/currencies&quot;) public Iterable&amp;lt;Currency&amp;gt; getCurrencies() { return currencyRepository.findAll(); } } We are ready to run the application. After run navigates to localhost:8080/currencies. We can see that application get all the currencies from the database and return it in JSON format: We must add a few more methods that we will need in our Wallet application. 1 - addCurrency() method marked by @PostMapping annotation: @PostMapping(&quot;/currencies&quot;) void addCurrency(@RequestBody Currency currency) { currencyRepository.save(currency); } Annotation @PostMapping ( &quot;/currencies&quot;) maps the given path to the appropriate method that will handle the HTTP request (POST). @RequestBody annotation maps the HttpRequest body to a transfer or domain object (Currency object).</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part2.jpg" /></entry></feed>
+&lt;p&gt;Congratulations, the backend is almost ready! &lt;a href=&quot;http://devdiaries.net/blog/Spring-Boot-2-PostgreSQL-JWT-React-Part-4/&quot;&gt;In the next post, we will start to create a frontend in React&lt;/a&gt;.&lt;/p&gt;</content><author><name>Michal Fabjanski</name></author><summary type="html">Our application already has a controller, thanks to which we can manage data using HTTP requests. However, we must set security so that only authorized persons can manage these data. Spring Security Spring Security provides security services for Spring-based applications: Single sign-on Protection against attacks like session fixation, clickjacking, cross-site request forgery, etc Basic Access Authentication Digest Access Authentication Remember-me feature Web Form Authentication Authorization HTTP Authorization You can add Spring Security in your application by adding spring-boot-starter-security dependency to your pom.xml file. By the way, we’ll also add dependency to JWT. We will need it later: &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;2.1.5.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.jsonwebtoken&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;jjwt&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;0.9.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; WebSecurityConfigurerAdapter configuration To configure Spring Security in our project, we have to add new configuration class that extends the WebSecurityConfigurerAdapter class in net.devdiaries.wallet.configuration package: package net.devdiaries.wallet.configuration; import org.springframework.context.annotation.Configuration; import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity; import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter; @Configuration @EnableWebSecurity public class SecurityConfiguration extends WebSecurityConfigurerAdapter { } The @Configuration and @EnableWebSecurity annotations provide the default security configuration. Now, we can define which endpoints should be secured. We have to override the configure(HttpSecurity HTTP method. Adding user/password feature We can use an in-memory user provided by Spring Security, but the real backend application should save the users in the database. We are going to create an entity class for the user (User.java) and repository class. It will be very similar to creating Currency.java and CurrencyRepository in the first post: 1 - User.java in the net.devdiaries.wallet.domain package: package net.devdiaries.wallet.domain; import lombok.Getter; import lombok.Setter; import javax.persistence.Entity; import javax.persistence.Column; import javax.persistence.Id; import javax.persistence.GeneratedValue; import javax.persistence.GenerationType; @Entity @Getter @Setter public class User { @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(nullable = false, updatable = false) private Long id; private String userName; private String password; public User(String userName, String password) { this.userName = userName; this.password = password; } public User() { } } 2 - UserRepository.java in the net.devdiaries.wallet.domain package: package net.devdiaries.wallet.domain; import org.springframework.data.repository.CrudRepository; import org.springframework.stereotype.Repository; import java.util.Optional; @Repository public interface UserRepository extends CrudRepository&amp;lt;User, Long&amp;gt; { Optional&amp;lt;User&amp;gt; findByUserName(String username); } Now, we have to create the UserDetailsService implementation. This class (provided by Spring Security) is used for finding and authenticating users. Let’s create a new package: net.devdiaries.wallet.services with UserDetailsServiceImpl class and inject UserRepository: package net.devdiaries.wallet.services; import net.devdiaries.wallet.domain.User; import net.devdiaries.wallet.domain.UserRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.security.core.authority.SimpleGrantedAuthority; import org.springframework.security.core.userdetails.UserDetails; import org.springframework.security.core.userdetails.UserDetailsService; import org.springframework.security.core.userdetails.UsernameNotFoundException; import org.springframework.stereotype.Service; import java.util.Arrays; @Service public class UserDetailsServiceImpl implements UserDetailsService { private UserRepository userRepository; @Autowired public UserDetailsServiceImpl(UserRepository userRepository) { this.userRepository = userRepository; } @Override public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException { User user = userRepository.findByUserName(userName) .orElseThrow(() -&amp;gt; new UsernameNotFoundException(&quot;User: &quot; + userName + &quot; not found&quot;)); return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(&quot;user&quot;))); } } We had to override loadUserByUsername(..) method. This method checks if the user was found or not. Finally, the method returns a Spring Security Userobject with the username, password, and role (we use new SimpleGrantedAuthority(“user”) for this tutorial) of the authenticated user. Configure UserDetailsServiceImpl in the SecurityConfiguration Let’s return to our SecurityConfiguration class (created above). Now we can complete its configuration: @Configuration @EnableWebSecurity public class SecurityConfiguration extends WebSecurityConfigurerAdapter { @Autowired private UserDetailsServiceImpl customUserDetailsService; @Bean public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); } @Autowired public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception { auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder()); } We have added a configureGlobal(...) method to enable fetching and authorizing users from the database. We’ve also defined PasswordEncoder bean (BCryptPasswordEncoder) which uses the BCrypt hashing algorithm - our password has to be encrypted. Now We can save new users in the CommandLineRunner. Inject UserRepository to the WalletApplication and add users: package net.devdiaries.wallet; import net.devdiaries.wallet.domain.Currency; import net.devdiaries.wallet.domain.CurrencyRepository; import net.devdiaries.wallet.domain.User; import net.devdiaries.wallet.domain.UserRepository; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.CommandLineRunner; import org.springframework.boot.SpringApplication; import org.springframework.boot.autoconfigure.SpringBootApplication; import org.springframework.context.annotation.Bean; import java.math.BigDecimal; @SpringBootApplication public class WalletApplication { @Autowired private CurrencyRepository currencyRepository; @Autowired private UserRepository userRepository; public static void main(String[] args) { SpringApplication.run(WalletApplication.class, args); } @Bean CommandLineRunner runner() { return args -&amp;gt; { // Save demo data after start userRepository.save(new User(&quot;admin&quot;, &quot;$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG&quot;)); currencyRepository.save(new Currency(&quot;US Dolar&quot;, &quot;USD&quot;, new BigDecimal(100), new BigDecimal(3.92))); currencyRepository.save(new Currency(&quot;Euro&quot;, &quot;EUR&quot;, new BigDecimal(300), new BigDecimal(4.52))); }; } } We have just saved the “admin” user to our database. $2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG is BCrypt-encrypted “admin” password (You can use online encryptors to encrypt another password). Now, if you do GET request to the localhost:8080/currencies you will get a 401 Unauthorized HTTP error. You should authenticate to be able to get currencies (You can do this using the Authorization function in Postman or using curl -u admin). Securing application using JWT token Our authentication method is not usable when we are going to use our own frontend app. We are going to use the JSON Web Token (JWT) authentication. JWT defines how to exchange data between web services in a secure way through a JSON object. The information sent can be verified thanks to a digital signature, which is an element of the token. The JWT token is signed using the signature - the HMAC algorithm or with the RSA public/private key. Each JWT token contains three parts separated by dots: Header: defines the type of the token and the hashing algorithm, Payload: contains information about the user Signature: used to verify that JWT has not been changed. You can see the main idea of the JWT in the following image: Creating Authentication Functionality Let’s create a service (in the net.devdiaries.wallet.services package) that will create and validate the JWT token. The service will be called AuthenticationService: package net.devdiaries.wallet.services; import io.jsonwebtoken.Jwts; import io.jsonwebtoken.SignatureAlgorithm; import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; import org.springframework.security.core.Authentication; import javax.servlet.http.HttpServletRequest; import javax.servlet.http.HttpServletResponse; import java.util.Date; import static java.util.Collections.emptyList; public class AuthenticationService { static final long EXPIRATIONTIME = 864_000_00; static final String SIGNINGKEY = &quot;signingKey&quot;; static final String BEARER_PREFIX = &quot;Bearer&quot;; static public void addJWTToken(HttpServletResponse response, String username) { String JwtToken = Jwts.builder().setSubject(username) .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME)) .signWith(SignatureAlgorithm.HS512, SIGNINGKEY) .compact(); response.addHeader(&quot;Authorization&quot;, BEARER_PREFIX + &quot; &quot; + JwtToken); response.addHeader(&quot;Access-Control-Expose-Headers&quot;, &quot;Authorization&quot;); } static public Authentication getAuthentication(HttpServletRequest request) { String token = request.getHeader(&quot;Authorization&quot;); if (token != null) { String user = Jwts.parser() .setSigningKey(SIGNINGKEY) .parseClaimsJws(token.replace(BEARER_PREFIX, &quot;&quot;)) .getBody() .getSubject(); if (user != null) { return new UsernamePasswordAuthenticationToken(user, null, emptyList()); } else { throw new RuntimeException(&quot;Authentication failed&quot;); } } return null; } } In the beginning, we defined several constants. EXPIRATIONTIME defines the expiration time of the token (24 hours), SIGNINGKEY is used to sign the JWT (by verifying the JWT token we have a guarantee that it comes from our application), BEARER_PREFIX is the prefix of Authorization token - we use Bearer schema. The addJWTToken() creates the JWT and adds it to the Authorization header. We also had to add Access-Control-Expose-Headers header due to JS limitations on the frontend side. The getAuthentication() method gets the JWT token from the Authorization header.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.devdiaries.net/images/spring-react-currency-walet/header-image-part3.jpg" /></entry></feed>
