@@ -1,0 +1,361 @@
+<!-- This layout is used in all pages. Making changes here will efect all pages. We recommend not to change anything here. --> <!DOCTYPE html><html lang="en"> <!----><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="google-site-verification" content="Cghc1HFx2GBn1D5ans5vLlaX-pme-BY2wJpaLqHs_H0" /><meta name=”keywords” content=”java, openshift, docker, Michal Fabjanski, Fabjanski, github, jekyll, programming, spring, hibernate, spring boot, kubernetes” /><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//google-analytics.com"><link rel="dns-prefetch" href="//www.google-analytics.com"><link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com"><link rel="dns-prefetch" href="//ajax.googleapis.com"><link rel="dns-prefetch" href="//fonts.gstatic.com"><link rel="dns-prefetch" href="https://dev-diary-2.disqus.com/"><title>Kill the virus with a strategy pattern! Java Strategy Pattern with practical examples | Devdiaries</title><meta name="generator" content="Jekyll v3.8.4" /><meta property="og:title" content="Kill the virus with a strategy pattern! Java Strategy Pattern with practical examples" /><meta name="author" content="Michal Fabjanski" /><meta property="og:locale" content="en_US" /><meta name="description" content="Strategy Design Pattern in Java Todat I’ll take you to my lab. I’ll show you how to make your code cleaner. Any project can be created by multiple programmers at the same time, and each of them makes more bricks - being forced to understand other people’s bricks. Because you are in my lab, we will start working on real examples - starting with eccomerce, ending with virus treatment! Strategy Pattern introduction The strategy pattern next to the factory pattern is one of the most frequently used design patterns. It is easy to understand and to implement. It is one of the behavioral patterns, i.e. those that describe certain behavior. Strategy defines a family of interchangeable algorithms (in the form of classes) that are used to solve the same problem in several different ways. Implementation The Context class contains a reference to the StrategyInterface strategy object. The strategy object can be injected by the constructor or setter. The Context class method uses the strategy object to finalize the operation. Strategy classes Strategy1, Strategy2, etc. implement StrategyInterface interface methods. Each of these implementations of StrategyInterface solves a similar problem in a slightly different way. The above diagram can be implemented in the following way: public class Context {" /><meta property="og:description" content="Strategy Design Pattern in Java Todat I’ll take you to my lab. I’ll show you how to make your code cleaner. Any project can be created by multiple programmers at the same time, and each of them makes more bricks - being forced to understand other people’s bricks. Because you are in my lab, we will start working on real examples - starting with eccomerce, ending with virus treatment! Strategy Pattern introduction The strategy pattern next to the factory pattern is one of the most frequently used design patterns. It is easy to understand and to implement. It is one of the behavioral patterns, i.e. those that describe certain behavior. Strategy defines a family of interchangeable algorithms (in the form of classes) that are used to solve the same problem in several different ways. Implementation The Context class contains a reference to the StrategyInterface strategy object. The strategy object can be injected by the constructor or setter. The Context class method uses the strategy object to finalize the operation. Strategy classes Strategy1, Strategy2, etc. implement StrategyInterface interface methods. Each of these implementations of StrategyInterface solves a similar problem in a slightly different way. The above diagram can be implemented in the following way: public class Context {" /><link rel="canonical" href="https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" /><meta property="og:url" content="https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" /><meta property="og:site_name" content="Devdiaries" /><meta property="og:image" content="https://www.devdiaries.net/images/strategy-pattern/header-image.jpg" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-03-07T00:00:00+00:00" /><script type="application/ld+json"> {"description":"Strategy Design Pattern in Java Todat I’ll take you to my lab. I’ll show you how to make your code cleaner. Any project can be created by multiple programmers at the same time, and each of them makes more bricks - being forced to understand other people’s bricks. Because you are in my lab, we will start working on real examples - starting with eccomerce, ending with virus treatment! Strategy Pattern introduction The strategy pattern next to the factory pattern is one of the most frequently used design patterns. It is easy to understand and to implement. It is one of the behavioral patterns, i.e. those that describe certain behavior. Strategy defines a family of interchangeable algorithms (in the form of classes) that are used to solve the same problem in several different ways. Implementation The Context class contains a reference to the StrategyInterface strategy object. The strategy object can be injected by the constructor or setter. The Context class method uses the strategy object to finalize the operation. Strategy classes Strategy1, Strategy2, etc. implement StrategyInterface interface methods. Each of these implementations of StrategyInterface solves a similar problem in a slightly different way. The above diagram can be implemented in the following way: public class Context {","headline":"Kill the virus with a strategy pattern! Java Strategy Pattern with practical examples","dateModified":"2020-03-07T00:00:00+00:00","datePublished":"2020-03-07T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/"},"image":"https://www.devdiaries.net/images/strategy-pattern/header-image.jpg","url":"https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/","author":{"@type":"Person","name":"Michal Fabjanski"},"@context":"https://schema.org"}</script><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Replace these icons with your own. --><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-icon-152x152.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/android-icon-192x192.png"><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="icon" href="/favicon.ico" type="image/x-icon"><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> <!-- Google Analytics code.<head> tag is the right place for analytics code as directed by Google. This is unofficial light version which loads blazing fast! Implemented for faster page load. --><script src="https://cdn.jsdelivr.net/npm/ga-lite@1/dist/ga-lite.min.js" async></script><script> var galite = galite || {}; galite.UA = 'UA-139553005-1';</script><script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script></head><body><div class="loader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div><div class="wrapper"><div class="container-grid"><div class="sidebar"><div class="author-container shadow"><div class="author"><img src="/images/ja.jpg" width="100%" height="auto;" alt="Devdiaries" onclick="location.href='/'"></div><div class="about text-center"><h1 class="title"><a href="/">Devdiaries</a></h1></div><div class="bio text-center"><p class="m0">Michael`s Blog</p></div><hr class="dashed"><div class="social text-center"> <ul class="portfolio p0"> <li><a href="/about/">About Me</a></li> <li><a href="/categories/">Categories</a></li> <li><a href="/contact/">Contact</a></li> </ul> <ul class="sm p0 m0a"> <li><a href="https://www.linkedin.com/in/michal-fabjanski"><i class="fa fa-linkedin"></i></a></li> <li><a href="https://github.com"><i class="fa fa-github"></i></a></li> </ul></div></div></div><div class="main"><div class="main-container shadow"><div class="title-space"> <h2>Kill the virus with a strategy pattern! Java Strategy Pattern with practical examples</h2></div><hr class="dashed"> <main> <ul class="breadcrumbs"> <li><a href="/">Home</a></li> <li><a href="/blog/">Blog</a></li> <li><a href="#">Java strategy des...</a></li> </ul><div class="meta"> <p> <small> <span> <i class="fa fa-calendar" aria-hidden="true"></i> 07 Mar 2020&nbsp; </span> <span> <i class="fa fa-user" aria-hidden="true"></i> Michal Fabjanski&nbsp; </span> <span> <i class="fa fa-clock-o" aria-hidden="true"></i> 19 mins read. </span> </small> </p></div><div class="featured-image" style="background-image: url(/images/strategy-pattern/header-image.jpg)"></div><article> <ul class="toc rev clearfix"> <li><a href="#strategy-design-pattern-in-java">Strategy Design Pattern in Java</a> <ul> <li><a href="#strategy-pattern-introduction">Strategy Pattern introduction</a></li> <li><a href="#implementation">Implementation</a></li> <li><a href="#strategy-pattern-real-life-examples">Strategy Pattern Real Life Examples</a> <ul> <li><a href="#e-commerce---international-shipping-system-with-the-strategy-pattern">E-commerce - international shipping system with the strategy pattern</a></li> <li><a href="#number-converter-with-the-strategy-pattern">Number converter with the strategy pattern</a></li> <li><a href="#cure-the-coronavirus-with-strategy-pattern">Cure the Coronavirus with strategy pattern!</a></li> <li><a href="#tax-calculation-system-with-the-strategy-pattern">Tax calculation system with the Strategy Pattern</a></li> <li><a href="#the-most-popular-use-of-the-strategy-pattern-in-java">The most popular use of the Strategy Pattern in Java</a></li> <li><a href="#examples-of-strategy-pattern-in-spring-framework-and-java-libraries">Examples of Strategy Pattern in Spring Framework and Java libraries</a></li> </ul> </li> </ul> </li> <li><a href="#summary">Summary</a></li> </ul> <h1 id="strategy-design-pattern-in-java">Strategy Design Pattern in Java</h1> <p>Todat I’ll take you to my lab. I’ll show you <strong>how to make your code cleaner</strong>. Any project can be created by multiple programmers at the same time, and each of them makes more bricks - being forced to understand other people’s bricks.<br /> Because you are in my lab, we will start working on real examples - starting with eccomerce, ending with virus treatment!</p> <h2 id="strategy-pattern-introduction">Strategy Pattern introduction</h2> <p>The strategy pattern next to the factory pattern is one of the most frequently used design patterns. It is easy to understand and to implement. It is one of the behavioral patterns, i.e. those that describe certain behavior.<br /> Strategy defines a <strong>family of interchangeable algorithms</strong> (in the form of classes) that are used to <strong>solve the same problem in several different ways.</strong></p> <h2 id="implementation">Implementation</h2> <p><img src="/images/strategy-pattern/strategy-diagram.png" alt="strateg-pattern-diagram" /><br /> The <code class="highlighter-rouge">Context</code> class contains a reference to the <code class="highlighter-rouge">StrategyInterface</code> strategy object. The strategy object can be injected by the constructor or setter. The <code class="highlighter-rouge">Context</code> class method uses the strategy object to finalize the operation. Strategy classes Strategy1, Strategy2, etc. implement <code class="highlighter-rouge">StrategyInterface</code> interface methods. Each of these implementations of <code class="highlighter-rouge">StrategyInterface</code> solves a similar problem in a slightly different way. The above diagram can be implemented in the following way:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Context</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Strategy</span> <span class="n">strategy</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Context</span><span class="o">(</span><span class="n">Strategy</span> <span class="n">strategy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">strategy</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setStrategy</span><span class="o">(</span><span class="n">Strategy</span> <span class="n">strategy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">strategy</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">Object</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">strategy</span><span class="o">.</span><span class="na">action</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>  
+
+<span class="c1">// -----------------------------------------------------------  </span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Strategy1</span> <span class="kd">implements</span> <span class="n">Strategy</span> <span class="o">{</span>  
+  
+ <span class="nd">@Override</span> 
+ <span class="kd">public</span> <span class="kt">void</span> <span class="nf">action</span><span class="o">(</span><span class="n">Object</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//do action specific for Strategy1 </span>
+ <span class="o">}}</span>  
+  
+<span class="c1">// -----------------------------------------------------------   </span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Strategy2</span> <span class="kd">implements</span> <span class="n">Strategy</span> <span class="o">{</span>  
+  
+ <span class="nd">@Override</span> 
+ <span class="kd">public</span> <span class="kt">void</span> <span class="nf">action</span><span class="o">(</span><span class="n">Object</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//do action specific for Strategy2 </span>
+ <span class="o">}}</span>  
+<span class="c1">// -----------------------------------------------------------   </span>
+<span class="kd">interface</span> <span class="nc">Strategy</span> <span class="o">{</span>  
+  
+ <span class="kt">void</span> <span class="nf">action</span><span class="o">(</span><span class="n">Object</span> <span class="n">args</span><span class="o">);}</span>  </code></pre></figure> <p>Before calling the target method, <strong>the client selects the injected strategy</strong> depending on the condition:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">  
+<span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="o">(</span><span class="k">new</span> <span class="n">Strategy1</span><span class="o">());</span>  
+<span class="n">String</span> <span class="n">arg</span> <span class="o">=</span> <span class="s">"args passed to strategy 1"</span><span class="o">;</span>  
+<span class="n">context</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">arg</span><span class="o">);</span>  
+  
+<span class="c1">//new conditions </span>
+<span class="n">context</span><span class="o">.</span><span class="na">setStrategy</span><span class="o">(</span><span class="k">new</span> <span class="n">Strategy2</span><span class="o">());</span>  
+<span class="n">arg</span> <span class="o">=</span> <span class="s">"args for strategy 2"</span><span class="o">;</span>  
+<span class="n">context</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">arg</span><span class="o">);</span>  </code></pre></figure> <h2 id="strategy-pattern-real-life-examples">Strategy Pattern Real Life Examples</h2> <p>Let’s get to the practical part. I will show you some examples where Strategy pattern is a perfect solution.</p> <h3 id="e-commerce---international-shipping-system-with-the-strategy-pattern">E-commerce - international shipping system with the strategy pattern</h3> <p>Imagine that we own an online shop with many different products. At the beginning, we send products only to the USA, but we want to enter a new market - Europe. We also plan to enter the Australian and African markets. <br /> By following the <a href="https://www.devdiaries.net/blog/10-Object-oriented-design-principles-everythone-should-know/#openclosed-principle" title="Open/Closed Principle">Open/Closed Principle</a> we do not want to add more IFs to our class. In this case, the ideal choice is the strategy pattern!</p> <p>Let’s start from the <code class="highlighter-rouge">Shopping.java</code> interface - responsible for price calculation and currency information.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Shopping</span> <span class="o">{</span>  
+  
+ <span class="kt">double</span> <span class="nf">calculatePrice</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">products</span><span class="o">);</span> 
+ <span class="n">Currency</span> <span class="nf">getCurrency</span><span class="o">();</span>
+ <span class="o">}</span>  </code></pre></figure> <p>Now it’s time for some boring model classes:<br /> <code class="highlighter-rouge">Products.java</code> with our products:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Product</span> <span class="o">{</span>  
+  
+ <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span> 
+ <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span> 
+ <span class="kd">private</span> <span class="kt">double</span> <span class="n">price</span><span class="o">;</span> 
+ <span class="kd">private</span> <span class="n">Size</span> <span class="n">size</span><span class="o">;</span>  
+ 
+ <span class="kd">public</span> <span class="nf">Product</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">double</span> <span class="n">price</span><span class="o">,</span> <span class="n">Size</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span> 
+ <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span> 
+ <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> 
+ <span class="k">this</span><span class="o">.</span><span class="na">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">;</span> 
+ <span class="k">this</span><span class="o">.</span><span class="na">size</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span> 
+ <span class="o">}</span> <span class="c1">// getters and setters</span>
+ </code></pre></figure> <p><code class="highlighter-rouge">Cart.java</code> class:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Cart</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Shopping</span> <span class="n">shopping</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">products</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Cart</span><span class="o">(</span><span class="n">Shopping</span> <span class="n">shopping</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">shopping</span> <span class="o">=</span> <span class="n">shopping</span><span class="o">;</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getTotalPrice</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">shopping</span><span class="o">.</span><span class="na">calculatePrice</span><span class="o">(</span><span class="n">products</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addProduct</span><span class="o">(</span><span class="n">Product</span> <span class="n">product</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">products</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">product</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p><code class="highlighter-rouge">Size.java</code> - The price of the products will depend on the size:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">enum</span> <span class="n">Size</span> <span class="o">{</span>
+
+    <span class="n">S</span><span class="o">(</span><span class="mi">1</span><span class="o">),</span>
+    <span class="n">L</span><span class="o">(</span><span class="mi">2</span><span class="o">),</span>
+    <span class="n">XL</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
+
+    <span class="n">Size</span><span class="o">(</span><span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">size</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+                <span class="k">return</span> <span class="s">"S"</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+                <span class="k">return</span> <span class="s">"L"</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+                <span class="k">return</span> <span class="s">"XL"</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">return</span> <span class="s">"CUSTOM"</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>Let’s get back to the concrete! It’s time to implement our strategies. Depending on the country of shipping, the relevant customs duty is charged and the shipping cost of <code class="highlighter-rouge">EuropeShopping</code>, <code class="highlighter-rouge">AmericaShopping</code> increases. Large products (XL-size) have an additional charge.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AmericaShopping</span> <span class="kd">implements</span> <span class="n">Shopping</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">USD_TAX</span> <span class="o">=</span> <span class="mf">0.75</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">DUTY_TAX</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">double</span> <span class="n">DELIVERY_COST</span> <span class="o">=</span> <span class="mi">15</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculatePrice</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">products</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">double</span> <span class="n">totalPrice</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Product</span> <span class="n">product</span> <span class="o">:</span> <span class="n">products</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">product</span><span class="o">.</span><span class="na">getSize</span><span class="o">()</span> <span class="o">==</span> <span class="n">Size</span><span class="o">.</span><span class="na">XL</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">totalPrice</span> <span class="o">+=</span> <span class="n">product</span><span class="o">.</span><span class="na">getPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">DUTY_TAX</span><span class="o">;</span>
+                <span class="n">DELIVERY_COST</span> <span class="o">+=</span> <span class="mi">10</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span> <span class="o">{</span>
+                <span class="n">totalPrice</span> <span class="o">+=</span> <span class="n">product</span><span class="o">.</span><span class="na">getPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">DUTY_TAX</span><span class="o">;</span>
+                <span class="n">DELIVERY_COST</span> <span class="o">+=</span> <span class="mi">5</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">totalPrice</span> <span class="o">+</span> <span class="n">DELIVERY_COST</span><span class="o">)</span> <span class="o">*</span> <span class="n">USD_TAX</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Currency</span> <span class="nf">getCurrency</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Currency</span><span class="o">.</span><span class="na">USD</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EuropeShopping</span> <span class="kd">implements</span> <span class="n">Shopping</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">DUTY_TAX</span> <span class="o">=</span> <span class="mf">1.5</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">double</span> <span class="n">DELIVERY_COST</span> <span class="o">=</span> <span class="mi">11</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculatePrice</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">products</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">double</span> <span class="n">totalPrice</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Product</span> <span class="n">product</span> <span class="o">:</span> <span class="n">products</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">totalPrice</span> <span class="o">+=</span> <span class="n">product</span><span class="o">.</span><span class="na">getPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">DUTY_TAX</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">product</span><span class="o">.</span><span class="na">getSize</span><span class="o">()</span> <span class="o">==</span> <span class="n">Size</span><span class="o">.</span><span class="na">XL</span><span class="o">)</span>
+                <span class="n">DELIVERY_COST</span> <span class="o">+=</span> <span class="mi">10</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">totalPrice</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Currency</span> <span class="nf">getCurrency</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Currency</span><span class="o">.</span><span class="na">EUR</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>The above listing shows the calculation of the final price depending on the location of the shipment and product size. <br /> Example of use:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Shopping</span> <span class="n">shopping</span><span class="o">;</span>
+<span class="c1">//       Define a region for the USA.</span>
+<span class="c1">//       This is for demo purposes only - it should be injected depending on user address.</span>
+        <span class="n">Region</span> <span class="n">region</span> <span class="o">=</span> <span class="n">Region</span><span class="o">.</span><span class="na">EUR</span><span class="o">;</span>
+
+<span class="c1">//      Choice of strategy according to user region</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">region</span> <span class="o">==</span> <span class="n">Region</span><span class="o">.</span><span class="na">USA</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">shopping</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AmericaShopping</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="o">{</span>
+            <span class="n">shopping</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EuropeShopping</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="n">Cart</span> <span class="n">cart</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cart</span><span class="o">(</span><span class="n">shopping</span><span class="o">);</span>
+        <span class="n">cart</span><span class="o">.</span><span class="na">addProduct</span><span class="o">(</span><span class="k">new</span> <span class="n">Product</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">"Dell"</span><span class="o">,</span> <span class="mi">125</span><span class="o">,</span> <span class="n">Size</span><span class="o">.</span><span class="na">L</span><span class="o">));</span>
+        <span class="n">cart</span><span class="o">.</span><span class="na">addProduct</span><span class="o">(</span><span class="k">new</span> <span class="n">Product</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"Iphone"</span><span class="o">,</span> <span class="mi">1235</span><span class="o">,</span> <span class="n">Size</span><span class="o">.</span><span class="na">S</span><span class="o">));</span>
+        <span class="n">cart</span><span class="o">.</span><span class="na">addProduct</span><span class="o">(</span><span class="k">new</span> <span class="n">Product</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">"TV"</span><span class="o">,</span> <span class="mi">535</span><span class="o">,</span> <span class="n">Size</span><span class="o">.</span><span class="na">XL</span><span class="o">));</span>
+
+        <span class="kt">double</span> <span class="n">totalPrice</span> <span class="o">=</span> <span class="n">cart</span><span class="o">.</span><span class="na">getTotalPrice</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Total price : "</span> <span class="o">+</span> <span class="n">totalPrice</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">shopping</span><span class="o">.</span><span class="na">getCurrency</span><span class="o">());</span>
+<span class="c1">//        for region = REGION.USA the result is: Total price : 1447.5 USD</span>
+<span class="c1">//        for region = REGION.EUR the result is: Total price : 2842.5 EUR</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <h3 id="number-converter-with-the-strategy-pattern">Number converter with the strategy pattern</h3> <p>Imagine that you want to create a system to convert numbers into different <a href="rapidtables.com/math/number/Numeral_system.html" title="Numeral Systems">Numeral Systems</a> .<br /> As in the previous example, we will start with the interface:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ConvertingStrategy</span> <span class="o">{</span>  
+    <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">number</span><span class="o">);</span>  
+<span class="o">}</span>  </code></pre></figure> <p>Time for implementation. We will add support to convert number to octal, binary and hex system:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BinaryConverter</span> <span class="kd">implements</span> <span class="n">ConvertingStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">number</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toBinaryString</span><span class="o">(</span><span class="n">number</span><span class="o">);</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HexaConverter</span> <span class="kd">implements</span> <span class="n">ConvertingStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">number</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="n">number</span><span class="o">);</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OctaConverter</span> <span class="kd">implements</span> <span class="n">ConvertingStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">number</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toOctalString</span><span class="o">(</span><span class="n">number</span><span class="o">);</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  </code></pre></figure> <p>According to the diagram at the beginning of the post - we will create a class <code class="highlighter-rouge">Context</code> that will use our strategies:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Context</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">ConvertingStrategy</span> <span class="n">strategy</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Context</span><span class="o">(</span><span class="n">ConvertingStrategy</span> <span class="n">strategy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">strategy</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">int</span> <span class="n">number</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">strategy</span><span class="o">.</span><span class="na">convert</span><span class="o">(</span><span class="n">number</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>An example of how to use a strategy to convert:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="n">Context</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="o">(</span><span class="k">new</span> <span class="n">HexaConverter</span><span class="o">());</span>  
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ctx</span><span class="o">.</span><span class="na">convert</span><span class="o">(</span><span class="mi">1000</span><span class="o">));</span>  
+<span class="c1">//      Result: 3e8  </span>
+<span class="c1">//      If you change HexaConverter to BinaryConverter, the result will be: 1111101000  </span>
+    <span class="o">}</span>  
+<span class="o">}</span>  </code></pre></figure> <h3 id="cure-the-coronavirus-with-strategy-pattern">Cure the Coronavirus with strategy pattern!</h3> <p>It’s time for something popular :) We will create a strategy to treat viruses. It may seem to you that this is not a very practical use of Strategy Pattern, but imagine a similar situation in any game.</p> <p>In our case, this could be part of a game taking place in a Hospital For Infectious Diseases!<br /> <strong>Very often the strategy is used in games to handle movement.</strong> We want a player to either walk or run when he moves, but maybe in the future, he should also be able to swim, fly, teleport, burrow underground, etc.<br /> Let’s return to the hospital game. Just like before, we start with the interface:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">VaccinationStrategy</span> <span class="o">{</span>  
+    <span class="n">String</span> <span class="nf">vaccineInjection</span><span class="o">();</span>  
+<span class="o">}</span>  </code></pre></figure> <p>And some implementations:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Covid19Treatment</span> <span class="kd">implements</span> <span class="n">VaccinationStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">vaccineInjection</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="s">"The patient have been cured of infection with Coronavirus"</span><span class="o">;</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EbovTreatment</span> <span class="kd">implements</span> <span class="n">VaccinationStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">vaccineInjection</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="s">"The patient have been cured of infection with Ebov"</span><span class="o">;</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SarsTreatment</span> <span class="kd">implements</span> <span class="n">VaccinationStrategy</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">vaccineInjection</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="s">"The patient have been cured of infection with SARS"</span><span class="o">;</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  </code></pre></figure> <p>Now let’s create a class that will work as the <code class="highlighter-rouge">Context</code> from the previous point. Let’s name it <code class="highlighter-rouge">Treatment.java</code>:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Treatment</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">VaccinationStrategy</span> <span class="n">vaccinationStrategy</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">patientName</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Treatment</span><span class="o">(</span><span class="n">String</span> <span class="n">patientName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">patientName</span> <span class="o">=</span> <span class="n">patientName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setVaccination</span><span class="o">(</span><span class="n">VaccinationStrategy</span> <span class="n">vaccination</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">vaccinationStrategy</span> <span class="o">=</span> <span class="n">vaccination</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">treatment</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"The treatment of the patient: "</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">patientName</span> <span class="o">+</span> <span class="s">" has started"</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">vaccinationStrategy</span><span class="o">.</span><span class="na">vaccineInjection</span><span class="o">());</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"The patient left the hospital"</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"--------------------------------------------------------------------"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>In the above example, we set the strategy through the setter (instead of the constructor). <br /> Example of use:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">   
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Treatment</span> <span class="n">patient1Treatment</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Treatment</span><span class="o">(</span><span class="s">"John Duke"</span><span class="o">);</span>
+        <span class="n">Treatment</span> <span class="n">patient2Treatment</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Treatment</span><span class="o">(</span><span class="s">"Elisa Muratti"</span><span class="o">);</span>
+        <span class="n">Treatment</span> <span class="n">patient3Treatment</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Treatment</span><span class="o">(</span><span class="s">"Jeff People"</span><span class="o">);</span>
+
+        <span class="n">patient1Treatment</span><span class="o">.</span><span class="na">setVaccination</span><span class="o">(</span><span class="k">new</span> <span class="n">Covid19Treatment</span><span class="o">());</span>
+        <span class="n">patient2Treatment</span><span class="o">.</span><span class="na">setVaccination</span><span class="o">(</span><span class="k">new</span> <span class="n">EbovTreatment</span><span class="o">());</span>
+        <span class="n">patient3Treatment</span><span class="o">.</span><span class="na">setVaccination</span><span class="o">(</span><span class="k">new</span> <span class="n">SarsTreatment</span><span class="o">());</span>
+
+        <span class="n">patient1Treatment</span><span class="o">.</span><span class="na">treatment</span><span class="o">();</span>
+        <span class="n">patient2Treatment</span><span class="o">.</span><span class="na">treatment</span><span class="o">();</span>
+        <span class="n">patient3Treatment</span><span class="o">.</span><span class="na">treatment</span><span class="o">();</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"All patients cured. The world is saved!"</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+<span class="c1">//    RESULT:</span>
+<span class="c1">//The treatment of the patient: John Duke has started</span>
+<span class="c1">//    The patient have been cured of infection with Coronavirus</span>
+<span class="c1">//    The patient left the hospital</span>
+<span class="c1">//--------------------------------------------------------------------</span>
+<span class="c1">//    The treatment of the patient: Elisa Muratti has started</span>
+<span class="c1">//    The patient have been cured of infection with Ebov</span>
+<span class="c1">//    The patient left the hospital</span>
+<span class="c1">//--------------------------------------------------------------------</span>
+<span class="c1">//    The treatment of the patient: Jeff People has started</span>
+<span class="c1">//    The patient have been cured of infection with SARS</span>
+<span class="c1">//    The patient left the hospital</span>
+<span class="c1">//--------------------------------------------------------------------</span>
+<span class="c1">//    All patients cured. The world is saved!</span>
+
+<span class="o">}</span></code></pre></figure> <h3 id="tax-calculation-system-with-the-strategy-pattern">Tax calculation system with the Strategy Pattern</h3> <p>We have a system for creating invoices, but we have customers from different tax zones. What do you think will be the right design pattern? Exactly, the strategy!<br /> This time our interface will have one method of <code class="highlighter-rouge">calculate()</code>:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Tax</span> <span class="o">{</span>  
+    <span class="n">BigDecimal</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Invoice</span> <span class="n">invoice</span><span class="o">);</span>  
+<span class="o">}</span>  
+  
+<span class="c1">// IMPLEMENTATIONS:  </span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DutyTax</span> <span class="kd">implements</span> <span class="n">Tax</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">BigDecimal</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Invoice</span> <span class="n">invoice</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">invoice</span><span class="o">.</span><span class="na">getCost</span><span class="o">()</span>  
+                <span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mf">0.18</span><span class="o">));</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FederalTax</span> <span class="kd">implements</span> <span class="n">Tax</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">BigDecimal</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Invoice</span> <span class="n">invoice</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">invoice</span><span class="o">.</span><span class="na">getCost</span><span class="o">()</span>  
+                <span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mf">0.07</span><span class="o">));</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">VatTax</span> <span class="kd">implements</span> <span class="n">Tax</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="n">BigDecimal</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Invoice</span> <span class="n">invoice</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">return</span> <span class="n">invoice</span><span class="o">.</span><span class="na">getCost</span><span class="o">()</span>  
+                <span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mf">0.10</span><span class="o">));</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  </code></pre></figure> <p>We’ll need the class responsible for the invoice:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Invoice</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">BigDecimal</span> <span class="n">cost</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Invoice</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">cost</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">cost</span> <span class="o">=</span> <span class="n">cost</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">BigDecimal</span> <span class="nf">getCost</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">cost</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCost</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">cost</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">cost</span> <span class="o">=</span> <span class="n">cost</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>And, as before, the <code class="highlighter-rouge">Context</code> class:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Context</span> <span class="o">{</span>  
+    <span class="kd">private</span> <span class="n">Tax</span> <span class="n">tax</span><span class="o">;</span>  
+  
+ <span class="kd">public</span> <span class="nf">Context</span><span class="o">(</span><span class="n">Tax</span> <span class="n">tax</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">tax</span> <span class="o">=</span> <span class="n">tax</span><span class="o">;</span> <span class="o">}</span>  
+ <span class="kd">public</span> <span class="n">BigDecimal</span> <span class="nf">calculateTax</span><span class="o">(</span><span class="n">Invoice</span> <span class="n">invoice</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">tax</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">invoice</span><span class="o">);</span> <span class="o">}}</span>  </code></pre></figure> <p>Example of use:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java">      
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="n">Invoice</span> <span class="n">invoice</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Invoice</span><span class="o">(</span><span class="k">new</span> <span class="n">BigDecimal</span><span class="o">(</span><span class="s">"1500"</span><span class="o">));</span>
+
+        <span class="n">Context</span> <span class="n">federal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="o">(</span><span class="k">new</span> <span class="n">FederalTax</span><span class="o">());</span>
+        <span class="n">Context</span> <span class="n">vat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="o">(</span><span class="k">new</span> <span class="n">VatTax</span><span class="o">());</span>
+        <span class="n">Context</span> <span class="n">duty</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="o">(</span><span class="k">new</span> <span class="n">DutyTax</span><span class="o">());</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">federal</span><span class="o">.</span><span class="na">calculateTax</span><span class="o">(</span><span class="n">invoice</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">vat</span><span class="o">.</span><span class="na">calculateTax</span><span class="o">(</span><span class="n">invoice</span><span class="o">));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">duty</span><span class="o">.</span><span class="na">calculateTax</span><span class="o">(</span><span class="n">invoice</span><span class="o">));</span>
+
+<span class="c1">//        Result:</span>
+<span class="c1">//        105.00</span>
+<span class="c1">//        150.0</span>
+<span class="c1">//        270.00</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <h3 id="the-most-popular-use-of-the-strategy-pattern-in-java">The most popular use of the Strategy Pattern in Java</h3> <p>There are a lot of examples to come up with. The most common situations in which the strategy pattern is used are:</p> <ul> <li><strong>Validation</strong>: You need to check items according to some rule, but it is not yet clear what that rule will be, and there are likely to be many of them.</li> <li><strong>Storing information</strong>: You want the application to store information to the Database, but later it may be neet to be able to save a file.</li> <li><strong>Games</strong>: as I wrote in <a href="http://devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Example/#cure-the-coronavirus-with-strategy-pattern">previous point</a> - strategy is often used in games, e.g. to correctly handle the movement of objects in games.</li> <li><strong>Sorting</strong>: You want to sort elements, but you do not know what sorting algorithm should you use (BrickSort, QuickSort or other). This is a common case used in examples of Strategy implementation, so I omitted implementation in this article.</li> <li><strong>Outputting</strong>: You need to output text as a plain string, but later may be a CSV, XML or PDF.</li> </ul> <h3 id="examples-of-strategy-pattern-in-spring-framework-and-java-libraries">Examples of Strategy Pattern in Spring Framework and Java libraries</h3> <p>The strategy is a pattern that you often use using different librarians/frameworks in Java. <br /> The best example of the strategy pattern is the <code class="highlighter-rouge">Collection.sort()</code> method that takes <code class="highlighter-rouge">Comparator</code> parameter. We do not need to change the <code class="highlighter-rouge">sort()</code> method to achieve different sorting results. We can just inject different comparators in runtime.</p> <p>The next example is <code class="highlighter-rouge">javax.servlet.Filter#doFilter()</code> method. <br /> In Spring Framework an example of using strategy is class: <code class="highlighter-rouge">org.springframework.web.servlet.mvc.multiaction.MethodNameResolver</code></p> <h1 id="summary">Summary</h1> <p>That’s all about the Strategy Design Pattern🙂<br /> Link to Github with all examples: <a href="https://github.com/MichalFab/Strategy-design-pattern" title="Github">Github</a></p> </article> <hr class="dashed"><div class="row rev"><div class="col-md-12"><div class="share-box"> <i class="fa fa-share-alt" aria-hidden="true"></i> <a class="f nostyle" href="https://www.facebook.com/sharer/sharer.php?u=https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-facebook-official fa"></i></a> <a class="t nostyle" href="https://twitter.com/intent/tweet?text=&url=https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter fa"></i></a> <a class="g nostyle" href="https://plus.google.com/share?url=https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-google-plus fa"></i></a> <a class="r nostyle" href="http://www.reddit.com/submit?url=https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-reddit fa"></i></a> <a class="l nostyle" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/&title=&summary=&source=dev-diary.github.io" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-linkedin fa"></i></a> <a class="e nostyle" href="mailto:?subject=&amp;body=Check&amp;out&amp;this&amp;site&amp;https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/"><i class="fa fa-envelope fa"></i></a></div></div></div><div class="row"><div class="col-md-12"> <p class="categories rev"> <span><a href="/categories/#java">Java</a></span> <span><a href="/categories/#design-patterns">Design patterns</a></span> <span><a href="/categories/#interview">Interview</a></span></p></div></div><div id="disqus_thread"></div><script> var disqus_config = function () { this.page.url = 'https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/'; this.page.identifier = 'https://www.devdiaries.net/blog/Java-Strategy-Design-Pattern-By-Examples/'; }; (function() { var d = document, s = d.createElement('script'); s.src = 'https://dev-diary-2.disqus.com/embed.js'; s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s); })();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> <!--<div class="comment-loader">--> <!--<button class="comments cards">Comments</button>--> <!--</div>--> <!--<div class="disqus hide">Loading comments&hellip;</div>--> <!--<div class="disqus-loading"></div>--> <!--<script>--> <!--/*--> <!-- disqusLoader.js v1.0--> <!-- A JavaScript plugin for lazy-loading Disqus comments widget.--> <!-- - --> <!-- By Osvaldas Valutis, www.osvaldas.info--> <!-- Available for use under the MIT License--> <!--*/--> <!--(function(b,f,l){var r=function(a){a=a.getBoundingClientRect();return{top:a.top+f.body.scrollTop,left:a.left+f.body.scrollLeft}},t=function(a,c){var d=f.createElement("script");d.src=a;d.async=!0;d.setAttribute("data-timestamp",+new Date);d.addEventListener("load",function(){"function"===typeof c&&c()});(f.head||f.body).appendChild(d)};l=function(a,c){var d,e;return function(){var g=this,f=arguments,b=+new Date;d&&b<d+a?(clearTimeout(e),e=setTimeout(function(){d=b;c.apply(g,f)},a)):(d=b,c.apply(g,--> <!--f))}};var m=!1,n=!1,p=!1,k=!1,h="unloaded",e=!1,q=function(){if(!e||!f.body.contains(e)||"loaded"==e.disqusLoaderStatus)return!0;var a=b.pageYOffset,c=r(e).top;if(c-a>b.innerHeight*n||0<a-c-e.offsetHeight-b.innerHeight*n)return!0;(a=f.getElementById("disqus_thread"))&&a.removeAttribute("id");e.setAttribute("id","disqus_thread");e.disqusLoaderStatus="loaded";"loaded"==h?DISQUS.reset({reload:!0,config:p}):(b.disqus_config=p,"unloaded"==h&&(h="loading",t(k,function(){h="loaded"})))};b.addEventListener("scroll",--> <!--l(m,q));b.addEventListener("resize",l(m,q));b.disqusLoader=function(a,c){var d={laziness:1,throttle:250,scriptUrl:!1,disqusConfig:!1},b=c,g,h={};for(g in d)Object.prototype.hasOwnProperty.call(d,g)&&(h[g]=d[g]);for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(h[g]=b[g]);c=h;n=c.laziness+1;m=c.throttle;p=c.disqusConfig;k=!1===k?c.scriptUrl:k;e="string"===typeof a?f.querySelector(a):"number"===typeof a.length?a[0]:a;e.disqusLoaderStatus="unloaded";q()}})(window,document,0);--> <!--</script>--> <!--<script>--> <!-- disqusLoader( '.disqus',--> <!-- {--> <!-- scriptUrl: '//{"shortname"=>"dev-diary-2"}.disqus.com/embed.js',--> <!-- disqusConfig: function()--> <!-- {--><script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script><script> $(document).ready(function () { $(".loader").hide(); });</script><script> $("#search-input").keyup(function () { $("main").hide(); $("search-container").show(); if (!$('#search-input').val()) { $("main").show(); $("search-container").hide(); } });</script><script src="/js/jekyll-search.min.js" type="text/javascript"></script><script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-container'), searchResultTemplate: '<a class="nostyle" href="{url}"><div class="blog borders cards"><div class="image" style="background-image: url({image});"></div><div class="content"><h3 class="title">{title}</h3><p class="description">{description}</p></div></div></a>', noResultsText: 'No results found', json: '/search.json' })</script><script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script><script> AOS.init({ duration: 600, once: true, disable: 'mobile' });</script><script> $("button").click(function () { $(".disqus").toggle(); $(".comments").toggle(); });</script></body></html>
