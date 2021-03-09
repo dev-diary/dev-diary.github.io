@@ -1,0 +1,335 @@
+<!-- This layout is used in all pages. Making changes here will efect all pages. We recommend not to change anything here. --> <!DOCTYPE html><html lang="en"> <!----><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="google-site-verification" content="Cghc1HFx2GBn1D5ans5vLlaX-pme-BY2wJpaLqHs_H0" /><meta name=”keywords” content=”java, openshift, docker, Michal Fabjanski, Fabjanski, github, jekyll, programming, spring, hibernate, spring boot, kubernetes” /><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//google-analytics.com"><link rel="dns-prefetch" href="//www.google-analytics.com"><link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com"><link rel="dns-prefetch" href="//ajax.googleapis.com"><link rel="dns-prefetch" href="//fonts.gstatic.com"><link rel="dns-prefetch" href="https://dev-diary-2.disqus.com/"><title>Anemic Domain Model vs Rich Domain Model | Devdiaries</title><meta name="generator" content="Jekyll v3.8.4" /><meta property="og:title" content="Anemic Domain Model vs Rich Domain Model" /><meta name="author" content="Michal Fabjanski" /><meta property="og:locale" content="en_US" /><meta name="description" content="When we write code, we try to hide as many details as possible - using appropriate access modifiers. Most often we use getters and setters methods to set the appropriate state of an object. Is this a good practice? In this article you will learn what is Anemic Domain Model and Rich Domain Model and which way of creating models is the best. What’s more, you’ll find a special opportunity from CodeGym at the end of this post. I invite you to read :) Why are getters and setters unsafe? Anemic Domain Model vs Rich Domain Model" /><meta property="og:description" content="When we write code, we try to hide as many details as possible - using appropriate access modifiers. Most often we use getters and setters methods to set the appropriate state of an object. Is this a good practice? In this article you will learn what is Anemic Domain Model and Rich Domain Model and which way of creating models is the best. What’s more, you’ll find a special opportunity from CodeGym at the end of this post. I invite you to read :) Why are getters and setters unsafe? Anemic Domain Model vs Rich Domain Model" /><link rel="canonical" href="https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" /><meta property="og:url" content="https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" /><meta property="og:site_name" content="Devdiaries" /><meta property="og:image" content="https://www.devdiaries.net/images/rich-anemic-model/header-image.jpg" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-03-08T00:00:00+00:00" /><script type="application/ld+json"> {"description":"When we write code, we try to hide as many details as possible - using appropriate access modifiers. Most often we use getters and setters methods to set the appropriate state of an object. Is this a good practice? In this article you will learn what is Anemic Domain Model and Rich Domain Model and which way of creating models is the best. What’s more, you’ll find a special opportunity from CodeGym at the end of this post. I invite you to read :) Why are getters and setters unsafe? Anemic Domain Model vs Rich Domain Model","headline":"Anemic Domain Model vs Rich Domain Model","dateModified":"2021-03-08T00:00:00+00:00","datePublished":"2021-03-08T00:00:00+00:00","image":"https://www.devdiaries.net/images/rich-anemic-model/header-image.jpg","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/"},"url":"https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/","author":{"@type":"Person","name":"Michal Fabjanski"},"@context":"https://schema.org"}</script><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Replace these icons with your own. --><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-icon-152x152.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/android-icon-192x192.png"><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="icon" href="/favicon.ico" type="image/x-icon"><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> <!-- Google Analytics code.<head> tag is the right place for analytics code as directed by Google. This is unofficial light version which loads blazing fast! Implemented for faster page load. --><script src="https://cdn.jsdelivr.net/npm/ga-lite@1/dist/ga-lite.min.js" async></script><script> var galite = galite || {}; galite.UA = 'UA-139553005-1';</script><script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script></head><body><div class="loader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div><div class="wrapper"><div class="container-grid"><div class="sidebar"><div class="author-container shadow"><div class="author"><img src="/images/ja.jpg" width="100%" height="auto;" alt="Devdiaries" onclick="location.href='/'"></div><div class="about text-center"><h1 class="title"><a href="/">Devdiaries</a></h1></div><div class="bio text-center"><p class="m0">Michael`s Blog</p></div><hr class="dashed"><div class="social text-center"> <ul class="portfolio p0"> <li><a href="/about/">About Me</a></li> <li><a href="/categories/">Categories</a></li> <li><a href="/contact/">Contact</a></li> </ul> <ul class="sm p0 m0a"> <li><a target="_blank" href="https://www.linkedin.com/in/michal-fabjanski"><i class="fa fa-linkedin"></i></a></li> <li><a target="_blank" href="https://github.com/MichalFab"><i class="fa fa-github"></i></a></li> <li><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=michael.fabjanski%40gmail.com&item_name=blog-donation&currency_code=USD&source=url"><i class="fa fa-paypal"></i></a></li> <li><a target="_blank" href="https://www.devdiaries.net/feed.xml"><i class="fa fa-rss"></i></a></li> </ul></div></div></div><div class="main"><div class="main-container shadow"><div class="title-space"> <h2>Anemic Domain Model vs Rich Domain Model</h2></div><hr class="dashed"> <main> <ul class="breadcrumbs"> <li><a href="/">Home</a></li> <li><a href="/blog/">Blog</a></li> <li><a href="#">Java anemic domai...</a></li> </ul><div class="meta"> <p> <small> <span> <i class="fa fa-calendar" aria-hidden="true"></i> 08 Mar 2021&nbsp; </span> <span> <i class="fa fa-user" aria-hidden="true"></i> Michal Fabjanski&nbsp; </span> <span> <i class="fa fa-clock-o" aria-hidden="true"></i> 19 mins read. </span> </small> </p></div><div class="featured-image" style="background-image: url(/images/rich-anemic-model/header-image.jpg)"></div><article> <ul class="toc rev clearfix"> <li><a href="#why-are-getters-and-setters-unsafe-anemic-domain-model-vs-rich-domain-model">Why are getters and setters unsafe? Anemic Domain Model vs Rich Domain Model</a> <ul> <li><a href="#why-is-public-unsafe">Why is public unsafe?</a></li> <li><a href="#anemic-domain-model-in-java">Anemic Domain Model in Java</a></li> <li><a href="#rich-domain-model-in-java">Rich Domain Model in Java</a> <ul> <li><a href="#the-main-advantage-of-the-rich-domain-model">The main advantage of the Rich Domain Model</a></li> <li><a href="#example-tests-of-a-rich-domain-model">Example tests of a rich domain model</a></li> </ul> </li> <li><a href="#when-to-use-getters-and-setters-in-java-objects">When to use getters and setters in Java objects?</a></li> </ul> </li> <li><a href="#special-offer-from-codegym">Special offer from Codegym</a></li> </ul> <p>When we write code, we try to hide as many details as possible - using appropriate access modifiers. Most often we use getters and setters methods to set the appropriate state of an object. Is this a good practice? In this article you will learn what is <strong>Anemic Domain Model</strong> and <strong>Rich Domain Model</strong> and which way of creating models is the best. What’s more, you’ll find a special opportunity from <a href="https://codegym.cc/">CodeGym</a> at the end of this post. I invite you to read :)</p> <h1 id="why-are-getters-and-setters-unsafe-anemic-domain-model-vs-rich-domain-model">Why are getters and setters unsafe? Anemic Domain Model vs Rich Domain Model</h1> <p>Take a look at the code below:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>  
+ <span class="kd">public</span> <span class="n">UUID</span> <span class="n">userId</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isBlocked</span><span class="o">;</span>   
+ <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isActive</span><span class="o">;</span>
+<span class="o">}</span></code></pre></figure> <p>Do you see any potential risks? That’s right! The class contains public fields that can be changed anywhere else in the application code. It will be hard for us to control such an application, especially if it becomes a big project.</p> <p>All right. Let’s make changes so that the fields are not public:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">UUID</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isBlocked</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isActive</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">UUID</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserId</span><span class="o">(</span><span class="n">UUID</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userId</span> <span class="o">=</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getEmail</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">email</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setEmail</span><span class="o">(</span><span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isBlocked</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">isBlocked</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBlocked</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">blocked</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">isBlocked</span> <span class="o">=</span> <span class="n">blocked</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isActive</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">isActive</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setActive</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">active</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">isActive</span> <span class="o">=</span> <span class="n">active</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>  </code></pre></figure> <p>Does it look familiar? You have certainly come across such a code before. In accordance with best practices - fields are private. But adding getters and setters does not improve the situation (because we have the same access to variables - as if they were public). So how to deal with this problem? The answer is the <strong>Rich Domain Model</strong> you are about to read about.</p> <h2 id="why-is-public-unsafe">Why is public unsafe?</h2> <p>Let’s go back to the first example.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>  
+ <span class="kd">public</span> <span class="n">UUID</span> <span class="n">userId</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>  
+ <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isBlocked</span><span class="o">;</span>   
+ <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isActive</span><span class="o">;</span>
+<span class="o">}</span>
+  </code></pre></figure> <p>The <code class="highlighter-rouge">User</code> class above exposes its implementation, which in this case is very dangerous. Why? We can freely manipulate all the fields in this class. You can set any field without any consequences. Another problem can be changing the user id at any time in the code.</p> <h2 id="anemic-domain-model-in-java">Anemic Domain Model in Java</h2> <p>A class with state exposed by getters and setters is an Anemic Model. An anemic domain model is often used as DTO (<em>Data Transfer Object</em>) object - a class with private fields and setters and getters. With an anemic approach, our models become just “containers” for the data, and all the logic for operating on that data is extracted to classes such as: <code class="highlighter-rouge">**Service</code>, <code class="highlighter-rouge">**Helper</code>, <code class="highlighter-rouge">**Processor</code>, etc.</p> <p>What do you think the <code class="highlighter-rouge">UserService</code> class might look like? Let’s put together some requirements:</p> <ul> <li>The user at creation is non-active. Only after email confirmation his account is activated,</li> <li>By default, the user is not blocked. In case of breaking the rules, the user can be blocked by the administrator,</li> <li>User email address must be from gmail.com domain,</li> <li>User name must be shorter than 100 characters.</li> </ul> <p>Here we go! Following the most popular pattern, we create individual services:</p> <p><code class="highlighter-rouge">UserActivationService</code> - service responsible for user activation. A user can only be activated once!</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">anemic.exceptions.UserAlreadyActivatedException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.exceptions.UserNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.model.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.repository.UserRepository</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserActivationService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">;</span>
+
+
+    <span class="kd">public</span> <span class="nf">UserActivationService</span><span class="o">(</span><span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userRepository</span> <span class="o">=</span> <span class="n">userRepository</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">activateUser</span><span class="o">(</span><span class="n">UUID</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">userRepository</span><span class="o">.</span><span class="na">getById</span><span class="o">(</span><span class="n">userId</span><span class="o">).</span><span class="na">orElseThrow</span><span class="o">(</span><span class="nl">UserNotFoundException:</span><span class="o">:</span><span class="k">new</span><span class="o">);</span>
+        <span class="n">validateIfUserIsActive</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setActive</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">userRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validateIfUserIsActive</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isActive</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UserAlreadyActivatedException</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure> <p><code class="highlighter-rouge">UserBlockerService</code> - service responsible for blocking users. As with activation - a user can only be blocked once. It is not possible to block a previously blocked user.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">anemic.exceptions.UserAlreadyBlockedException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.exceptions.UserNotFoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.model.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.repository.UserRepository</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserBlockerService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">;</span>
+
+
+    <span class="kd">public</span> <span class="nf">UserBlockerService</span><span class="o">(</span><span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userRepository</span> <span class="o">=</span> <span class="n">userRepository</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">block</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userRepository</span><span class="o">.</span><span class="na">getById</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()).</span><span class="na">orElseThrow</span><span class="o">(</span><span class="nl">UserNotFoundException:</span><span class="o">:</span><span class="k">new</span><span class="o">);</span>
+
+        <span class="n">validateIfUserIsNotBlocked</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setBlocked</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="n">userRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validateIfUserIsNotBlocked</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isBlocked</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UserAlreadyBlockedException</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p><code class="highlighter-rouge">UserRegistrationService</code> - service responsible for user registration. According to the above requirements, we need to validate the username length and email address.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">anemic.exceptions.UserAlreadyExistsException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.exceptions.UserNameTooLongException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.exceptions.WrongEmailDomainException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.model.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.repository.UserRepository</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRegistrationService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">MAIL_DOMAIN</span> <span class="o">=</span> <span class="s">"gmail.com"</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">UserRegistrationService</span><span class="o">(</span><span class="n">UserRepository</span> <span class="n">userRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userRepository</span> <span class="o">=</span> <span class="n">userRepository</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">registerUser</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">userRepository</span><span class="o">.</span><span class="na">getById</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getUserId</span><span class="o">()).</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UserAlreadyExistsException</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="n">validateUserEmailDomain</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getEmail</span><span class="o">());</span>
+        <span class="n">validateUserName</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setActive</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setBlocked</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">userRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validateUserEmailDomain</span><span class="o">(</span><span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">email</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="n">MAIL_DOMAIN</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">WrongEmailDomainException</span><span class="o">(</span><span class="n">email</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validateUserName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UserNameTooLongException</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>So we have a simple, anemic User domain model that contains no logic. We also have 3 services (<code class="highlighter-rouge">UserActivationService</code>, <code class="highlighter-rouge">UserBlockerService</code>, <code class="highlighter-rouge">UserRegistrationService</code>) with all the logic of the user activation, blocking and registration. This solution is very popular but has a few cons:</p> <ul> <li>It simply violates the <strong>“Tell, Don’t Ask”</strong> principle which states that objects should tell the client what they can or cannot do rather than exposing properties and leaving it up to the client to determine if an object is in a particular state for a given action to take place.</li> <li>We often have to repeat code across multiple places. In the case of our project - in UserBlockerService and UserActivationService we had to repeat checking if the user already exists.</li> <li>The model is completely untestable because we cannot ensure that the model doesn’t get invalid at some point. Theoretically, some other **Service could create a user with a disallowed domain in email and add it to the database - which would break one of our requirements.</li> </ul> <h2 id="rich-domain-model-in-java">Rich Domain Model in Java</h2> <p>Now let’s look at the same example in the rich domain approach. Let’s start with the <strong>email</strong> field. We can move it to a separate class - <code class="highlighter-rouge">Email</code>. This has the advantage that we can move the email domain validations to the Email object. This will prevent us from creating an incorrect email address (with a non-allowed domain). We will also not be able to modify the email after it has been created.</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Email</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">MAIL_DOMAIN</span> <span class="o">=</span> <span class="s">"gmail.com"</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Email</span><span class="o">(</span><span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">requireNonNull</span><span class="o">(</span><span class="n">email</span><span class="o">,</span> <span class="s">"Email not provided"</span><span class="o">);</span>
+        <span class="n">checkDomain</span><span class="o">(</span><span class="n">email</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Email</span> <span class="nf">of</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Email</span><span class="o">(</span><span class="n">email</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">checkDomain</span><span class="o">(</span><span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">email</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="n">MAIL_DOMAIN</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">WrongEmailDomainException</span><span class="o">(</span><span class="n">email</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>Now do the same for the <strong>Username</strong> field:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Username</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX_USERNAME_LENGTH</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">username</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Username</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">requireNonNull</span><span class="o">(</span><span class="n">username</span><span class="o">,</span> <span class="s">"username not provided"</span><span class="o">);</span>
+        <span class="n">checkUsernameLength</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Username</span> <span class="nf">of</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">userName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Username</span><span class="o">(</span><span class="n">userName</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">checkUsernameLength</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">username</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">MAX_USERNAME_LENGTH</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">UserNameTooLongException</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>As you can see the classes are similar. They have validation and a static method to create an object (Static Factory Method). It is not possible to create an Email object with an invalid domain and a Username object with a too long name (as required). Below I will show you the code of a rich <code class="highlighter-rouge">User</code> domain:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">google</span><span class="o">.</span><span class="na">common</span><span class="o">.</span><span class="na">base</span><span class="o">.</span><span class="na">Preconditions</span><span class="o">.</span><span class="na">checkState</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+
+    <span class="kd">private</span> <span class="n">UUID</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Username</span> <span class="n">userName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Email</span> <span class="n">email</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isBlocked</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isActive</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">User</span><span class="o">(</span><span class="n">UUID</span> <span class="n">userId</span><span class="o">,</span> <span class="n">Username</span> <span class="n">userName</span><span class="o">,</span> <span class="n">Email</span> <span class="n">email</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isBlocked</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isActive</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userId</span> <span class="o">=</span> <span class="n">userId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userName</span> <span class="o">=</span> <span class="n">userName</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isBlocked</span> <span class="o">=</span> <span class="n">isBlocked</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isActive</span> <span class="o">=</span> <span class="n">isActive</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">User</span> <span class="nf">create</span><span class="o">(</span><span class="n">UUID</span> <span class="n">userId</span><span class="o">,</span> <span class="n">Username</span> <span class="n">userName</span><span class="o">,</span> <span class="n">Email</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">isBlocked</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="kt">var</span> <span class="n">isActive</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">User</span><span class="o">(</span><span class="n">userId</span><span class="o">,</span> <span class="n">userName</span><span class="o">,</span> <span class="n">email</span><span class="o">,</span> <span class="n">isBlocked</span><span class="o">,</span> <span class="n">isActive</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">block</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">checkState</span><span class="o">(</span><span class="n">canBeBlocked</span><span class="o">(),</span> <span class="s">"User can not be blocked"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isBlocked</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">activate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">checkState</span><span class="o">(</span><span class="n">canBeActivated</span><span class="o">(),</span> <span class="s">"User is already activated"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isActive</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isBlocked</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">isBlocked</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isActive</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">isActive</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">UUID</span> <span class="nf">getUserId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">userId</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Username</span> <span class="nf">getUserName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">userName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">canBeActivated</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">isActive</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">canBeBlocked</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">isBlocked</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <p>In <code class="highlighter-rouge">block()</code> and <code class="highlighter-rouge">activate()</code> methods I used <code class="highlighter-rouge">checkState()</code> from Guava library. If the first parameter is false - we throw <code class="highlighter-rouge">IllegalStateException</code> with the content from the second parameter. Thanks to this we do not have to create additional “if” conditions.</p> <p>As you can see, compared to the anemic model our <strong>rich domain model does not provide the ability to modify fields externally</strong>. There are no setter methods. Variables have private access, they are set in a private constructor. There is a public static factory method that creates a new User object. Additionally, we have some getter methods to be able to extract some information (such as username or userID).</p> <p>The most important thing about the above code is that the <strong>rich domain object provides business methods, exposing the behavior of the model and not just its state</strong> (as for standard models with getters/setters).</p> <h3 id="the-main-advantage-of-the-rich-domain-model">The main advantage of the Rich Domain Model</h3> <p>A rich domain does not allow us to create invalid objects. You are not able to create a user with a wrong email address or too long username - as in the anemic domain model. The state of an object is always consistent, and consistency is guaranteed by the object itself, not by conditions checked in code that operates on objects (such as <code class="highlighter-rouge">**Services</code> classes).</p> <p>If we use an anemic model - we make our object public, allow for any modification of the model variables and all the responsibility (logic) is transferred to external classes of the Service type. This creates a lot of IF conditions and a big risk that before performing some operation we forget to check some condition that would exclude the possibility of performing that operation.</p> <p>If the logic is distributed among many services, and the model itself allows any modification of its internal data - we are very exposed not only to making a mistake, but also to overwriting the field value, unauthorized/uncontrolled access to the field. By moving the same logic into the domain model itself - there is less chance of error.</p> <h3 id="example-tests-of-a-rich-domain-model">Example tests of a rich domain model</h3> <p>Testing the rich model is straightforward. Below you can see what a sample test looks like:</p> <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">anemic.exceptions.UserNameTooLongException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">anemic.exceptions.WrongEmailDomainException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.text.RandomStringGenerator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.DisplayName</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">rich.model.Email</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">rich.model.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">rich.model.Username</span><span class="o">;</span>
+
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">UUID</span><span class="o">.</span><span class="na">randomUUID</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">assertj</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">api</span><span class="o">.</span><span class="na">Assertions</span><span class="o">.*;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserTest</span> <span class="o">{</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"The user after creation should not be active"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldNotBeActiveAfterCreation</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@gmail.com"</span><span class="o">));</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isActive</span><span class="o">()).</span><span class="na">isFalse</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"The user can be blocked"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">canBeBlocked</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@gmail.com"</span><span class="o">));</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isBlocked</span><span class="o">()).</span><span class="na">isFalse</span><span class="o">();</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">block</span><span class="o">();</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isBlocked</span><span class="o">()).</span><span class="na">isTrue</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"A blocked user cannot be blocked again"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">canBeBlockedOnlyOnce</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@gmail.com"</span><span class="o">));</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">block</span><span class="o">();</span>
+        <span class="n">assertThatCode</span><span class="o">(</span><span class="nl">user:</span><span class="o">:</span><span class="n">block</span><span class="o">).</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">IllegalStateException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"The user can be activated"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">canBeActivated</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@gmail.com"</span><span class="o">));</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isActive</span><span class="o">()).</span><span class="na">isFalse</span><span class="o">();</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">activate</span><span class="o">();</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">isActive</span><span class="o">()).</span><span class="na">isTrue</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"The user cannot be activated again"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">canBeActivatedOnlyOnce</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@gmail.com"</span><span class="o">));</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">activate</span><span class="o">();</span>
+        <span class="n">assertThatCode</span><span class="o">(</span><span class="nl">user:</span><span class="o">:</span><span class="n">activate</span><span class="o">).</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">IllegalStateException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"The email address must match the domain"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">emailMustMatchTheDomain</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertThatCode</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John123"</span><span class="o">),</span> 
+        <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@wrongdomain.com"</span><span class="o">))).</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">WrongEmailDomainException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@DisplayName</span><span class="o">(</span><span class="s">"Username must have permission length"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">usernameMustHaveAllowedLength</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">longUsername</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomStringGenerator</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">build</span><span class="o">().</span><span class="na">generate</span><span class="o">(</span><span class="mi">101</span><span class="o">);</span>
+        <span class="n">assertThatCode</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">randomUUID</span><span class="o">(),</span> <span class="n">Username</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">longUsername</span><span class="o">),</span> 
+        <span class="n">Email</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"john@wrongdomain.com"</span><span class="o">))).</span><span class="na">isInstanceOf</span><span class="o">(</span><span class="n">UserNameTooLongException</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure> <h2 id="when-to-use-getters-and-setters-in-java-objects">When to use getters and setters in Java objects?</h2> <p>You can safely use getters/setters in <strong>DTO (Data Transfer Object)</strong> objects. DTO models are used as entities when communicating with databases or as data transfer objects between REST services. Often setters are even necessary because libraries of various frameworks use them. But remember that it is best to map such objects to domain objects (which will use a rich model).</p> <h1 id="special-offer-from-codegym">Special offer from Codegym</h1> <p><a href="https://codegym.cc/">CodeGym</a> is an interactive educational platform where people can learn Java programming from scratch. I used this platform early in my career and it was great to solidify my knowledge of Java. It takes a very practical approach to learning programming. Also, it does not neglect the theory part which is also very important. I would recommend it to anyone who wants to learn java or prepare for a job interview or new job. Additionally, CodeGym creates a community where you can get help or meet interesting people.</p> <blockquote> <p>30% Off With CodeGym subscription by just applying the coupon: <strong>devdiaries30</strong></p> </blockquote> <p>If you are interested in full access - CodeGym has provided my blog readers with a <strong>30% off discount coupon</strong>. All you need to do is to use the coupon: <strong>devdiaries30</strong> during your order. If you have any questions, please do not hesitate to contact me!</p> </article> <hr class="dashed"><div class="row rev"><div class="col-md-12"><div class="share-box"> <i class="fa fa-share-alt" aria-hidden="true"></i> <a class="f nostyle" href="https://www.facebook.com/sharer/sharer.php?u=https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-facebook-official fa"></i></a> <a class="t nostyle" href="https://twitter.com/intent/tweet?text=&url=https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"><i class="fa fa-twitter fa"></i></a> <a class="g nostyle" href="https://plus.google.com/share?url=https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-google-plus fa"></i></a> <a class="r nostyle" href="http://www.reddit.com/submit?url=https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-reddit fa"></i></a> <a class="l nostyle" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/&title=&summary=&source=dev-diary.github.io" onclick="window.open(this.href, 'mywin', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" ><i class="fa fa-linkedin fa"></i></a> <a class="e nostyle" href="mailto:?subject=&amp;body=Check&amp;out&amp;this&amp;site&amp;https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/"><i class="fa fa-envelope fa"></i></a></div><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="text-align: center;"> <input type="hidden" name="cmd" value="_donations" /> <input type="hidden" name="business" value="michael.fabjanski@gmail.com" /> <input type="hidden" name="item_name" value="blog-donation" /> <input type="hidden" name="currency_code" value="USD" /> <input type="image" src="https://github.com/MichalFab/students-day/blob/master/donate2.png?raw=true" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" /> <img alt="" border="0" src="https://www.paypal.com/en_PL/i/scr/pixel.gif" width="1" height="1" /> </form></div></div><div class="row"><div class="col-md-12"> <p class="categories rev"> <span><a href="/categories/#java">Java</a></span> <span><a href="/categories/#design-patterns">Design patterns</a></span> <span><a href="/categories/#interview">Interview</a></span></p></div></div><div id="disqus_thread"></div><script> var disqus_config = function () { this.page.url = 'https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/'; this.page.identifier = 'https://www.devdiaries.net/blog/Java-Anemic-Domain-Model-Rich-Domain-Model/'; }; (function() { var d = document, s = d.createElement('script'); s.src = 'https://dev-diary-2.disqus.com/embed.js'; s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s); })();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> <!--<div class="comment-loader">--> <!--<button class="comments cards">Comments</button>--> <!--</div>--> <!--<div class="disqus hide">Loading comments&hellip;</div>--> <!--<div class="disqus-loading"></div>--> <!--<script>--> <!--/*--> <!-- disqusLoader.js v1.0--> <!-- A JavaScript plugin for lazy-loading Disqus comments widget.--> <!-- - --> <!-- By Osvaldas Valutis, www.osvaldas.info--> <!-- Available for use under the MIT License--> <!--*/--> <!--(function(b,f,l){var r=function(a){a=a.getBoundingClientRect();return{top:a.top+f.body.scrollTop,left:a.left+f.body.scrollLeft}},t=function(a,c){var d=f.createElement("script");d.src=a;d.async=!0;d.setAttribute("data-timestamp",+new Date);d.addEventListener("load",function(){"function"===typeof c&&c()});(f.head||f.body).appendChild(d)};l=function(a,c){var d,e;return function(){var g=this,f=arguments,b=+new Date;d&&b<d+a?(clearTimeout(e),e=setTimeout(function(){d=b;c.apply(g,f)},a)):(d=b,c.apply(g,--> <!--f))}};var m=!1,n=!1,p=!1,k=!1,h="unloaded",e=!1,q=function(){if(!e||!f.body.contains(e)||"loaded"==e.disqusLoaderStatus)return!0;var a=b.pageYOffset,c=r(e).top;if(c-a>b.innerHeight*n||0<a-c-e.offsetHeight-b.innerHeight*n)return!0;(a=f.getElementById("disqus_thread"))&&a.removeAttribute("id");e.setAttribute("id","disqus_thread");e.disqusLoaderStatus="loaded";"loaded"==h?DISQUS.reset({reload:!0,config:p}):(b.disqus_config=p,"unloaded"==h&&(h="loading",t(k,function(){h="loaded"})))};b.addEventListener("scroll",--> <!--l(m,q));b.addEventListener("resize",l(m,q));b.disqusLoader=function(a,c){var d={laziness:1,throttle:250,scriptUrl:!1,disqusConfig:!1},b=c,g,h={};for(g in d)Object.prototype.hasOwnProperty.call(d,g)&&(h[g]=d[g]);for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(h[g]=b[g]);c=h;n=c.laziness+1;m=c.throttle;p=c.disqusConfig;k=!1===k?c.scriptUrl:k;e="string"===typeof a?f.querySelector(a):"number"===typeof a.length?a[0]:a;e.disqusLoaderStatus="unloaded";q()}})(window,document,0);--> <!--</script>--> <!--<script>--> <!-- disqusLoader( '.disqus',--> <!-- {--> <!-- scriptUrl: '//{"shortname"=>"dev-diary-2"}.disqus.com/embed.js',--> <!-- disqusConfig: function()--> <!-- {--><script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script><script> $(document).ready(function () { $(".loader").hide(); });</script><script> $("#search-input").keyup(function () { $("main").hide(); $("search-container").show(); if (!$('#search-input').val()) { $("main").show(); $("search-container").hide(); } });</script><script src="/js/jekyll-search.min.js" type="text/javascript"></script><script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-container'), searchResultTemplate: '<a class="nostyle" href="{url}"><div class="blog borders cards"><div class="image" style="background-image: url({image});"></div><div class="content"><h3 class="title">{title}</h3><p class="description">{description}</p></div></div></a>', noResultsText: 'No results found', json: '/search.json' })</script><script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script><script> AOS.init({ duration: 600, once: true, disable: 'mobile' });</script><script> $("button").click(function () { $(".disqus").toggle(); $(".comments").toggle(); });</script></body></html>
